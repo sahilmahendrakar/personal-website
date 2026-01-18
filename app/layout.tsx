@@ -9,6 +9,9 @@ export const metadata: Metadata = {
     template: '%s | Sahil Mahendrakar',
   },
   description: 'Software Engineer at AWS. Building AI-native tools for learning and reading. Ex-founder/CTO.',
+  icons: {
+    icon: '/images/profile.png',
+  },
   keywords: ['software engineer', 'AWS', 'AI', 'machine learning', 'React', 'TypeScript', 'Next.js'],
   authors: [{ name: 'Sahil Mahendrakar' }],
   creator: 'Sahil Mahendrakar',
