@@ -26,8 +26,7 @@ export function Contact() {
         Contact
       </h2>
       <p className="text-muted-foreground text-lg mb-10 max-w-xl">
-        If you&apos;re building in AI + learning, I&apos;d love to chat. Always happy to connect 
-        with people working on interesting problems.
+        Feel free to reach out if you&apos;re interested in talking. I'm always happy to connect!
       </p>
       
       <div className="space-y-4">
