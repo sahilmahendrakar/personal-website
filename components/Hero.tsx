@@ -2,60 +2,81 @@
 
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
+import Image from 'next/image';
 import Link from 'next/link';
 
 export function Hero() {
   return (
     <section className="min-h-[90vh] flex flex-col justify-center py-20 md:py-32">
-      <div className="max-w-3xl">
-        <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="text-muted-foreground mb-4 text-lg"
-        >
-          Hi, I&apos;m
-        </motion.p>
-        
-        <motion.h1
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.1 }}
-          className="text-5xl md:text-7xl font-semibold tracking-tight mb-6"
-        >
-          Sahil Mahendrakar
-        </motion.h1>
-        
-        <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-          className="text-xl md:text-2xl text-muted-foreground mb-4 max-w-2xl leading-relaxed"
-        >
-          Building things. Breaking stuff. Humaning around.
-        </motion.p>
-        
-        <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.25 }}
-          className="text-md md:text-base text-muted-foreground font-semibold mb-10 max-w-2xl"
-        >
-          Software Engineer at AWS • Former founder & CTO • Building AI learning tools
-        </motion.p>
-        
+      <div className="flex flex-col-reverse lg:flex-row items-center gap-12 lg:gap-16">
+        {/* Text content - left side */}
+        <div className="flex-1 text-center lg:text-left">
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="text-muted-foreground mb-4 text-lg"
+          >
+            Hi, I&apos;m
+          </motion.p>
+          
+          <motion.h1
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+            className="text-5xl md:text-7xl font-semibold tracking-tight mb-6"
+          >
+            Sahil Mahendrakar
+          </motion.h1>
+          
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="text-xl md:text-2xl text-muted-foreground mb-4 max-w-2xl leading-relaxed"
+          >
+            Building things. Breaking stuff. Humaning around.
+          </motion.p>
+          
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.25 }}
+            className="text-md md:text-base text-muted-foreground font-semibold mb-10 max-w-2xl"
+          >
+            Software Engineer at AWS • Former founder & CTO • Building AI learning tools
+          </motion.p>
+          
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+            className="flex flex-wrap gap-4 justify-center lg:justify-start"
+          >
+            <Button asChild size="lg" className="text-base px-6">
+              <Link href="#projects">See projects</Link>
+            </Button>
+            <Button asChild variant="outline" size="lg" className="text-base px-6">
+              <Link href="#contact">Contact me</Link>
+            </Button>
+          </motion.div>
+        </div>
+
+        {/* Profile image - right side */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.3 }}
-          className="flex flex-wrap gap-4"
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5 }}
+          className="flex-shrink-0"
         >
-          <Button asChild size="lg" className="text-base px-6">
-            <Link href="#projects">See projects</Link>
-          </Button>
-          <Button asChild variant="outline" size="lg" className="text-base px-6">
-            <Link href="#contact">Contact me</Link>
-          </Button>
+          <Image
+            src="/images/profile.png"
+            alt="Sahil Mahendrakar"
+            width={320}
+            height={320}
+            className="rounded-full"
+            priority
+          />
         </motion.div>
       </div>
     </section>
