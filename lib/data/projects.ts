@@ -10,6 +10,7 @@ export interface Project {
     writeup?: string;
   };
   tech: string[];
+  image?: string;
 }
 
 export const projects: Project[] = [
@@ -27,6 +28,7 @@ export const projects: Project[] = [
       live: 'https://www.aristotlereader.com',
     },
     tech: ['Next.js', 'TypeScript', 'Pinecone', 'Vercel AI SDK', 'Firebase'],
+    image: '/images/aristotle.png',
   },
   {
     id: 'lyrn-code',
@@ -42,5 +44,6 @@ export const projects: Project[] = [
       live: 'https://www.lyrncode.com',
     },
     tech: ['Next.js', 'TypeScript', 'LangChain', 'OpenAI', 'Firebase'],
+    image: '/images/lyrncode.png',
   },
 ];

@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import type { Project } from '@/lib/data/projects';
 
 interface ProjectCardProps {
@@ -17,7 +18,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
       className="group relative block p-6 md:p-8 rounded-xl border border-border bg-card hover:border-muted-foreground/30 hover:-translate-y-1 hover:shadow-lg transition-all duration-300 cursor-pointer"
     >
       <article className="flex flex-col h-full">
-        <div className="mb-6">
+        <div className="mb-4">
           <h3 className="text-2xl md:text-3xl font-semibold tracking-tight mb-2 group-hover:text-primary transition-colors">
             {project.name}
           </h3>
@@ -25,6 +26,17 @@ export function ProjectCard({ project }: ProjectCardProps) {
             {project.tagline}
           </p>
         </div>
+
+        {project.image && (
+          <div className="relative w-full aspect-video overflow-hidden rounded-lg mb-6">
+            <Image
+              src={project.image}
+              alt={`${project.name} preview`}
+              fill
+              className="object-cover transition-transform duration-300 group-hover:scale-105"
+            />
+          </div>
+        )}
         
         <ul className="space-y-3 mb-6 flex-grow">
           {project.bullets.map((bullet, index) => (
@@ -35,12 +47,12 @@ export function ProjectCard({ project }: ProjectCardProps) {
           ))}
         </ul>
         
-        <div className="mb-6 p-4 rounded-lg bg-muted/50">
+        {/* <div className="mb-6 p-4 rounded-lg bg-muted/50">
           <p className="text-sm">
             <span className="text-muted-foreground">Exploring: </span>
             <span>{project.exploring}</span>
           </p>
-        </div>
+        </div> */}
         
         <div className="flex flex-wrap gap-2 mb-6">
           {project.tech.map((tech) => (
