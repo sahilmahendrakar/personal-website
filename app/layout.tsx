@@ -22,11 +22,20 @@ export const metadata: Metadata = {
     title: 'Sahil Mahendrakar',
     description: 'Software Engineer at AWS. Building AI-native tools for learning and reading.',
     siteName: 'Sahil Mahendrakar',
+    images: [
+      {
+        url: 'https://sahilmahendrakar.com/images/thumbnail.png',
+        width: 1200,
+        height: 630,
+        alt: 'Sahil Mahendrakar - Software Engineer',
+      },
+    ],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Sahil Mahendrakar',
     description: 'Software Engineer at AWS. Building AI-native tools for learning and reading.',
+    images: ['https://sahilmahendrakar.com/images/thumbnail.png'],
   },
   robots: {
     index: true,
