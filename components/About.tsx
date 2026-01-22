@@ -19,7 +19,7 @@ export function About() {
           <li className="flex items-start gap-3">
             <span className="text-muted-foreground mt-1.5">→</span>
             <span>
-              <strong className="font-medium">Ex co-founder/CTO</strong>
+              <strong className="font-medium">Former co-founder/CTO</strong>
               <span className="text-muted-foreground"> — raised $1M, Stanford Blockchain Accelerator</span>
             </span>
           </li>
