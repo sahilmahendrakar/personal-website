@@ -46,4 +46,19 @@ export const projects: Project[] = [
     tech: ['Next.js', 'TypeScript', 'LangChain', 'OpenAI', 'Firebase'],
     image: '/images/lyrncode.png',
   },
+  {
+    id: 'boomie',
+    name: 'Boomie',
+    tagline: 'Personalized, AI-powered album recommendations',
+    bullets: [
+      'Rate albums and build a personal listening profile',
+      'Agent-based recommendations with spotify integration for album search and metadata',
+    ],
+    exploring: 'Collaborative filtering and cross-genre discovery patterns',
+    links: {
+      live: 'https://listenboomie.com',
+    },
+    tech: ['Next.js', 'TypeScript', 'Google Gemini', 'Spotify API', 'Firebase'],
+    image: '/images/boomie-thumbnail.png',
+  },
 ];

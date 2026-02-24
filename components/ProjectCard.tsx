@@ -1,3 +1,6 @@
+'use client';
+
+import { useState } from 'react';
 import Image from 'next/image';
 import type { Project } from '@/lib/data/projects';
 
@@ -9,6 +12,8 @@ export function ProjectCard({ project }: ProjectCardProps) {
   // Get primary link (prioritize live, then demo, then writeup)
   const primaryLink = project.links.live || project.links.demo || project.links.writeup;
   const isExternal = !!(project.links.live || project.links.demo);
+  const [isExpanded, setIsExpanded] = useState(false);
+  const bulletListId = `project-bullets-${project.id}`;
 
   return (
     <a
@@ -38,14 +43,20 @@ export function ProjectCard({ project }: ProjectCardProps) {
           </div>
         )}
         
-        <ul className="space-y-3 mb-6 flex-grow">
-          {project.bullets.map((bullet, index) => (
-            <li key={index} className="flex items-start gap-3 text-sm md:text-base">
-              <span className="text-muted-foreground mt-1 flex-shrink-0">•</span>
-              <span>{bullet}</span>
-            </li>
-          ))}
-        </ul>
+        <div
+          className={`overflow-hidden transition-all duration-300 ease-in-out ${
+            isExpanded ? 'max-h-96 mb-6' : 'max-h-0 mb-0'
+          }`}
+        >
+          <ul id={bulletListId} className="space-y-3">
+            {project.bullets.map((bullet, index) => (
+              <li key={index} className="flex items-start gap-3 text-sm md:text-base">
+                <span className="text-muted-foreground mt-1 flex-shrink-0">•</span>
+                <span>{bullet}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
         
         {/* <div className="mb-6 p-4 rounded-lg bg-muted/50">
           <p className="text-sm">
@@ -54,19 +65,35 @@ export function ProjectCard({ project }: ProjectCardProps) {
           </p>
         </div> */}
         
-        <div className="flex flex-wrap gap-2 mb-6">
-          {project.tech.map((tech) => (
-            <span
-              key={tech}
-              className="px-3 py-1 text-xs font-medium rounded-full bg-secondary text-secondary-foreground"
+        <div className="flex items-center gap-3 pt-4 border-t border-border">
+          <button
+            type="button"
+            aria-label={isExpanded ? 'Hide project details' : 'Show project details'}
+            aria-expanded={isExpanded}
+            aria-controls={bulletListId}
+            onClick={(event) => {
+              event.preventDefault();
+              event.stopPropagation();
+              setIsExpanded((prev) => !prev);
+            }}
+            className="inline-flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-lg bg-secondary text-secondary-foreground hover:bg-secondary/70 transition-colors"
+          >
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 20 20"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.8"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className={`transition-transform duration-300 ${isExpanded ? 'rotate-180' : 'rotate-0'}`}
             >
-              {tech}
-            </span>
-          ))}
-        </div>
-        
-        <div className="flex gap-4 pt-4 border-t border-border">
-          <span className="inline-flex items-center px-4 py-2 text-sm font-medium rounded-lg bg-secondary text-secondary-foreground hover:bg-primary hover:text-primary-foreground transition-colors">
+              <path d="M5 7.5L10 12.5L15 7.5" />
+            </svg>
+            <span>More details</span>
+          </button>
+          <span className="ml-auto inline-flex items-center px-4 py-2 text-sm font-medium rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors">
             View Project →
           </span>
         </div>
