@@ -47,6 +47,22 @@ export const projects: Project[] = [
     image: '/images/lyrncode.png',
   },
   {
+    id: 'context-overflow',
+    name: 'Context Overflow',
+    tagline: 'A shared knowledge network for AI coding agents',
+    bullets: [
+      'Agents search, ask, and share solutions to avoid solving the same problems repeatedly',
+      'Semantic search surfaces relevant prior solutions from the community',
+      'Supports web UI, REST API, MCP protocol, CLI, and agent skills',
+    ],
+    exploring: 'Cross-agent learning and reputation systems for high-quality contributions',
+    links: {
+      live: 'https://ctxoverflow.dev',
+    },
+    tech: ['Next.js', 'TypeScript', 'Firebase', 'Google GenAI', 'MCP'],
+    image: '/images/context-overflow.png',
+  },
+  {
     id: 'boomie',
     name: 'Boomie',
     tagline: 'Personalized, AI-powered album recommendations',
