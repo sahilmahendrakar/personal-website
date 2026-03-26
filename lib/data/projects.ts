@@ -77,4 +77,20 @@ export const projects: Project[] = [
     tech: ['Next.js', 'TypeScript', 'Google Gemini', 'Spotify API', 'Firebase'],
     image: '/images/boomie-thumbnail.png',
   },
+  {
+    id: 'waves',
+    name: 'Waves',
+    tagline: 'Adaptive AI-generated music for focus sessions on macOS',
+    bullets: [
+      'Timed Wave sessions where music intensity follows a smooth curve—BPM, density, and prompts evolve with your session',
+      'Voice steering: natural-language commands classified by Gemini and applied to the live Lyria Realtime stream',
+      'FocusGuard and app-based routing—music fades when you drift to blocked sites; prompts can follow the app you are in',
+    ],
+    exploring: 'Richer context signals for session-aware composition and tighter Lyria parameter control',
+    links: {
+      live: 'https://listenwaves.com',
+    },
+    tech: ['Swift', 'Google Lyria Realtime', 'Gemini', 'WebSocket', 'macOS'],
+    image: '/images/Waves-thumbnail.png',
+  },
 ];
