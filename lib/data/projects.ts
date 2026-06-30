@@ -98,15 +98,15 @@ export const projects: Project[] = [
     name: 'Fluxx',
     tagline: 'AI-native project management for software development',
     bullets: [
-      'Plan documentation combined with kanban board—turn product intent into planned, delegated, tracked, reviewed work',
-      'Integrate coding agents with isolated git worktrees to prevent conflicts and coordinate delegated tasks',
-      'Track progress across planning, implementation, and review stages in a unified workspace',
+      'Kanban board where every task gets its own AI coding-agent session and isolated git worktree—parallel agents never touch the same files',
+      'Agent-agnostic: drive Claude Code, Codex, and Cursor from one interface instead of juggling terminal windows',
+      'Conversational planning assistant reads your repo and decomposes features into concrete, agent-ready tasks you add in one click',
     ],
-    exploring: 'Richer agent collaboration patterns and advanced code review workflows',
+    exploring: 'Cloud-hosted agents and richer multi-agent coordination beyond local worktrees',
     links: {
       live: 'https://fluxx.sh',
     },
-    tech: ['Electron', 'TypeScript', 'React', 'Firebase', 'Git'],
+    tech: ['Electron', 'TypeScript', 'React', 'Anthropic API', 'Git'],
     image: '/images/fluxx.jpg',
   },
 ];
