@@ -93,4 +93,20 @@ export const projects: Project[] = [
     tech: ['Swift', 'Google Lyria Realtime', 'Gemini', 'WebSocket', 'macOS'],
     image: '/images/Waves-thumbnail.png',
   },
+  {
+    id: 'fluxx',
+    name: 'Fluxx',
+    tagline: 'AI-native project management for software development',
+    bullets: [
+      'Plan documentation combined with kanban board—turn product intent into planned, delegated, tracked, reviewed work',
+      'Integrate coding agents with isolated git worktrees to prevent conflicts and coordinate delegated tasks',
+      'Track progress across planning, implementation, and review stages in a unified workspace',
+    ],
+    exploring: 'Richer agent collaboration patterns and advanced code review workflows',
+    links: {
+      live: 'https://fluxx.sh',
+    },
+    tech: ['Electron', 'TypeScript', 'React', 'Firebase', 'Git'],
+    image: '/images/fluxx.jpg',
+  },
 ];
