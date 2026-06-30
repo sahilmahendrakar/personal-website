@@ -16,12 +16,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
   const bulletListId = `project-bullets-${project.id}`;
 
   return (
-    <a
-      href={primaryLink}
-      target={isExternal ? '_blank' : undefined}
-      rel={isExternal ? 'noopener noreferrer' : undefined}
-      className="group relative block p-6 md:p-8 rounded-xl border border-border bg-card hover:border-muted-foreground/30 hover:-translate-y-1 hover:shadow-lg transition-all duration-300 cursor-pointer"
-    >
+    <div className="group relative block p-6 md:p-8 rounded-xl border border-border bg-card hover:border-muted-foreground/30 hover:-translate-y-1 hover:shadow-lg transition-all duration-300">
       <article className="flex flex-col h-full">
         <div className="mb-4">
           <h3 className="text-2xl md:text-3xl font-semibold tracking-tight mb-2 group-hover:text-primary transition-colors">
@@ -45,7 +40,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
         
         <div
           className={`overflow-hidden transition-all duration-300 ease-in-out ${
-            isExpanded ? 'max-h-96 mb-6' : 'max-h-0 mb-0'
+            isExpanded ? 'max-h-[1000px] mb-6' : 'max-h-0 mb-0'
           }`}
         >
           <ul id={bulletListId} className="space-y-3">
@@ -93,11 +88,18 @@ export function ProjectCard({ project }: ProjectCardProps) {
             </svg>
             <span>More details</span>
           </button>
-          <span className="ml-auto inline-flex items-center px-4 py-2 text-sm font-medium rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors">
-            View Project →
-          </span>
+          {primaryLink ? (
+            <a
+              href={primaryLink}
+              target={isExternal ? '_blank' : undefined}
+              rel={isExternal ? 'noopener noreferrer' : undefined}
+              className="ml-auto inline-flex items-center px-4 py-2 text-sm font-medium rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
+            >
+              View Project →
+            </a>
+          ) : null}
         </div>
       </article>
-    </a>
+    </div>
   );
 }

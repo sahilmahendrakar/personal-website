@@ -21,7 +21,7 @@ const links = [
 
 export function Contact() {
   return (
-    <SectionWrapper id="contact" className="py-20 md:py-28">
+    <SectionWrapper className="py-20 md:py-28">
       <h2 className="text-3xl md:text-4xl font-semibold tracking-tight mb-4">
         Contact
       </h2>
@@ -44,12 +44,6 @@ export function Contact() {
             </AnimatedLink>
           </div>
         ))}
-      </div>
-      
-      <div className="mt-16 pt-8 border-t border-border">
-        <p className="text-sm text-muted-foreground">
-          © {new Date().getFullYear()} Sahil Mahendrakar. Built with Next.js.
-        </p>
       </div>
     </SectionWrapper>
   );

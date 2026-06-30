@@ -51,7 +51,7 @@ export function Projects() {
   };
 
   return (
-    <SectionWrapper id="projects" className="py-20 md:py-28">
+    <SectionWrapper className="py-20 md:py-28">
       <div className="flex items-end justify-between mb-4">
         <div>
           <h2 className="text-3xl md:text-4xl font-semibold tracking-tight mb-4">
@@ -87,7 +87,7 @@ export function Projects() {
 
       <div
         ref={scrollRef}
-        className="flex gap-6 overflow-x-auto scroll-smooth snap-x snap-mandatory -mx-6 px-6 pt-2 pb-4"
+        className="flex gap-6 overflow-x-auto overscroll-x-contain scroll-smooth snap-x snap-mandatory -mx-6 px-6 pt-2 pb-4"
         style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
       >
         {projects.map((project) => (

@@ -54,10 +54,10 @@ export function Hero() {
             className="flex flex-wrap gap-4 justify-center lg:justify-start"
           >
             <Button asChild size="lg" className="text-base px-6">
-              <Link href="#projects">See projects</Link>
+              <Link href="/projects">See projects</Link>
             </Button>
             <Button asChild variant="outline" size="lg" className="text-base px-6">
-              <Link href="#contact">Contact me</Link>
+              <Link href="/contact">Contact me</Link>
             </Button>
           </motion.div>
         </div>

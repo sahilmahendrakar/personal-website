@@ -17,7 +17,7 @@ const interests = [
 
 export function Now() {
   return (
-    <SectionWrapper id="now" className="py-20 md:py-28">
+    <SectionWrapper className="py-20 md:py-28">
       <h2 className="text-3xl md:text-4xl font-semibold tracking-tight mb-4">
         Now
       </h2>
