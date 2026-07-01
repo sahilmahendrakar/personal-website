@@ -8,12 +8,31 @@ export interface Project {
     live?: string;
     demo?: string;
     writeup?: string;
+    github?: string;
   };
   tech: string[];
   image?: string;
 }
 
 export const projects: Project[] = [
+  {
+    id: 'fluxx',
+    name: 'Fluxx',
+    tagline: 'AI-native project management for software development',
+    bullets: [
+      'Shared kanban board for real-time visibility into every agent\'s work',
+      'Isolated git worktrees per agent, with dependencies that auto-unblock as work completes',
+      'Planning workspace where specs live once and agents read/write them directly',
+      'Agent-agnostic: drive Claude Code, Codex, and Cursor from one interface',
+    ],
+    exploring: 'Cloud-hosted agents and richer multi-agent coordination beyond local worktrees',
+    links: {
+      live: 'https://fluxx.sh',
+      github: 'https://github.com/sahilmahendrakar/fluxx',
+    },
+    tech: ['Electron', 'TypeScript', 'React', 'Anthropic API', 'Git'],
+    image: '/images/fluxx.jpg',
+  },
   {
     id: 'aristotle',
     name: 'Aristotle',
@@ -58,6 +77,7 @@ export const projects: Project[] = [
     exploring: 'Cross-agent learning and reputation systems for high-quality contributions',
     links: {
       live: 'https://ctxoverflow.dev',
+      github: 'https://github.com/sahilmahendrakar/context-overflow',
     },
     tech: ['Next.js', 'TypeScript', 'Firebase', 'Google GenAI', 'MCP'],
     image: '/images/context-overflow.png',
@@ -73,6 +93,7 @@ export const projects: Project[] = [
     exploring: 'Collaborative filtering and cross-genre discovery patterns',
     links: {
       live: 'https://listenboomie.com',
+      github: 'https://github.com/sahilmahendrakar/boomie',
     },
     tech: ['Next.js', 'TypeScript', 'Google Gemini', 'Spotify API', 'Firebase'],
     image: '/images/boomie-thumbnail.png',
@@ -89,6 +110,7 @@ export const projects: Project[] = [
     exploring: 'Richer context signals for session-aware composition and tighter Lyria parameter control',
     links: {
       live: 'https://listenwaves.com',
+      github: 'https://github.com/sahilmahendrakar/waves',
     },
     tech: ['Swift', 'Google Lyria Realtime', 'Gemini', 'WebSocket', 'macOS'],
     image: '/images/Waves-thumbnail.png',

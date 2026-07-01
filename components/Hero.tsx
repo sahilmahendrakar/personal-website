@@ -44,7 +44,7 @@ export function Hero() {
             transition={{ duration: 0.5, delay: 0.25 }}
             className="text-md md:text-base text-muted-foreground font-semibold mb-10 max-w-2xl"
           >
-            Software Engineer at AWS • Former founder & CTO • Building AI learning tools
+            Agentic AI @ AWS • Former founder & CTO • Building for the agent era
           </motion.p>
           
           <motion.div

@@ -58,7 +58,7 @@ export function Projects() {
             Projects
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl">
-            AI-powered projects at the intersection of curiosity, learning, and discovery.
+            Things I&apos;ve built with AI — from agent tooling to creative side projects.
           </p>
         </div>
         <div className="hidden md:flex items-center gap-2">
@@ -87,7 +87,7 @@ export function Projects() {
 
       <div
         ref={scrollRef}
-        className="flex gap-6 overflow-x-auto scroll-smooth snap-x snap-mandatory -mx-6 px-6 pt-2 pb-4"
+        className="flex gap-6 overflow-x-auto overscroll-x-contain scroll-smooth snap-x snap-mandatory -mx-6 px-6 pt-2 pb-4"
         style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
       >
         {projects.map((project) => (

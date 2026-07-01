@@ -45,7 +45,7 @@ export function Contact() {
           </div>
         ))}
       </div>
-      
+
       <div className="mt-16 pt-8 border-t border-border">
         <p className="text-sm text-muted-foreground">
           © {new Date().getFullYear()} Sahil Mahendrakar. Built with Next.js.

@@ -1,0 +1,11 @@
+---
+description: Use pnpm for Node/package workflows in this repo
+alwaysApply: true
+---
+
+# Package manager
+
+This project uses **pnpm** (`pnpm-lock.yaml` is the lockfile).
+
+- Use `pnpm install`, `pnpm add`, `pnpm remove`, `pnpm exec`, and `pnpm run` / `pnpm <script>` for all package and script commands.
+- Do not use `npm` or `yarn` for installs or scripts unless the user explicitly asks for an exception.
