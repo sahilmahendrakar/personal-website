@@ -1,23 +1,23 @@
 import { SectionWrapper } from './SectionWrapper';
 
 const currentFocus = [
-  'Building AI reading and learning tools (Aristotle, Lyrn Code)',
-  'Exploring RAG architectures and retrieval optimization',
-  'Developing AI-native interfaces that feel intuitive',
+  'Building long-term memory for AI agents at AWS Bedrock AgentCore',
+  'Building Fluxx & Context Overflow — tools for people working with coding agents',
+  'Exploring multi-agent coordination and shared knowledge across agents',
 ];
 
 const interests = [
-  'AI-native interfaces',
-  'RAG systems',
-  'Learning tools',
+  'Agent memory',
+  'Multi-agent systems',
+  'Agent-native tooling',
+  'Human–agent collaboration',
   'Developer experience',
-  'Performance UX',
   'System design',
 ];
 
 export function Now() {
   return (
-    <SectionWrapper className="py-20 md:py-28">
+    <SectionWrapper id="now" className="py-20 md:py-28">
       <h2 className="text-3xl md:text-4xl font-semibold tracking-tight mb-4">
         Now
       </h2>

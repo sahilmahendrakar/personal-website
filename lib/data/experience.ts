@@ -16,14 +16,12 @@ export const experiences: Experience[] = [
     company: 'Amazon Web Services',
     companyUrl: 'https://aws.amazon.com',
     period: 'Sept 2024 – Present',
-    description: 'Building customer-facing recommendation and cost optimization experiences.',
+    description: 'Building agentic AI on the Bedrock AgentCore team.',
     highlights: [
-      'Own customer-facing recommendation experiences across Compute Optimizer, Savings Plans/RI console, and Cost Optimization Hub',
-      'Built automation workflows with adoption and savings metrics tracking',
-      'Led React modernization efforts with React Query caching for improved performance',
-      'Expanded services into ADC regions with comprehensive pipelines, alarms, and dashboards',
+      'Building long-term memory for AI agents on Bedrock AgentCore Memory',
+      'Previously delivered customer-facing cost optimization experiences (Compute Optimizer, Savings Plans, Cost Optimization Hub)',
     ],
-    tags: ['React', 'TypeScript', 'AWS', 'CloudWatch'],
+    tags: ['Agentic AI', 'AWS', 'Bedrock AgentCore', 'TypeScript'],
   },
   {
     id: 'aws-intern',

@@ -3,7 +3,7 @@ import { patents } from '@/lib/data/patents';
 
 export function Patents() {
   return (
-    <SectionWrapper className="py-20 md:py-28">
+    <SectionWrapper id="patents" className="py-20 md:py-28">
       <h2 className="text-3xl md:text-4xl font-semibold tracking-tight mb-10">
         Patents
       </h2>

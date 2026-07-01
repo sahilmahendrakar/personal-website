@@ -51,14 +51,14 @@ export function Projects() {
   };
 
   return (
-    <SectionWrapper className="py-20 md:py-28">
+    <SectionWrapper id="projects" className="py-20 md:py-28">
       <div className="flex items-end justify-between mb-4">
         <div>
           <h2 className="text-3xl md:text-4xl font-semibold tracking-tight mb-4">
             Projects
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl">
-            AI-powered projects at the intersection of curiosity, learning, and discovery.
+            Things I&apos;ve built with AI — from agent tooling to creative side projects.
           </p>
         </div>
         <div className="hidden md:flex items-center gap-2">

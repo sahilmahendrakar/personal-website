@@ -44,7 +44,7 @@ export function Hero() {
             transition={{ duration: 0.5, delay: 0.25 }}
             className="text-md md:text-base text-muted-foreground font-semibold mb-10 max-w-2xl"
           >
-            Software Engineer at AWS • Former founder & CTO • Building AI learning tools
+            Agentic AI @ AWS • Former founder & CTO • Building for the agent era
           </motion.p>
           
           <motion.div
@@ -54,10 +54,10 @@ export function Hero() {
             className="flex flex-wrap gap-4 justify-center lg:justify-start"
           >
             <Button asChild size="lg" className="text-base px-6">
-              <Link href="/projects">See projects</Link>
+              <Link href="#projects">See projects</Link>
             </Button>
             <Button asChild variant="outline" size="lg" className="text-base px-6">
-              <Link href="/contact">Contact me</Link>
+              <Link href="#contact">Contact me</Link>
             </Button>
           </motion.div>
         </div>
