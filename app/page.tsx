@@ -5,7 +5,7 @@ import { Projects } from '@/components/Projects';
 import { Timeline } from '@/components/Timeline';
 import { Patents } from '@/components/Patents';
 import { Now } from '@/components/Now';
-// import { BlogPreview } from '@/components/BlogPreview';
+import { BlogPreview } from '@/components/BlogPreview';
 import { Contact } from '@/components/Contact';
 
 export default function Home() {
@@ -22,7 +22,7 @@ export default function Home() {
           <Timeline />
           <Patents />
           <Now />
-          {/* <BlogPreview /> */}
+          <BlogPreview />
           <Contact />
         </div>
       </main>

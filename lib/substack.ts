@@ -1,18 +1,16 @@
 import { XMLParser } from 'fast-xml-parser';
-import type { PostData } from './posts';
 
 /**
- * Substack integration (Option A: Substack is the canonical source).
+ * Substack integration (Substack is the canonical source).
  *
  * At build time we fetch the publication's RSS feed, which Substack exposes
  * at `<publication-url>/feed` and which includes the full HTML of each post
  * inside `<content:encoded>`. Those posts are rendered on the personal site
- * as `/blog/<slug>` entries, with a link back to the Substack original.
+ * as `/thoughts/<slug>` entries, with a link back to the Substack original.
  *
  * The publication URL is configured via the `SUBSTACK_URL` env var, e.g.
  *   SUBSTACK_URL=https://yourname.substack.com
- * When unset, no Substack posts are returned (and the site falls back to any
- * local markdown in /posts), so the build never fails.
+ * When unset, no posts are returned, so the build never fails.
  */
 
 const SUBSTACK_URL = (process.env.SUBSTACK_URL || '').replace(/\/+$/, '');
@@ -20,11 +18,17 @@ const SUBSTACK_URL = (process.env.SUBSTACK_URL || '').replace(/\/+$/, '');
 /** How often (seconds) the feed is re-fetched via ISR. */
 export const FEED_REVALIDATE_SECONDS = 3600;
 
-export interface SubstackPostData extends PostData {
+export interface PostData {
+  id: string;
+  title: string;
+  /** Substack's subtitle for the post (the feed's `<description>`). */
+  subtitle?: string;
+  date: string;
+  contentHtml: string;
   /** Permalink to the post on Substack. */
   substackUrl: string;
-  /** Short excerpt from the feed's `<description>`, if present. */
-  excerpt?: string;
+  /** Estimated reading time in whole minutes. */
+  readingMinutes: number;
 }
 
 export function isSubstackConfigured(): boolean {
@@ -37,9 +41,9 @@ export function substackBaseUrl(): string {
 
 // Module-level cache so a single build shares one fetch across the index page,
 // generateStaticParams, and each post page.
-let postsCache: Promise<SubstackPostData[]> | null = null;
+let postsCache: Promise<PostData[]> | null = null;
 
-export function getSubstackPosts(): Promise<SubstackPostData[]> {
+export function getSortedPostsData(): Promise<PostData[]> {
   if (!SUBSTACK_URL) return Promise.resolve([]);
   if (!postsCache) {
     postsCache = fetchSubstackPosts().catch((err) => {
@@ -52,7 +56,19 @@ export function getSubstackPosts(): Promise<SubstackPostData[]> {
   return postsCache;
 }
 
-async function fetchSubstackPosts(): Promise<SubstackPostData[]> {
+export async function getAllPostIds(): Promise<{ id: string }[]> {
+  const posts = await getSortedPostsData();
+  return posts.map((post) => ({ id: post.id }));
+}
+
+export async function getPostData(id: string): Promise<PostData> {
+  const posts = await getSortedPostsData();
+  const post = posts.find((p) => p.id === id);
+  if (!post) throw new Error(`Post not found: ${id}`);
+  return post;
+}
+
+async function fetchSubstackPosts(): Promise<PostData[]> {
   const feedUrl = `${SUBSTACK_URL}/feed`;
   const res = await fetch(feedUrl, {
     next: { revalidate: FEED_REVALIDATE_SECONDS },
@@ -71,7 +87,8 @@ async function fetchSubstackPosts(): Promise<SubstackPostData[]> {
 
   return items
     .map(parseItem)
-    .filter((post): post is SubstackPostData => Boolean(post.id && post.title));
+    .filter((post): post is PostData => Boolean(post.id && post.title))
+    .sort((a, b) => (a.date < b.date ? 1 : -1));
 }
 
 interface ParsedFeed {
@@ -88,20 +105,42 @@ interface ParsedItem {
   'content:encoded'?: ParsedValue;
 }
 
-function parseItem(item: ParsedItem): SubstackPostData {
+function parseItem(item: ParsedItem): PostData {
   const link = textOf(item.link);
   const title = textOf(item.title);
   const pubDate = textOf(item.pubDate);
-  const content = textOf(item['content:encoded']) || textOf(item.description) || '';
+  const content = cleanContent(
+    textOf(item['content:encoded']) || textOf(item.description) || ''
+  );
 
   return {
     id: slugFromLink(link),
     title,
+    subtitle: textOf(item.description) || undefined,
     date: parsePubDate(pubDate),
     contentHtml: content,
     substackUrl: link,
-    excerpt: textOf(item.description) || undefined,
+    readingMinutes: estimateReadingMinutes(content),
   };
+}
+
+/**
+ * Substack's feed HTML can embed subscribe forms and CTA buttons that don't
+ * belong on the mirrored page (there's a dedicated Substack link instead).
+ */
+function cleanContent(html: string): string {
+  return html
+    .replace(/<form[\s\S]*?<\/form>/gi, '')
+    .replace(/<p class="button-wrapper"[\s\S]*?<\/p>/gi, '')
+    .replace(/<a[^>]*class="[^"]*button[^"]*"[\s\S]*?<\/a>/gi, '');
+}
+
+function estimateReadingMinutes(html: string): number {
+  const words = html
+    .replace(/<[^>]+>/g, ' ')
+    .split(/\s+/)
+    .filter(Boolean).length;
+  return Math.max(1, Math.round(words / 230));
 }
 
 /** Normalize a value that fast-xml-parser may return as a string or {__cdata}. */

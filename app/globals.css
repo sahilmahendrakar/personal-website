@@ -88,6 +88,7 @@
 }
 
 @theme inline {
+  --font-serif: var(--font-newsreader), Georgia, 'Times New Roman', serif;
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -210,6 +211,159 @@ body {
 .section-fade.visible {
   opacity: 1;
   transform: translateY(0);
+}
+
+/* Long-form reading typography (/thoughts posts) */
+.post-body {
+  font-family: var(--font-serif);
+  font-size: 1.1875rem;
+  line-height: 1.75;
+  color: var(--foreground);
+  letter-spacing: 0.003em;
+}
+
+@media (min-width: 768px) {
+  .post-body {
+    font-size: 1.3125rem;
+    line-height: 1.72;
+  }
+}
+
+.post-body > * + * {
+  margin-top: 1.5em;
+}
+
+.post-body p {
+  margin: 0;
+}
+
+.post-body p + p {
+  margin-top: 1.35em;
+}
+
+.post-body h1,
+.post-body h2,
+.post-body h3,
+.post-body h4 {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.25;
+  margin-top: 2.2em;
+  margin-bottom: 0.6em;
+}
+
+.post-body h1 { font-size: 1.55em; }
+.post-body h2 { font-size: 1.35em; }
+.post-body h3 { font-size: 1.15em; }
+.post-body h4 { font-size: 1em; }
+
+.post-body a {
+  color: var(--foreground);
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--foreground) 35%, transparent);
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+  transition: text-decoration-color 0.2s ease;
+}
+
+.post-body a:hover {
+  text-decoration-color: var(--foreground);
+}
+
+.post-body em {
+  font-style: italic;
+}
+
+.post-body strong {
+  font-weight: 600;
+}
+
+.post-body blockquote {
+  margin: 2em 0;
+  padding-left: 1.5rem;
+  border-left: 2px solid var(--foreground);
+  font-style: italic;
+  color: var(--muted-foreground);
+}
+
+.post-body ul,
+.post-body ol {
+  padding-left: 1.5rem;
+}
+
+.post-body ul { list-style: disc; }
+.post-body ol { list-style: decimal; }
+
+.post-body li {
+  margin-top: 0.5em;
+}
+
+.post-body li::marker {
+  color: var(--muted-foreground);
+}
+
+.post-body hr {
+  border: none;
+  margin: 3em 0;
+  text-align: center;
+}
+
+.post-body hr::after {
+  content: '···';
+  display: block;
+  color: var(--muted-foreground);
+  font-size: 1.25em;
+  letter-spacing: 0.75em;
+  margin-left: 0.75em; /* offset the trailing letter-spacing so dots center */
+}
+
+.post-body img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--radius);
+  margin: 2em auto;
+}
+
+.post-body figure {
+  margin: 2em 0;
+}
+
+.post-body figure img {
+  margin: 0 auto;
+}
+
+.post-body figcaption {
+  font-family: var(--font-sans);
+  font-size: 0.8125rem;
+  color: var(--muted-foreground);
+  text-align: center;
+  margin-top: 0.75em;
+}
+
+.post-body code {
+  font-family: var(--font-mono);
+  font-size: 0.8em;
+  background: var(--muted);
+  padding: 0.15em 0.4em;
+  border-radius: 0.375rem;
+}
+
+.post-body pre {
+  font-family: var(--font-mono);
+  font-size: 0.75em;
+  line-height: 1.6;
+  background: var(--muted);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.25rem;
+  overflow-x: auto;
+}
+
+.post-body pre code {
+  background: none;
+  padding: 0;
 }
 
 /* Selection */
