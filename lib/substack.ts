@@ -10,10 +10,12 @@ import { XMLParser } from 'fast-xml-parser';
  *
  * The publication URL is configured via the `SUBSTACK_URL` env var, e.g.
  *   SUBSTACK_URL=https://yourname.substack.com
- * When unset, no posts are returned, so the build never fails.
+ * When unset, it defaults to sahilmahendrakar.substack.com.
  */
 
-const SUBSTACK_URL = (process.env.SUBSTACK_URL || '').replace(/\/+$/, '');
+const DEFAULT_SUBSTACK_URL = 'https://sahilmahendrakar.substack.com';
+
+const SUBSTACK_URL = (process.env.SUBSTACK_URL || DEFAULT_SUBSTACK_URL).replace(/\/+$/, '');
 
 /** How often (seconds) the feed is re-fetched via ISR. */
 export const FEED_REVALIDATE_SECONDS = 3600;
