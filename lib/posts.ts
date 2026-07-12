@@ -3,6 +3,7 @@ import path from 'path';
 import matter from 'gray-matter';
 import { remark } from 'remark';
 import html from 'remark-html';
+import { getSubstackPosts } from './substack';
 
 const postsDirectory = path.join(process.cwd(), 'posts');
 
@@ -11,66 +12,56 @@ export interface PostData {
   title: string;
   date: string;
   contentHtml?: string;
+  /** Present when this post originates from Substack. */
+  substackUrl?: string;
 }
 
-export function getSortedPostsData(): PostData[] {
-  // Get file names under /posts
-  const fileNames = fs.readdirSync(postsDirectory);
-  const allPostsData = fileNames.map((fileName) => {
-    // Remove ".md" from file name to get id
-    const id = fileName.replace(/\.md$/, '');
+// --- Local markdown posts (fallback / for posts not mirrored on Substack) ---
 
-    // Read markdown file as string
-    const fullPath = path.join(postsDirectory, fileName);
-    const fileContents = fs.readFileSync(fullPath, 'utf8');
-
-    // Use gray-matter to parse the post metadata section
-    const matterResult = matter(fileContents);
-
-    // Combine the data with the id
-    return {
-      id,
-      ...(matterResult.data as { title: string; date: string }),
-    };
-  });
-  // Sort posts by date
-  return allPostsData.sort((a, b) => {
-    if (a.date < b.date) {
-      return 1;
-    } else {
-      return -1;
-    }
-  });
+function getLocalPostIds(): string[] {
+  if (!fs.existsSync(postsDirectory)) return [];
+  return fs
+    .readdirSync(postsDirectory)
+    .filter((f) => f.endsWith('.md'))
+    .map((f) => f.replace(/\.md$/, ''));
 }
 
-export function getAllPostIds(): { id: string }[] {
-  const fileNames = fs.readdirSync(postsDirectory);
-
-  return fileNames.map((fileName) => {
-    return {
-      id: fileName.replace(/\.md$/, ''),
-    };
-  });
-}
-
-export async function getPostData(id: string): Promise<PostData> {
+async function getLocalPostData(id: string): Promise<PostData> {
   const fullPath = path.join(postsDirectory, `${id}.md`);
   const fileContents = fs.readFileSync(fullPath, 'utf8');
-
-  // Use gray-matter to parse the post metadata section
   const matterResult = matter(fileContents);
 
-  // Use remark to convert markdown into HTML string
-  const processedContent = await remark()
-    .use(html)
-    .process(matterResult.content);
-  const contentHtml = processedContent.toString();
+  const processedContent = await remark().use(html).process(matterResult.content);
 
-  // Combine the data with the id and contentHtml
   return {
     id,
-    contentHtml,
+    contentHtml: processedContent.toString(),
     ...(matterResult.data as { title: string; date: string }),
   };
 }
 
+// --- Merged API: Substack posts first, then any local-only markdown ---
+
+export async function getSortedPostsData(): Promise<PostData[]> {
+  const substackPosts = await getSubstackPosts();
+  const substackIds = new Set(substackPosts.map((p) => p.id));
+
+  // Don't double-list a post that's both on Substack and local.
+  const localOnlyIds = getLocalPostIds().filter((id) => !substackIds.has(id));
+  const localPosts = await Promise.all(localOnlyIds.map(getLocalPostData));
+
+  const all = [...substackPosts, ...localPosts];
+  return all.sort((a, b) => (a.date < b.date ? 1 : -1));
+}
+
+export async function getAllPostIds(): Promise<{ id: string }[]> {
+  const posts = await getSortedPostsData();
+  return posts.map((post) => ({ id: post.id }));
+}
+
+export async function getPostData(id: string): Promise<PostData> {
+  const substackPosts = await getSubstackPosts();
+  const substackPost = substackPosts.find((p) => p.id === id);
+  if (substackPost) return substackPost;
+  return getLocalPostData(id);
+}

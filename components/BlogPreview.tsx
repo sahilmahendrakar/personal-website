@@ -3,8 +3,8 @@ import { AnimatedLink } from './AnimatedLink';
 import { getSortedPostsData } from '@/lib/posts';
 import { format, parseISO } from 'date-fns';
 
-export function BlogPreview() {
-  const posts = getSortedPostsData().slice(0, 3);
+export async function BlogPreview() {
+  const posts = (await getSortedPostsData()).slice(0, 3);
 
   if (posts.length === 0) {
     return null;

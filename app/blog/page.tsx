@@ -9,8 +9,11 @@ export const metadata: Metadata = {
   description: 'Thoughts on building software, AI, and learning.',
 };
 
-export default function BlogPage() {
-  const posts = getSortedPostsData();
+// Refresh the post list (mirrored from Substack) hourly via ISR.
+export const revalidate = 3600;
+
+export default async function BlogPage() {
+  const posts = await getSortedPostsData();
 
   return (
     <main className="min-h-screen">

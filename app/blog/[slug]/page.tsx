@@ -8,8 +8,11 @@ interface BlogPostProps {
   params: Promise<{ slug: string }>;
 }
 
+// Keep the mirrored Substack content fresh via ISR.
+export const revalidate = 3600;
+
 export async function generateStaticParams() {
-  const posts = getAllPostIds();
+  const posts = await getAllPostIds();
   return posts.map((post) => ({
     slug: post.id,
   }));
@@ -22,6 +25,8 @@ export async function generateMetadata({ params }: BlogPostProps): Promise<Metad
     return {
       title: post.title,
       description: `Read ${post.title} by Sahil Mahendrakar`,
+      // Substack is the canonical source, so point search engines there.
+      alternates: post.substackUrl ? { canonical: post.substackUrl } : undefined,
     };
   } catch {
     return {
@@ -74,6 +79,20 @@ export default async function BlogPost({ params }: BlogPostProps) {
         />
 
         <footer className="mt-16 pt-8 border-t border-border">
+          {post.substackUrl && (
+            <p className="text-sm text-muted-foreground mb-4">
+              Originally published on{' '}
+              <a
+                href={post.substackUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-foreground underline underline-offset-4 hover:text-muted-foreground transition-colors"
+              >
+                Substack
+              </a>
+              .
+            </p>
+          )}
           <Link
             href="/blog"
             className="text-sm text-muted-foreground hover:text-foreground transition-colors"
