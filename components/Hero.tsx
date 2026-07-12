@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
+import { Connections } from '@/components/Connections';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -42,7 +43,7 @@ export function Hero() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.25 }}
-            className="text-md md:text-base text-muted-foreground font-semibold mb-10 max-w-2xl"
+            className="text-md md:text-base text-muted-foreground font-semibold mb-8 max-w-2xl"
           >
             Agentic AI @ AWS • Former founder & CTO • Building for the agent era
           </motion.p>
@@ -51,7 +52,7 @@ export function Hero() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.3 }}
-            className="flex flex-wrap gap-4 justify-center lg:justify-start"
+            className="flex flex-wrap items-center gap-4 justify-center lg:justify-start"
           >
             <Button asChild size="lg" className="text-base px-6">
               <Link href="#projects">See projects</Link>
@@ -59,6 +60,7 @@ export function Hero() {
             <Button asChild variant="outline" size="lg" className="text-base px-6">
               <Link href="#contact">Contact me</Link>
             </Button>
+            <Connections />
           </motion.div>
         </div>
 

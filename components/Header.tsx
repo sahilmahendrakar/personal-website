@@ -11,7 +11,7 @@ const navLinks = [
   { label: 'Experience', href: '#experience' },
   { label: 'Patents', href: '#patents' },
   { label: 'Now', href: '#now' },
-  // { label: 'Blog', href: '#blog' },
+  { label: 'Thoughts', href: '#thoughts' },
   { label: 'Contact', href: '#contact' },
 ];
 
