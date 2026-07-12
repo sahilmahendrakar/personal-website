@@ -17,6 +17,11 @@ const links = [
     href: 'https://github.com/sahilmahendrakar',
     display: 'github.com/sahilmahendrakar',
   },
+  {
+    label: 'X',
+    href: 'https://x.com/sahilmdkr',
+    display: 'x.com/sahilmdkr',
+  },
 ];
 
 export function Contact() {
@@ -48,7 +53,7 @@ export function Contact() {
 
       <div className="mt-16 pt-8 border-t border-border">
         <p className="text-sm text-muted-foreground">
-          © {new Date().getFullYear()} Sahil Mahendrakar. Built with Next.js.
+          © {new Date().getFullYear()} Sahil Mahendrakar.
         </p>
       </div>
     </SectionWrapper>
