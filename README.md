@@ -28,29 +28,25 @@ Edit the data files in `lib/data/`:
 - `projects.ts` - Featured projects
 - `patents.ts` - Patent information
 
-### Blog Posts
-The blog mirrors posts from a Substack publication via its RSS feed, with local
-markdown as a fallback for posts not on Substack.
+### Blog Posts (`/thoughts`)
+The blog mirrors posts from a Substack publication via its RSS feed. Set
+`SUBSTACK_URL` to your publication URL (see `.env.example`); it defaults to
+`sahilmahendrakar.substack.com`. The site fetches `<SUBSTACK_URL>/feed` and
+parses each post's title, subtitle, date, full HTML, and cover image (the same
+art Substack uses for social previews), then renders it at `/thoughts/<slug>`
+with a link back to the Substack original. Substack is treated as the canonical
+source (canonical URLs point there), and each mirrored post reuses its cover as
+the page's Open Graph / Twitter image.
 
-**Substack (primary source):** Set `SUBSTACK_URL` to your publication URL (see
-`.env.example`). At build time the site fetches `<SUBSTACK_URL>/feed`, parses
-each post's title, date, and full HTML, and renders it at `/blog/<slug>` with a
-link back to the Substack original. The feed is re-fetched hourly via ISR, so
-new posts appear without a redeploy. Substack is treated as the canonical
-source (canonical URLs point there).
+**Publishing delay:** posts appear on their own, without a redeploy — the feed
+is re-fetched via ISR every 10 minutes (`FEED_REVALIDATE_SECONDS` in
+`lib/substack.ts`, mirrored by each page's `revalidate`). So a new Substack post
+shows up within ~10 minutes of publishing. To make it instant, add a route that
+calls `revalidatePath('/thoughts')` and point a Substack/Zapier webhook at it.
 
-**Local markdown (fallback):** Any `.md` file in `posts/` that isn't already on
-Substack is also listed. When `SUBSTACK_URL` is unset, the blog shows local
-markdown only, so the build never fails.
-
-```markdown
----
-title: "Your Post Title"
-date: "2025-01-15"
----
-
-Your content here...
-```
+> Note: a deploy build can still prerender a stale post list, because Next
+> persists its `fetch` cache between builds. ISR corrects this within one
+> revalidate window; `rm -rf .next/cache` forces a fresh fetch locally.
 
 > Note: `substack.com/@yourhandle` is your reader *profile*, not a publication.
 > A publication has its own subdomain (`yourname.substack.com`) and is what

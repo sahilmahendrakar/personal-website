@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation';
 import { getAllPostIds, getPostData } from '@/lib/substack';
 import { ReadingProgress } from '@/components/ReadingProgress';
 import { SubstackButton } from '@/components/SubstackLink';
+import { PostCover } from '@/components/PostCover';
 import { format, parseISO } from 'date-fns';
 
 interface BlogPostProps {
@@ -11,7 +12,7 @@ interface BlogPostProps {
 }
 
 // Keep the mirrored Substack content fresh via ISR.
-export const revalidate = 3600;
+export const revalidate = 600;
 
 export async function generateStaticParams() {
   const posts = await getAllPostIds();
@@ -24,11 +25,30 @@ export async function generateMetadata({ params }: BlogPostProps): Promise<Metad
   const { slug } = await params;
   try {
     const post = await getPostData(slug);
+    const description = post.subtitle || `Read ${post.title} by Sahil Mahendrakar`;
+    // Reuse Substack's cover art as the social preview for the mirrored page.
+    // Declaring `openGraph` here replaces the layout's entirely, so posts
+    // without cover art fall back to the site-wide image explicitly.
+    const images = [post.coverImage ?? 'https://sahilmahendrakar.com/images/thumbnail.png'];
     return {
       title: post.title,
-      description: post.subtitle || `Read ${post.title} by Sahil Mahendrakar`,
+      description,
       // Substack is the canonical source, so point search engines there.
       alternates: { canonical: post.substackUrl },
+      openGraph: {
+        type: 'article',
+        title: post.title,
+        description,
+        publishedTime: post.date,
+        url: `https://sahilmahendrakar.com/thoughts/${post.id}`,
+        images,
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title: post.title,
+        description,
+        images,
+      },
     };
   } catch {
     return {
@@ -50,7 +70,7 @@ export default async function BlogPost({ params }: BlogPostProps) {
   return (
     <main className="min-h-screen">
       <ReadingProgress />
-      <article className="mx-auto max-w-[42rem] px-6 md:px-8 py-16 md:py-24">
+      <article className="mx-auto max-w-[46rem] px-5 md:px-6 py-12 md:py-16">
         <div className="mb-12 md:mb-16">
           <Link
             href="/thoughts"
@@ -82,6 +102,15 @@ export default async function BlogPost({ params }: BlogPostProps) {
             <p className="font-serif text-xl md:text-[1.4rem] leading-snug text-muted-foreground text-pretty mt-4">
               {post.subtitle}
             </p>
+          )}
+
+          {post.coverImage && (
+            <PostCover
+              src={post.coverImage}
+              className="aspect-[16/9] w-full mt-8 md:mt-10"
+              sizes="(max-width: 768px) 100vw, 46rem"
+              priority
+            />
           )}
         </header>
 

@@ -19,10 +19,10 @@ export default function Home() {
         <div className="mx-auto max-w-3xl px-6 md:px-6">
           <About />
           <Projects />
+          <BlogPreview />
           <Timeline />
           <Patents />
           <Now />
-          <BlogPreview />
           <Contact />
         </div>
       </main>

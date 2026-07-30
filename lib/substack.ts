@@ -5,8 +5,9 @@ import { XMLParser } from 'fast-xml-parser';
  *
  * At build time we fetch the publication's RSS feed, which Substack exposes
  * at `<publication-url>/feed` and which includes the full HTML of each post
- * inside `<content:encoded>`. Those posts are rendered on the personal site
- * as `/thoughts/<slug>` entries, with a link back to the Substack original.
+ * inside `<content:encoded>`, plus its cover image as an `<enclosure>`. Those
+ * posts are rendered on the personal site as `/thoughts/<slug>` entries, with a
+ * link back to the Substack original.
  *
  * The publication URL is configured via the `SUBSTACK_URL` env var, e.g.
  *   SUBSTACK_URL=https://yourname.substack.com
@@ -18,7 +19,7 @@ const DEFAULT_SUBSTACK_URL = 'https://sahilmahendrakar.substack.com';
 const SUBSTACK_URL = (process.env.SUBSTACK_URL || DEFAULT_SUBSTACK_URL).replace(/\/+$/, '');
 
 /** How often (seconds) the feed is re-fetched via ISR. */
-export const FEED_REVALIDATE_SECONDS = 3600;
+export const FEED_REVALIDATE_SECONDS = 600;
 
 export interface PostData {
   id: string;
@@ -31,6 +32,8 @@ export interface PostData {
   substackUrl: string;
   /** Estimated reading time in whole minutes. */
   readingMinutes: number;
+  /** Substack's cover image (the social preview), from the feed's `<enclosure>`. */
+  coverImage?: string;
 }
 
 export function isSubstackConfigured(): boolean {
@@ -42,20 +45,24 @@ export function substackBaseUrl(): string {
 }
 
 // Module-level cache so a single build shares one fetch across the index page,
-// generateStaticParams, and each post page.
-let postsCache: Promise<PostData[]> | null = null;
+// generateStaticParams, and each post page. It expires on the same schedule as
+// the ISR window — otherwise a long-lived server process would keep handing back
+// the first feed it ever fetched and new posts would never appear.
+let postsCache: { fetchedAt: number; posts: Promise<PostData[]> } | null = null;
 
 export function getSortedPostsData(): Promise<PostData[]> {
   if (!SUBSTACK_URL) return Promise.resolve([]);
-  if (!postsCache) {
-    postsCache = fetchSubstackPosts().catch((err) => {
+  const now = Date.now();
+  if (!postsCache || now - postsCache.fetchedAt > FEED_REVALIDATE_SECONDS * 1000) {
+    const posts = fetchSubstackPosts().catch((err) => {
       // Allow a later build to retry, and don't take the whole site down.
       postsCache = null;
       console.error('[substack] Failed to fetch feed:', err);
       return [];
     });
+    postsCache = { fetchedAt: now, posts };
   }
-  return postsCache;
+  return postsCache.posts;
 }
 
 export async function getAllPostIds(): Promise<{ id: string }[]> {
@@ -80,7 +87,9 @@ async function fetchSubstackPosts(): Promise<PostData[]> {
   }
   const xml = await res.text();
 
-  const parser = new XMLParser({ ignoreAttributes: true });
+  // Attributes are needed for `<enclosure url="..." />`, which carries the post's
+  // cover image (the same one Substack uses for social previews).
+  const parser = new XMLParser({ ignoreAttributes: false, attributeNamePrefix: '@_' });
   const parsed = parser.parse(xml) as ParsedFeed;
 
   const channel = parsed?.rss?.channel ?? parsed?.feed ?? {};
@@ -99,12 +108,17 @@ interface ParsedFeed {
 }
 
 type ParsedValue = string | { __cdata?: string; '#text'?: string } | undefined;
+interface ParsedEnclosure {
+  '@_url'?: string;
+  '@_type'?: string;
+}
 interface ParsedItem {
   title?: ParsedValue;
   link?: ParsedValue;
   pubDate?: ParsedValue;
   description?: ParsedValue;
   'content:encoded'?: ParsedValue;
+  enclosure?: ParsedEnclosure | ParsedEnclosure[];
 }
 
 function parseItem(item: ParsedItem): PostData {
@@ -123,7 +137,24 @@ function parseItem(item: ParsedItem): PostData {
     contentHtml: content,
     substackUrl: link,
     readingMinutes: estimateReadingMinutes(content),
+    coverImage: coverImageOf(item),
   };
+}
+
+/**
+ * Substack attaches the post's cover image as an `<enclosure>`. Podcast posts
+ * use the same element for audio, so only image enclosures are accepted.
+ */
+function coverImageOf(item: ParsedItem): string | undefined {
+  const enclosures = item.enclosure
+    ? Array.isArray(item.enclosure)
+      ? item.enclosure
+      : [item.enclosure]
+    : [];
+  const image = enclosures.find(
+    (e) => e?.['@_url'] && (e['@_type'] ?? '').startsWith('image/')
+  );
+  return image?.['@_url'];
 }
 
 /**

@@ -1,7 +1,17 @@
 'use client';
 
+import Link from 'next/link';
 import { SubstackIcon } from './SubstackLink';
 import { cn } from '@/lib/utils';
+
+/** Solid pencil, drawn to match the weight of the filled brand icons beside it. */
+function PencilIcon({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden="true">
+      <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" />
+    </svg>
+  );
+}
 
 function GitHubIcon({ className }: { className?: string }) {
   return (
@@ -32,6 +42,8 @@ interface Connection {
   href: string;
   Icon: React.ComponentType<{ className?: string }>;
   hoverClassName: string;
+  /** Routes within the site, so no new tab and client-side navigation. */
+  internal?: boolean;
 }
 
 const connections: Connection[] = [
@@ -59,32 +71,45 @@ const connections: Connection[] = [
     Icon: SubstackIcon,
     hoverClassName: 'hover:text-[#FF6719] focus-visible:text-[#FF6719]',
   },
+  {
+    label: 'Thoughts',
+    href: '/thoughts',
+    Icon: PencilIcon,
+    hoverClassName: 'hover:text-foreground focus-visible:text-foreground',
+    internal: true,
+  },
 ];
 
 export function Connections() {
   return (
     <div className="flex items-center gap-1.5">
-      {connections.map(({ label, href, Icon, hoverClassName }) => (
-        <a
-          key={label}
-          href={href}
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label={label}
-          className={cn(
-            'group relative flex h-10 w-10 items-center justify-center text-muted-foreground transition-colors duration-300 ease-out',
-            hoverClassName
-          )}
-        >
-          <Icon className="h-5 w-5 transition-transform duration-300 ease-out group-hover:scale-110 group-hover:-translate-y-0.5 group-focus-visible:scale-110 group-focus-visible:-translate-y-0.5" />
-          <span
-            role="tooltip"
-            className="pointer-events-none absolute -top-7 left-1/2 -translate-x-1/2 translate-y-1 whitespace-nowrap rounded-full bg-foreground px-2.5 py-1 text-[11px] font-medium tracking-wide text-background opacity-0 transition-all duration-200 group-hover:translate-y-0 group-hover:opacity-100 group-focus-visible:translate-y-0 group-focus-visible:opacity-100"
+      {connections.map(({ label, href, Icon, hoverClassName, internal }) => {
+        const Tag = internal ? Link : 'a';
+        const externalProps = internal
+          ? {}
+          : { target: '_blank', rel: 'noopener noreferrer' };
+
+        return (
+          <Tag
+            key={label}
+            href={href}
+            {...externalProps}
+            aria-label={label}
+            className={cn(
+              'group relative flex h-10 w-10 items-center justify-center text-muted-foreground transition-colors duration-300 ease-out',
+              hoverClassName
+            )}
           >
-            {label}
-          </span>
-        </a>
-      ))}
+            <Icon className="h-5 w-5 transition-transform duration-300 ease-out group-hover:scale-110 group-hover:-translate-y-0.5 group-focus-visible:scale-110 group-focus-visible:-translate-y-0.5" />
+            <span
+              role="tooltip"
+              className="pointer-events-none absolute -top-7 left-1/2 -translate-x-1/2 translate-y-1 whitespace-nowrap rounded-full bg-foreground px-2.5 py-1 text-[11px] font-medium tracking-wide text-background opacity-0 transition-all duration-200 group-hover:translate-y-0 group-hover:opacity-100 group-focus-visible:translate-y-0 group-focus-visible:opacity-100"
+            >
+              {label}
+            </span>
+          </Tag>
+        );
+      })}
     </div>
   );
 }
