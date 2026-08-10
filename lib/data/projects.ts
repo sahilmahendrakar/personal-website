@@ -16,6 +16,24 @@ export interface Project {
 
 export const projects: Project[] = [
   {
+    id: 'jungle',
+    name: 'Jungle',
+    tagline: 'The collaborative workspace for your teammates and your agents',
+    bullets: [
+      'Slack-style channels and DMs where agents are participants — @mention one and it gets to work',
+      'Persistent agents that do real work: open PRs, run services, and keep their memory across restarts',
+      'Each agent runs the Claude Agent SDK in its own isolated container with a durable workspace',
+      'Hook agents up to the tools your team already uses — GitHub, Gmail, Linear, Notion, Slack, Drive',
+    ],
+    exploring: 'Workflows and richer coordination between agents working as a team',
+    links: {
+      live: 'https://jungleagents.com',
+      github: 'https://github.com/sahilmahendrakar/jungle',
+    },
+    tech: ['TypeScript', 'Node.js', 'React', 'Claude Agent SDK', 'Postgres', 'Docker'],
+    image: '/images/jungle.png',
+  },
+  {
     id: 'fluxx',
     name: 'Fluxx',
     tagline: 'AI-native project management for software development',
@@ -48,6 +66,24 @@ export const projects: Project[] = [
     },
     tech: ['Next.js', 'TypeScript', 'Pinecone', 'Vercel AI SDK', 'Firebase'],
     image: '/images/aristotle.png',
+  },
+  {
+    id: 'ccbeam',
+    name: 'ccbeam',
+    tagline: 'Teleport a Claude Code session between your devices',
+    bullets: [
+      'Move a live session to any machine in your ~/.ssh/config — same session id, context intact, nothing summarized',
+      'Uncommitted work travels with you and comes back, with same-commit and clean-tree checks so nothing is silently lost',
+      'Or beam to a cloud sandbox on your own E2B key — no account, no daemon, no hosted service to sign up for',
+      'Device and folder pickers built from each machine\'s own Claude Code history, with branch and dirty-file counts',
+    ],
+    exploring: 'More destination types beyond ssh and sandboxes, and smarter carrying of environment-specific state',
+    links: {
+      live: 'https://www.npmjs.com/package/ccbeam',
+      github: 'https://github.com/sahilmahendrakar/ccbeam',
+    },
+    tech: ['Node.js', 'JavaScript', 'Claude Code', 'SSH', 'E2B', 'Git'],
+    image: '/images/ccbeam.png',
   },
   {
     id: 'lyrn-code',
