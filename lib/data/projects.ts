@@ -32,6 +32,8 @@ export const projects: Project[] = [
     },
     tech: ['Chrome Extension (MV3)', 'Kokoro-82M', 'ONNX Runtime Web', 'WebGPU', 'Next.js'],
     image: '/images/chickadee-thumbnail.png',
+  },
+  {
     id: 'jungle',
     name: 'Jungle',
     tagline: 'The collaborative workspace for your teammates and your agents',
