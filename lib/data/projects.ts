@@ -16,6 +16,22 @@ export interface Project {
 
 export const projects: Project[] = [
   {
+    id: 'chickadee',
+    name: 'Chickadee',
+    tagline: 'A browser extension that reads any web page aloud, entirely on your machine',
+    bullets: [
+      'Runs the Kokoro-82M speech model in the browser on WebGPU via ONNX Runtime — no server, no account, nothing uploaded',
+      'Highlights each sentence on the real page as it is read, using the CSS Custom Highlight API so the page is never modified',
+      'Generates the next two sentences while the current one plays, so playback never waits on the GPU',
+      'activeTab-only permissions: the reader is injected on demand and has no standing access to any site',
+    ],
+    exploring: 'A desktop version that reads any selected text, and word-level highlighting via forced alignment',
+    links: {
+      live: 'https://www.usechickadee.com',
+      github: 'https://github.com/sahilmahendrakar/chickadee',
+    },
+    tech: ['Chrome Extension (MV3)', 'Kokoro-82M', 'ONNX Runtime Web', 'WebGPU', 'Next.js'],
+    image: '/images/chickadee-thumbnail.png',
     id: 'jungle',
     name: 'Jungle',
     tagline: 'The collaborative workspace for your teammates and your agents',
