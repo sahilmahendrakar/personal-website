@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
+import { getAllPosts } from '@/lib/native-posts';
 import {
-  getSortedPostsData,
   isSubstackConfigured,
   substackBaseUrl,
   type PostData,
@@ -19,7 +19,7 @@ export const metadata: Metadata = {
 export const revalidate = 600;
 
 export default async function BlogPage() {
-  const posts = await getSortedPostsData();
+  const posts = await getAllPosts();
   const [featured, ...rest] = posts;
 
   return (

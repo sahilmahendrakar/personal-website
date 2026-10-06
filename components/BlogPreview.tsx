@@ -2,11 +2,11 @@ import Link from 'next/link';
 import { SectionWrapper } from './SectionWrapper';
 import { AnimatedLink } from './AnimatedLink';
 import { PostCover } from './PostCover';
-import { getSortedPostsData } from '@/lib/substack';
+import { getAllPosts } from '@/lib/native-posts';
 import { format, parseISO } from 'date-fns';
 
 export async function BlogPreview() {
-  const posts = (await getSortedPostsData()).slice(0, 3);
+  const posts = (await getAllPosts()).slice(0, 3);
 
   if (posts.length === 0) {
     return null;
