@@ -1,12 +1,17 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Connections } from '@/components/Connections';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useState } from 'react';
+import { NinjaMask } from '@/components/NinjaMask';
 
 export function Hero() {
+  const [stealthMode, setStealthMode] = useState(false);
+  const reduceMotion = useReducedMotion();
+
   return (
     <section className="min-h-[90vh] flex flex-col justify-center py-20 md:py-32">
       <div className="flex flex-col-reverse lg:flex-row items-center gap-12 lg:gap-16">
@@ -45,7 +50,18 @@ export function Hero() {
             transition={{ duration: 0.5, delay: 0.25 }}
             className="text-md md:text-base text-muted-foreground font-semibold mb-8 max-w-2xl"
           >
-            Agentic AI @ AWS • Former founder & CTO • Building for the agent era
+            Building in{' '}
+            <span
+              tabIndex={0}
+              onMouseEnter={() => setStealthMode(true)}
+              onMouseLeave={() => setStealthMode(false)}
+              onFocus={() => setStealthMode(true)}
+              onBlur={() => setStealthMode(false)}
+              className="underline underline-offset-4 cursor-default"
+            >
+              stealth
+            </span>{' '}
+            • Prev. agentic AI at AWS, Columbia &apos;24
           </motion.p>
           
           <motion.div
@@ -69,16 +85,38 @@ export function Hero() {
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.5 }}
-          className="flex-shrink-0"
+          className="flex-shrink-0 [perspective:1200px]"
         >
-          <Image
-            src="/images/profile.png"
-            alt="Sahil Mahendrakar"
-            width={320}
-            height={320}
-            className="rounded-full"
-            priority
-          />
+          {/* Coin flip: hovering "stealth" reveals ninja mode on the back */}
+          <motion.div
+            animate={{ rotateY: stealthMode ? 180 : 0 }}
+            transition={{ duration: reduceMotion ? 0 : 0.7, ease: [0.65, 0, 0.35, 1] }}
+            className="relative [transform-style:preserve-3d]"
+          >
+            <div className="[backface-visibility:hidden]">
+              <Image
+                src="/images/profile.png"
+                alt="Sahil Mahendrakar"
+                width={320}
+                height={320}
+                className="rounded-full"
+                priority
+              />
+            </div>
+            <div
+              aria-hidden="true"
+              className="absolute inset-0 [backface-visibility:hidden] [transform:rotateY(180deg)]"
+            >
+              <Image
+                src="/images/profile.png"
+                alt=""
+                width={320}
+                height={320}
+                className="rounded-full"
+              />
+              <NinjaMask />
+            </div>
+          </motion.div>
         </motion.div>
       </div>
     </section>
