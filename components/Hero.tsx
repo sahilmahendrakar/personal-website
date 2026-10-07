@@ -56,7 +56,7 @@ export function Hero() {
               onMouseLeave={() => setStealthMode(false)}
               onFocus={() => setStealthMode(true)}
               onBlur={() => setStealthMode(false)}
-              className="cursor-pointer text-muted-foreground/50 underline decoration-dashed decoration-muted-foreground/40 underline-offset-4 outline-none transition-colors duration-300 hover:text-foreground hover:decoration-solid hover:decoration-foreground focus-visible:text-foreground focus-visible:decoration-solid focus-visible:decoration-foreground"
+              className="cursor-pointer text-muted-foreground/70 underline decoration-dashed decoration-muted-foreground/50 underline-offset-4 outline-none transition-colors duration-300 hover:text-foreground hover:decoration-solid hover:decoration-foreground focus-visible:text-foreground focus-visible:decoration-solid focus-visible:decoration-foreground"
             >
               Stealth
             </span>{' '}
