@@ -12,7 +12,7 @@ import { format, parseISO } from 'date-fns';
 
 export const metadata: Metadata = {
   title: 'Writings',
-  description: 'Writings on building software, AI, and learning.',
+  description: 'Thoughts on building software, AI, and learning.',
 };
 
 // Refresh the post list (mirrored from Substack) via ISR.
@@ -48,7 +48,7 @@ export default async function BlogPage() {
           )}
         </div>
         <p className="text-muted-foreground text-lg mb-14">
-          Writings on building software, AI, and learning.
+          Thoughts on building software, AI, and learning.
         </p>
 
         {posts.length === 0 ? (
