@@ -6,7 +6,7 @@ import { XMLParser } from 'fast-xml-parser';
  * At build time we fetch the publication's RSS feed, which Substack exposes
  * at `<publication-url>/feed` and which includes the full HTML of each post
  * inside `<content:encoded>`, plus its cover image as an `<enclosure>`. Those
- * posts are rendered on the personal site as `/thoughts/<slug>` entries, with a
+ * posts are rendered on the personal site as `/writings/<slug>` entries, with a
  * link back to the Substack original.
  *
  * The publication URL is configured via the `SUBSTACK_URL` env var, e.g.

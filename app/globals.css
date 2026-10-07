@@ -213,7 +213,7 @@ body {
   transform: translateY(0);
 }
 
-/* Long-form reading typography (/thoughts posts) */
+/* Long-form reading typography (/writings posts) */
 .post-body {
   font-family: var(--font-serif);
   font-size: 1.1875rem;

@@ -10,6 +10,13 @@ const nextConfig: NextConfig = {
       { protocol: 'https', hostname: '*.substack.com' },
     ],
   },
+  async redirects() {
+    // The blog section used to live at /thoughts; keep old links working.
+    return [
+      { source: '/thoughts', destination: '/writings', permanent: true },
+      { source: '/thoughts/:path*', destination: '/writings/:path*', permanent: true },
+    ];
+  },
 };
 
 export default nextConfig;

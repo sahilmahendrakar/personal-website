@@ -13,16 +13,16 @@ export async function BlogPreview() {
   }
 
   return (
-    <SectionWrapper id="thoughts" className="py-20 md:py-28">
+    <SectionWrapper id="writings" className="py-20 md:py-28">
       <h2 className="text-3xl md:text-4xl font-semibold tracking-tight mb-10">
-        Thoughts
+        Writings
       </h2>
 
       <div className="flex flex-col">
         {posts.map((post) => (
           <article key={post.id} className="group">
             <Link
-              href={`/thoughts/${post.id}`}
+              href={`/writings/${post.id}`}
               className="flex items-start gap-5 -mx-4 rounded-xl px-4 py-5 transition-colors hover:bg-muted/60"
             >
               <div className="min-w-0 flex-1">
@@ -54,7 +54,7 @@ export async function BlogPreview() {
       </div>
 
       <div className="mt-10 flex justify-center">
-        <AnimatedLink href="/thoughts" className="text-sm text-muted-foreground">
+        <AnimatedLink href="/writings" className="text-sm text-muted-foreground">
           See more →
         </AnimatedLink>
       </div>

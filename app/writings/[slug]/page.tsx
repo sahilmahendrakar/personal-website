@@ -40,7 +40,7 @@ export async function generateMetadata({ params }: BlogPostProps): Promise<Metad
         title: post.title,
         description,
         publishedTime: post.date,
-        url: `https://sahilmahendrakar.com/thoughts/${post.id}`,
+        url: `https://sahilmahendrakar.com/writings/${post.id}`,
         images,
       },
       twitter: {
@@ -73,10 +73,10 @@ export default async function BlogPost({ params }: BlogPostProps) {
       <article className="mx-auto max-w-[46rem] px-5 md:px-6 py-12 md:py-16">
         <div className="mb-12 md:mb-16">
           <Link
-            href="/thoughts"
+            href="/writings"
             className="text-sm text-muted-foreground hover:text-foreground transition-colors"
           >
-            ← Thoughts
+            ← Writings
           </Link>
         </div>
 
@@ -121,10 +121,10 @@ export default async function BlogPost({ params }: BlogPostProps) {
 
         <footer className="mt-16 md:mt-20">
           <Link
-            href="/thoughts"
+            href="/writings"
             className="text-sm text-muted-foreground hover:text-foreground transition-colors"
           >
-            ← Back to all thoughts
+            ← Back to all writings
           </Link>
         </footer>
       </article>

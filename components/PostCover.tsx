@@ -17,7 +17,7 @@ interface PostCoverProps {
 
 /**
  * A post's Substack cover image (its social preview), framed consistently
- * across the thoughts index, the home page preview, and the post itself.
+ * across the writings index, the home page preview, and the post itself.
  */
 export function PostCover({ src, alt = '', className, sizes, priority }: PostCoverProps) {
   return (

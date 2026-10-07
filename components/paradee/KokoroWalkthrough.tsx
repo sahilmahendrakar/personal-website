@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { KOKORO as K } from '@/lib/data/paradee-kokoro';
 import { currentTime, nearestStep, stop, toggle, useFrame, usePlayer } from './player';
 
-const ASSETS = '/thoughts/paradee';
+const ASSETS = '/writings/paradee';
 const TONE = `${ASSETS}/audio/walk_tone.mp3`;
 const VOICE = `${ASSETS}/audio/walk_kokoro.mp3`;
 

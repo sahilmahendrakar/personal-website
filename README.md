@@ -28,12 +28,12 @@ Edit the data files in `lib/data/`:
 - `projects.ts` - Featured projects
 - `patents.ts` - Patent information
 
-### Blog Posts (`/thoughts`)
+### Blog Posts (`/writings`)
 The blog mirrors posts from a Substack publication via its RSS feed. Set
 `SUBSTACK_URL` to your publication URL (see `.env.example`); it defaults to
 `sahilmahendrakar.substack.com`. The site fetches `<SUBSTACK_URL>/feed` and
 parses each post's title, subtitle, date, full HTML, and cover image (the same
-art Substack uses for social previews), then renders it at `/thoughts/<slug>`
+art Substack uses for social previews), then renders it at `/writings/<slug>`
 with a link back to the Substack original. Substack is treated as the canonical
 source (canonical URLs point there), and each mirrored post reuses its cover as
 the page's Open Graph / Twitter image.
@@ -42,7 +42,7 @@ the page's Open Graph / Twitter image.
 is re-fetched via ISR every 10 minutes (`FEED_REVALIDATE_SECONDS` in
 `lib/substack.ts`, mirrored by each page's `revalidate`). So a new Substack post
 shows up within ~10 minutes of publishing. To make it instant, add a route that
-calls `revalidatePath('/thoughts')` and point a Substack/Zapier webhook at it.
+calls `revalidatePath('/writings')` and point a Substack/Zapier webhook at it.
 
 > Note: a deploy build can still prerender a stale post list, because Next
 > persists its `fetch` cache between builds. ISR corrects this within one

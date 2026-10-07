@@ -4,7 +4,7 @@ import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { AudioClip } from './AudioClip';
 import { currentTime, nearestStep, toggle, useFrame, usePlayer } from './player';
 
-const ASSETS = '/thoughts/paradee';
+const ASSETS = '/writings/paradee';
 
 const STAGES = [
   {

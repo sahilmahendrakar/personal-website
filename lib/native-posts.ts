@@ -1,7 +1,7 @@
 import { getSortedPostsData, type PostData } from './substack';
 
 /**
- * Posts written for this site, each with its own route under `/thoughts`.
+ * Posts written for this site, each with its own route under `/writings`.
  * They are listed alongside the posts mirrored from Substack.
  */
 export const PARADEE_POST: PostData = {
@@ -13,7 +13,7 @@ export const PARADEE_POST: PostData = {
   // TODO: set once the Substack version is published.
   substackUrl: '',
   readingMinutes: 8,
-  coverImage: '/thoughts/paradee/img/cover.png',
+  coverImage: '/writings/paradee/img/cover.png',
 };
 
 const NATIVE_POSTS: PostData[] = [PARADEE_POST];

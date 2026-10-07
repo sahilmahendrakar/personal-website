@@ -11,8 +11,8 @@ import { DecoderStory } from '@/components/paradee/DecoderStory';
 import { Comparison, DistillationDiagram, Snippet } from '@/components/paradee/Figures';
 import './paradee.css';
 
-const ASSETS = '/thoughts/paradee';
-const URL = `https://sahilmahendrakar.com/thoughts/${post.id}`;
+const ASSETS = '/writings/paradee';
+const URL = `https://sahilmahendrakar.com/writings/${post.id}`;
 const COVER = `https://sahilmahendrakar.com${post.coverImage}`;
 
 const PAPER_URL = 'https://arxiv.org/abs/2610.06817';
@@ -45,8 +45,8 @@ export default function ParadeePost() {
       <article className="py-12 md:py-16">
         <div className="pd-col">
           <div className="mb-12 md:mb-16">
-            <Link href="/thoughts" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-              ← Thoughts
+            <Link href="/writings" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+              ← Writings
             </Link>
           </div>
 
@@ -255,8 +255,8 @@ export default function ParadeePost() {
 
         <div className="pd-col">
           <footer className="mt-16 md:mt-20">
-            <Link href="/thoughts" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-              ← Back to all thoughts
+            <Link href="/writings" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+              ← Back to all writings
             </Link>
           </footer>
         </div>

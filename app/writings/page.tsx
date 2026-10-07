@@ -11,8 +11,8 @@ import { PostCover } from '@/components/PostCover';
 import { format, parseISO } from 'date-fns';
 
 export const metadata: Metadata = {
-  title: 'Thoughts',
-  description: 'Thoughts on building software, AI, and learning.',
+  title: 'Writings',
+  description: 'Writings on building software, AI, and learning.',
 };
 
 // Refresh the post list (mirrored from Substack) via ISR.
@@ -36,7 +36,7 @@ export default async function BlogPage() {
 
         <div className="flex flex-wrap items-start justify-between gap-x-4 gap-y-3 mb-4">
           <h1 className="font-serif text-4xl md:text-5xl font-semibold tracking-tight">
-            Thoughts
+            Writings
           </h1>
           {isSubstackConfigured() && (
             <SubstackButton
@@ -48,7 +48,7 @@ export default async function BlogPage() {
           )}
         </div>
         <p className="text-muted-foreground text-lg mb-14">
-          Thoughts on building software, AI, and learning.
+          Writings on building software, AI, and learning.
         </p>
 
         {posts.length === 0 ? (
@@ -74,7 +74,7 @@ export default async function BlogPage() {
 function FeaturedPost({ post }: { post: PostData }) {
   return (
     <article className="group">
-      <Link href={`/thoughts/${post.id}`} className="block">
+      <Link href={`/writings/${post.id}`} className="block">
         {post.coverImage && (
           <PostCover
             src={post.coverImage}
@@ -101,7 +101,7 @@ function PostRow({ post }: { post: PostData }) {
   return (
     <article className="group">
       <Link
-        href={`/thoughts/${post.id}`}
+        href={`/writings/${post.id}`}
         className="flex items-start gap-5 sm:gap-8 -mx-4 rounded-xl px-4 py-6 transition-colors hover:bg-muted/60"
       >
         <div className="min-w-0 flex-1">

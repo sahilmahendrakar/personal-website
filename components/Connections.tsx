@@ -72,8 +72,8 @@ const connections: Connection[] = [
     hoverClassName: 'hover:text-[#FF6719] focus-visible:text-[#FF6719]',
   },
   {
-    label: 'Thoughts',
-    href: '/thoughts',
+    label: 'Writings',
+    href: '/writings',
     Icon: PencilIcon,
     hoverClassName: 'hover:text-foreground focus-visible:text-foreground',
     internal: true,
