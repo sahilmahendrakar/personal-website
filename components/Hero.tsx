@@ -56,9 +56,9 @@ export function Hero() {
               onMouseLeave={() => setStealthMode(false)}
               onFocus={() => setStealthMode(true)}
               onBlur={() => setStealthMode(false)}
-              className="underline underline-offset-4 cursor-default"
+              className="cursor-pointer text-muted-foreground/50 underline decoration-dashed decoration-muted-foreground/40 underline-offset-4 outline-none transition-colors duration-300 hover:text-foreground hover:decoration-solid hover:decoration-foreground focus-visible:text-foreground focus-visible:decoration-solid focus-visible:decoration-foreground"
             >
-              stealth
+              Stealth
             </span>{' '}
             • Prev. agentic AI at AWS, Columbia &apos;24
           </motion.p>
