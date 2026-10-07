@@ -6,7 +6,6 @@ import { Connections } from '@/components/Connections';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
-import { NinjaMask } from '@/components/NinjaMask';
 
 export function Hero() {
   const [stealthMode, setStealthMode] = useState(false);
@@ -108,13 +107,12 @@ export function Hero() {
               className="absolute inset-0 [backface-visibility:hidden] [transform:rotateY(180deg)]"
             >
               <Image
-                src="/images/profile.png"
+                src="/images/profile-ninja.png"
                 alt=""
                 width={320}
                 height={320}
                 className="rounded-full"
               />
-              <NinjaMask />
             </div>
           </motion.div>
         </motion.div>
