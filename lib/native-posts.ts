@@ -16,7 +16,18 @@ export const PARADEE_POST: PostData = {
   coverImage: '/writings/paradee/img/cover.png',
 };
 
-const NATIVE_POSTS: PostData[] = [PARADEE_POST];
+export const PARADEE_11_POST: PostData = {
+  id: 'paradee-1-1',
+  title: 'Paradee-8M-v1.1',
+  subtitle: 'A new decoder head makes Paradee three times faster and removes most of the buzz.',
+  date: '2026-10-19',
+  contentHtml: '',
+  substackUrl: '',
+  readingMinutes: 3,
+  coverImage: '/writings/paradee-1-1/img/cover.jpg',
+};
+
+const NATIVE_POSTS: PostData[] = [PARADEE_POST, PARADEE_11_POST];
 
 /** Native and Substack posts together, newest first. */
 export async function getAllPosts(): Promise<PostData[]> {
