@@ -99,6 +99,8 @@
 .pd-table tbody th { font-weight: 400; color: var(--foreground); }
 .pd-table td { color: var(--muted-foreground); }
 .pd-table .pd-table-us { color: var(--foreground); font-weight: 600; }
+.pd-table-text th,
+.pd-table-text td { text-align: left; }
 
 /* Figures */
 .pd-figure-scroll { overflow-x: auto; }

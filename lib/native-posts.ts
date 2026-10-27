@@ -27,7 +27,18 @@ export const PARADEE_11_POST: PostData = {
   coverImage: '/writings/paradee-1-1/img/cover.jpg',
 };
 
-const NATIVE_POSTS: PostData[] = [PARADEE_POST, PARADEE_11_POST];
+export const PARADEE_12_POST: PostData = {
+  id: 'paradee-1-2',
+  title: 'Paradee 1.2: Expanding to additional voices',
+  subtitle: 'Paradee now speaks four voices without growing in size or losing quality.',
+  date: '2026-10-28',
+  contentHtml: '',
+  substackUrl: '',
+  readingMinutes: 3,
+  coverImage: '/writings/paradee-1-2/img/cover.jpg',
+};
+
+const NATIVE_POSTS: PostData[] = [PARADEE_POST, PARADEE_11_POST, PARADEE_12_POST];
 
 /** Native and Substack posts together, newest first. */
 export async function getAllPosts(): Promise<PostData[]> {
