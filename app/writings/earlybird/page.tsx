@@ -6,12 +6,12 @@ import { EARLYBIRD_POST as post } from '@/lib/native-posts';
 import { ReadingProgress } from '@/components/ReadingProgress';
 import { Calibration, KeptBars, Scatter, Timeline, TrainingExample } from '@/components/earlybird/Charts';
 import { SamplePlayer } from '@/components/earlybird/Samples';
+import { LiveDemo } from '@/components/earlybird/Live';
 import { MODELS, ms, pct, type Point } from '@/components/earlybird/format';
 import '../paradee/paradee.css';
 import './earlybird.css';
 
 const URL = `https://sahilmahendrakar.com/writings/${post.id}`;
-const DEMO = 'https://sahil-mahendrakar--earlybird-live-live-web.us-east.modal.run';
 const HF = 'https://huggingface.co/sahilmahendrakar/earlybird';
 
 // Recordings in the sample player, in picker order (components/earlybird/samples.json).
@@ -138,7 +138,7 @@ export default function EarlybirdPost() {
             ends. Released streaming models predict it correctly 90&ndash;400 ms after.
           </p>
           <p>
-            <a className="eb-cta" href={DEMO}>
+            <a className="eb-cta" href="#try">
               <i aria-hidden="true" />
               Try it live with your microphone or recorded samples
             </a>
@@ -171,6 +171,13 @@ export default function EarlybirdPost() {
           <Figure caption="A replay of each model's logged output on the recording, in time with the audio, not models running in your browser. The number next to each model is its median word latency on that clip. Guesses under 15% confidence are hidden. The recordings were never used in training: voice commands from SLURP, public speech from People's Speech and an audiobook from LibriSpeech.">
             <SamplePlayer ids={SAMPLE_IDS} />
           </Figure>
+
+          <h2 id="try">Try it yourself</h2>
+          <p>
+            This is the real 4-bit model, running on a small CPU server. Press the microphone and talk, or play one of the
+            recordings through it. Words are colored by confidence, and its guesses for the next words are in dashed boxes.
+          </p>
+          <LiveDemo />
 
           <h2>What I compare against</h2>
           <p>The results below compare Earlybird with three released models on the same audio:</p>
@@ -361,7 +368,7 @@ export default function EarlybirdPost() {
 
           <h2>Links</h2>
           <ul>
-            <li>Live demo: <a href={DEMO}>try it with your microphone</a> or recorded samples</li>
+            <li>Live demo: <a href="#try">try it with your microphone</a> or recorded samples</li>
             <li>Model: <a href={HF}>Hugging Face</a></li>
             <li>Built on <a href="https://huggingface.co/UsefulSensors/moonshine-streaming-tiny">Moonshine Tiny</a> by Useful Sensors (MIT)</li>
           </ul>
