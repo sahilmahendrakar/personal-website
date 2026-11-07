@@ -54,7 +54,7 @@ const LATENCY_ACC: Point[] = [
   { name: 'Whisper tiny', x: 110, y: 12.19, label: 'right', lines: ['78 MB', 'word latency +110 ms', 'error rate 12.2%'] },
   { name: 'Whisper base', x: 90, y: 9.78, label: 'right', lines: ['145 MB', 'word latency +90 ms', 'error rate 9.8%'] },
   { name: 'Whisper small', x: 80, y: 8.15, label: 'right', lines: ['488 MB', 'word latency +80 ms', 'error rate 8.2%'] },
-  { name: 'Parakeet TDT 0.6B (2.5 GB)', x: -10, y: 6.05, published: true, label: 'right', lines: ['2.5 GB', 'word latency −10 ms (other clips)', `error rate 6.1% (${pub})`] },
+  { name: 'Parakeet TDT 0.6B (1.2 GB)', x: -10, y: 6.05, published: true, label: 'right', lines: ['1.2 GB at 16 bits', 'word latency −10 ms (other clips)', `error rate 6.1% (${pub})`] },
 ];
 
 // Size (x) against Open ASR mean WER (y). Full-precision models at their 16-bit size. Hollow = published model-card number.
@@ -151,7 +151,7 @@ export default function EarlybirdPost() {
             reply.
           </p>
           <p>
-            To reduce that wait, I train Earlybird differently: <strong>train the model on audio cut off partway through a word, and ask it
+            Earlybird cuts that wait with a change to training: <strong>train the model on audio cut off partway through a word, and ask it
             to guess the whole word, with the confidence that it is right</strong>.
           </p>
           <Figure
@@ -163,7 +163,8 @@ export default function EarlybirdPost() {
 
           <h2>Hear it on real speech</h2>
           <p>
-            These are real recordings, played through Earlybird and three released models. Each row shows what that model had
+            These are real recordings. I fed each one to Earlybird and three released models in 80 ms chunks, as if it
+            were live, and logged every change to each model&rsquo;s text. Each row shows what that model had
             on screen at that moment. Slow it down to &frac14;&times; to watch Earlybird write a word while it is still being
             said, with the darker blue meaning it is more confident.
           </p>
