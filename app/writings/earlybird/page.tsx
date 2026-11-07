@@ -15,7 +15,7 @@ const URL = `https://sahilmahendrakar.com/writings/${post.id}`;
 const HF = 'https://huggingface.co/sahilmahendrakar/earlybird';
 
 // Recordings in the sample player, in picker order (components/earlybird/samples.json).
-const SAMPLE_IDS = ['s1', 's4', 's0', 's7', 's9'];
+const SAMPLE_IDS = ['l3', 'l4', 'l9', 'l6', 'l2', 'l1'];
 
 // Median word latency (ms) · word error rate (%), same utterances for every model in each set (67 to 150).
 // Earlybird repo: results/four.md
@@ -168,7 +168,7 @@ export default function EarlybirdPost() {
             on screen at that moment. At &frac14;&times; speed you can see Earlybird write each word while it is still being said.
             Darker blue means more confident.
           </p>
-          <Figure caption="A replay of each model's logged output on the recording, in time with the audio, not models running in your browser. The number next to each model is its median word latency on that clip. Guesses under 15% confidence are hidden. The recordings were never used in training: voice commands from SLURP, public speech from People's Speech and an audiobook from LibriSpeech.">
+          <Figure caption="A replay of each model's logged output on the recording, in time with the audio, not models running in your browser. The number next to each model is its median word latency on that clip. Guesses under 15% confidence are hidden. The recordings were never used in training: a news read, an interview, a science talk and a speech from People's Speech, an earnings call from Earnings-22 and an audiobook from LibriSpeech.">
             <SamplePlayer ids={SAMPLE_IDS} />
           </Figure>
 

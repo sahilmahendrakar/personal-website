@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties, type KeyboardEvent, type PointerEvent } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type CSSProperties, type KeyboardEvent, type PointerEvent, type ReactNode } from 'react';
 import SAMPLES from './samples.json';
 import { ms } from './format';
 
@@ -52,6 +52,29 @@ const confStyle = (c: number | null): CSSProperties | undefined =>
 
 const fmtConf = (c: number | null) => (c === null ? '' : `${Math.round(c * 100)}%`);
 
+/**
+ * A fixed-height window onto a transcript, like live captions: it shows the first lines until the text outgrows
+ * it, then keeps the line with the latest word in view (older lines slide up and out). Words marked .todo (not
+ * said yet) don't count as the latest.
+ */
+function Caption({ children }: { children: ReactNode }) {
+  const outer = useRef<HTMLDivElement>(null);
+  const inner = useRef<HTMLParagraphElement>(null);
+  useLayoutEffect(() => {
+    const o = outer.current, i = inner.current;
+    if (!o || !i) return;
+    const words = i.querySelectorAll<HTMLElement>(':scope > span:not(.todo)');
+    const last = words[words.length - 1];
+    const bottom = last ? last.offsetTop + last.offsetHeight : 0;
+    i.style.transform = `translateY(${-Math.max(0, bottom - o.clientHeight)}px)`;
+  });
+  return (
+    <div ref={outer} className="ebs-win">
+      <p ref={inner} className="ebs-text">{children}</p>
+    </div>
+  );
+}
+
 export function SamplePlayer({ ids }: { ids?: string[] }) {
   const clips = useMemo(() => (ids ? ids.map((id) => CLIPS.find((c) => c.id === id)!).filter(Boolean) : CLIPS), [ids]);
   const [ci, setCi] = useState(0);
@@ -68,22 +91,6 @@ export function SamplePlayer({ ids }: { ids?: string[] }) {
   tRef.current = t;
 
   const lanes = LANES.filter(([name]) => clip.lanes[name]?.length);
-  // The longest text each lane ever shows, rendered invisibly so the layout never jumps.
-  const longest = useMemo(
-    () =>
-      Object.fromEntries(
-        lanes.map(([name]) => {
-          let best: string[] = [];
-          for (const [, w, g] of clip.lanes[name]) {
-            const all = [...w.map((x) => x[0]), ...g.map((x) => x[0])];
-            if (all.join(' ').length > best.join(' ').length) best = all;
-          }
-          return [name, best];
-        }),
-      ),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [clip],
-  );
 
   const stop = useCallback(() => {
     cancelAnimationFrame(raf.current);
@@ -240,16 +247,16 @@ export function SamplePlayer({ ids }: { ids?: string[] }) {
         <div className="ebs-lanes">
           <div className="ebs-lane ebs-said">
             <div className="ebs-name"><b>Speaker</b><small>what was said</small></div>
-            <p className="ebs-text">
+            <Caption>
               {clip.said.map(([w, s, e], i) => {
                 const p = t <= s ? 0 : t >= e ? 1 : (t - s) / (e - s);
                 return (
-                  <span key={i} className={p >= 1 ? 'done' : p > 0 ? 'now' : ''} style={{ '--p': `${Math.round(p * 100)}%` } as CSSProperties}>
+                  <span key={i} className={p >= 1 ? 'done' : p > 0 ? 'now' : 'todo'} style={{ '--p': `${Math.round(p * 100)}%` } as CSSProperties}>
                     {w}
                   </span>
                 );
               })}
-            </p>
+            </Caption>
           </div>
 
           {lanes.map(([name, size]) => {
@@ -264,15 +271,11 @@ export function SamplePlayer({ ids }: { ids?: string[] }) {
                   <b>{name}</b>
                   <small>{size}{lat !== null && <> · <span className={lat < 0 ? 'early' : ''}>{ms(lat)}</span></>}</small>
                 </div>
-                <div className="ebs-text ebs-stack">
-                  <p aria-hidden="true" className="ebs-sizer">
-                    {longest[name].map((w, i) => <span key={i}>{w}</span>)}
-                  </p>
-                  <p>
+                <Caption>
                     {words.map(([w, c, j], i) => (
                       <span
                         key={i}
-                        className={`${c !== null ? 'c' : ''}${j >= 0 && clip.said[j][2] > t ? ' ahead' : ''}`}
+                        className={`${c !== null ? 'c' : ''}${j >= 0 && clip.said[j][1] <= t && clip.said[j][2] > t ? ' ahead' : ''}`}
                         style={confStyle(c)}
                         title={c !== null ? `${fmtConf(c)} confident` : undefined}
                       >
@@ -286,8 +289,7 @@ export function SamplePlayer({ ids }: { ids?: string[] }) {
                       </span>
                     ))}
                     {!words.length && !guesses.length && <span className="ebs-wait">…</span>}
-                  </p>
-                </div>
+                </Caption>
               </div>
             );
           })}

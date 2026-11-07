@@ -200,7 +200,7 @@
 .ebs-speed button[aria-pressed='true'] { background: var(--eb-ink); color: var(--eb-card); }
 
 .ebs-lanes { display: flex; flex-direction: column; }
-.ebs-lane .ebs-text { margin-left: -0.15em !important; }
+.ebs-lane:not(.ebs-said) .ebs-text { margin-left: -0.15em !important; }
 .ebs-lane { display: grid; grid-template-columns: 8.5rem 1fr; gap: 1rem; align-items: baseline; padding: 0.85rem 1rem; }
 .ebs-lane + .ebs-lane { border-top: 1px solid var(--eb-line); }
 .ebs-name { display: flex; flex-direction: column; gap: 0.1rem; }
@@ -210,11 +210,8 @@
 .ebs-name small .early { color: var(--eb-blue); font-weight: 600; }
 .ebs-text { margin: 0 !important; font-size: 1.2rem; line-height: 1.55; color: var(--eb-ink); letter-spacing: -0.005em; }
 .ebs-text span { display: inline-block; margin-right: 0.3em; border-radius: 0.3rem; }
-.ebs-stack { display: grid; }
-.ebs-stack > p { grid-area: 1 / 1; margin: 0 !important; }
-.ebs-sizer { visibility: hidden; }
-.ebs-sizer span { padding: 0 0.3em; margin-right: 0.08em; }
-.ebs-sizer span::after { content: ' 00%'; font-size: 0.6em; }
+.ebs-win { --lines: 2; height: calc(var(--lines) * 1.2rem * 1.6); overflow: hidden; }
+.ebs-win .ebs-text { position: relative; transition: transform 0.25s ease; }
 
 /* Speaker row: words fill in as they are said */
 .ebs-said .ebs-text span { color: var(--eb-line); transition: color 0.12s; }
@@ -226,7 +223,7 @@
 }
 
 /* Model lanes */
-.ebs-lane .ebs-text p span { padding: 0 0.15em; margin-right: 0.08em; }
+.ebs-lane:not(.ebs-said) .ebs-text span { padding: 0 0.15em; margin-right: 0.08em; }
 .ebs-lane .ebs-text span.c, .ebl-screen .ebs-text span.c { color: color-mix(in oklab, var(--eb-blue) var(--conf), var(--eb-pale)); font-weight: 500; }
 .ebs-lane .ebs-text span.ahead, .ebl-screen .ebs-text span.ahead { background: var(--eb-blue-soft); box-shadow: inset 0 -2px 0 color-mix(in oklab, var(--eb-blue) 45%, transparent); }
 .ebs-lane .ebs-text span.g, .ebl-screen .ebs-text span.g { font-style: italic; font-weight: 400; outline: 1.5px dashed color-mix(in oklab, var(--eb-blue) 45%, transparent); outline-offset: -1.5px; padding: 0 0.3em; }
@@ -244,6 +241,7 @@
   .ebs-lane { grid-template-columns: 1fr; gap: 0.3rem; }
   .ebs-name { flex-direction: row; align-items: baseline; gap: 0.5rem; }
   .ebs-text { font-size: 1.05rem; }
+  .ebs-win { --lines: 3; height: calc(var(--lines) * 1.05rem * 1.6); }
   .ebs-ctrl { flex-wrap: wrap; gap: 0.6rem 0.75rem; }
   .ebs-wave { flex-basis: calc(100% - 3.5rem); }
   .ebs-clock { width: auto; text-align: left; margin-right: auto; }
@@ -278,5 +276,5 @@
 .ebl { margin-top: 1.4em; }
 @media (max-width: 640px) { .ebl-screen .ebs-text { font-size: 1.2rem; } }
 
-@media (prefers-reduced-motion: reduce) { .ebl-mic, .ebl-mic.on::before, .ebs-play, .ebs-wave rect, .ebs-said .ebs-text span { transition: none; } }
+@media (prefers-reduced-motion: reduce) { .ebs-win .ebs-text, .ebl-mic, .ebl-mic.on::before, .ebs-play, .ebs-wave rect, .ebs-said .ebs-text span { transition: none; } }
 .eb .post-body h2[id] { scroll-margin-top: 5rem; }
