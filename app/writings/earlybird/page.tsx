@@ -140,7 +140,7 @@ export default function EarlybirdPost() {
           <p>
             <a className="eb-cta" href={DEMO}>
               <i aria-hidden="true" />
-              Try it with your microphone
+              Try it live with your microphone or recorded samples
             </a>
           </p>
 
@@ -151,7 +151,7 @@ export default function EarlybirdPost() {
             reply.
           </p>
           <p>
-            Earlybird reduces that wait with one idea: <strong>train the model on audio cut off partway through a word, and ask it
+            To reduce that wait, I train Earlybird differently: <strong>train the model on audio cut off partway through a word, and ask it
             to guess the whole word, with the confidence that it is right</strong>.
           </p>
           <Figure
@@ -360,7 +360,7 @@ export default function EarlybirdPost() {
 
           <h2>Links</h2>
           <ul>
-            <li>Live demo: <a href={DEMO}>try it with your microphone</a></li>
+            <li>Live demo: <a href={DEMO}>try it with your microphone</a> or recorded samples</li>
             <li>Model: <a href={HF}>Hugging Face</a></li>
             <li>Built on <a href="https://huggingface.co/UsefulSensors/moonshine-streaming-tiny">Moonshine Tiny</a> by Useful Sensors (MIT)</li>
           </ul>
