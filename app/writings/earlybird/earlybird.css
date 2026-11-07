@@ -192,6 +192,7 @@
 .ebs-wave rect { fill: var(--eb-line); transition: fill 0.1s; }
 .ebs-wave rect.on { fill: var(--eb-ink); }
 .ebs-head { stroke: var(--eb-blue); stroke-width: 2; vector-effect: non-scaling-stroke; }
+.ebs-wave:focus:not(:focus-visible) { outline: none; }
 .ebs-wave:focus-visible { outline: 2px solid var(--eb-blue); outline-offset: 4px; border-radius: 4px; }
 .ebs-clock { flex: none; width: 3.2rem; text-align: right; font-size: 0.8125rem; color: var(--eb-muted); font-variant-numeric: tabular-nums; }
 .ebs-speed { flex: none; display: flex; border: 1px solid var(--eb-line); border-radius: 999px; padding: 2px; }
