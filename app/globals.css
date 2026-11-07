@@ -7,13 +7,13 @@
 /* Design System Variables */
 :root {
   /* Colors - Light Mode (warm, premium feel) */
-  --background: #FAFAFA;
+  --background: #FFFDFA;
   --foreground: #171717;
-  --muted: #F5F5F5;
+  --muted: #F6F4F0;
   --muted-foreground: #737373;
-  --accent: #F5F5F5;
+  --accent: #F6F4F0;
   --accent-foreground: #171717;
-  --border: #E5E5E5;
+  --border: #ECE9E4;
   --ring: #171717;
 
   /* Semantic colors */
@@ -23,11 +23,11 @@
   --popover-foreground: #171717;
   --primary: #171717;
   --primary-foreground: #FAFAFA;
-  --secondary: #F5F5F5;
+  --secondary: #F6F4F0;
   --secondary-foreground: #171717;
   --destructive: #EF4444;
   --destructive-foreground: #FAFAFA;
-  --input: #E5E5E5;
+  --input: #ECE9E4;
 
   /* Radius */
   --radius: 0.5rem;
@@ -40,13 +40,13 @@
   --chart-5: oklch(0.769 0.188 70.08);
 
   /* Sidebar */
-  --sidebar: #FAFAFA;
+  --sidebar: #FFFDFA;
   --sidebar-foreground: #171717;
   --sidebar-primary: #171717;
   --sidebar-primary-foreground: #FAFAFA;
-  --sidebar-accent: #F5F5F5;
+  --sidebar-accent: #F6F4F0;
   --sidebar-accent-foreground: #171717;
-  --sidebar-border: #E5E5E5;
+  --sidebar-border: #ECE9E4;
   --sidebar-ring: #171717;
 }
 
