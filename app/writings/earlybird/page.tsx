@@ -5,6 +5,7 @@ import { format, parseISO } from 'date-fns';
 import { EARLYBIRD_POST as post } from '@/lib/native-posts';
 import { ReadingProgress } from '@/components/ReadingProgress';
 import { Calibration, KeptBars, Scatter, Timeline, TrainingExample } from '@/components/earlybird/Charts';
+import { SamplePlayer } from '@/components/earlybird/Samples';
 import { MODELS, ms, pct, type Point } from '@/components/earlybird/format';
 import '../paradee/paradee.css';
 import './earlybird.css';
@@ -12,6 +13,9 @@ import './earlybird.css';
 const URL = `https://sahilmahendrakar.com/writings/${post.id}`;
 const DEMO = 'https://sahil-mahendrakar--earlybird-live-live-web.us-east.modal.run';
 const HF = 'https://huggingface.co/sahilmahendrakar/earlybird';
+
+// Recordings in the sample player, in picker order (components/earlybird/samples.json).
+const SAMPLE_IDS = ['s1', 's4', 's0', 's7', 's9'];
 
 // Median word latency (ms) · word error rate (%), same utterances for every model in each set (67 to 150).
 // Earlybird repo: results/four.md
@@ -155,6 +159,16 @@ export default function EarlybirdPost() {
             caption="Median word latency on LibriSpeech audiobooks, the same 67 utterances for every model. Whisper base is re-run on all the audio so far every 0.48 s."
           >
             <Timeline />
+          </Figure>
+
+          <h2>Hear it on real speech</h2>
+          <p>
+            These are real recordings, played through Earlybird and three released models. Each row shows what that model had
+            on screen at that moment. Slow it down to &frac14;&times; to watch Earlybird write a word while it is still being
+            said, with the darker blue meaning it is more confident.
+          </p>
+          <Figure caption="A replay of each model's logged output on the recording, in time with the audio, not models running in your browser. The number next to each model is its median word latency on that clip. Guesses under 15% confidence are hidden. The recordings were never used in training: voice commands from SLURP, public speech from People's Speech and an audiobook from LibriSpeech.">
+            <SamplePlayer ids={SAMPLE_IDS} />
           </Figure>
 
           <h2>What I compare against</h2>
