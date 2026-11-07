@@ -1,0 +1,153 @@
+/* Earlybird post. Builds on the Paradee post styles (paradee.css); everything here is scoped under .eb. */
+.eb {
+  --eb-ink: #17202c;
+  --eb-muted: #667085;
+  --eb-line: #e3e7ed;
+  --eb-blue: #36597c;
+  --eb-blue-soft: #e9eff6;
+  --eb-s0: #36597c;
+  --eb-s1: #b8742a;
+  --eb-s2: #8d97a6;
+  --eb-s3: #c3cad4;
+}
+
+/* Spacing next to the site's post typography */
+.eb .post-body :is(.eb-figure, .eb-facts, .eb-cta, .pd-table-wrap) + :is(p, h2, ul, ol),
+.eb .post-body :is(p, ul, ol) + :is(.eb-figure, .eb-facts, .eb-cta, .pd-table-wrap) { margin-top: 1.6em; }
+.eb .post-body h2 + .eb-figure { margin-top: 1em; }
+
+/* Live demo button */
+.eb-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font: 500 0.9375rem var(--font-sans);
+  background: var(--foreground);
+  color: var(--background) !important;
+  text-decoration: none !important;
+  border-radius: 999px;
+  padding: 0.7rem 1.2rem 0.7rem 1rem;
+  transition: transform 0.15s ease;
+}
+.eb-cta:hover { transform: translateY(-1px); }
+.eb-cta i { width: 0.6rem; height: 0.6rem; border-radius: 999px; background: #e5484d; box-shadow: 0 0 0 4px rgb(229 72 77 / 0.25); }
+
+/* Headline numbers */
+.eb-facts {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  border-block: 1px solid var(--border);
+  font-family: var(--font-sans);
+  list-style: none !important;
+  padding: 0 !important;
+}
+.eb-facts li { margin: 0 !important; padding: 1.1rem 1rem 1.1rem 0; display: flex; flex-direction: column; gap: 0.25rem; }
+.eb-facts li + li { padding-left: 1rem; border-left: 1px solid var(--border); }
+.eb-facts span { font-size: 0.75rem; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted-foreground); line-height: 1.3; }
+.eb-facts b { font-size: 1.6rem; font-weight: 600; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; color: var(--eb-blue); }
+.eb-facts small { font-size: 0.8125rem; line-height: 1.4; color: var(--muted-foreground); }
+@media (max-width: 640px) {
+  .eb-facts { grid-template-columns: 1fr; }
+  .eb-facts li + li { padding-left: 0; border-left: 0; border-top: 1px solid var(--border); }
+}
+
+/* Figures */
+.eb-figure { margin: 2.2em 0 0; }
+.eb-figure-title { font: 600 0.9375rem var(--font-sans); color: var(--eb-ink); margin-bottom: 0.5rem; }
+.eb-figure figcaption {
+  margin-top: 0.75rem;
+  font: 0.8125rem/1.55 var(--font-sans);
+  color: var(--muted-foreground);
+}
+.eb-frame { position: relative; }
+.eb-figure svg { display: block; width: 100%; height: auto; font-family: var(--font-sans); overflow: visible; }
+.eb-grid { stroke: var(--eb-line); stroke-width: 1; }
+.eb-zero { stroke: #98a2b3; stroke-width: 1; }
+.eb-band { fill: var(--eb-blue-soft); }
+.eb-diag { stroke: #98a2b3; stroke-dasharray: 4 4; }
+.eb-tick { font-size: 12px; fill: var(--eb-muted); font-variant-numeric: tabular-nums; }
+.eb-axis { font-size: 12.5px; fill: var(--eb-muted); }
+.eb-note { font-size: 12px; fill: var(--eb-muted); font-weight: 500; }
+.eb-lbl { font-size: 13.5px; fill: #344054; }
+.eb-val { font-size: 13px; font-weight: 600; fill: #344054; font-variant-numeric: tabular-nums; }
+.eb-acc { fill: var(--eb-blue) !important; }
+.eb-faint { fill: #98a2b3 !important; }
+
+/* Scatter points */
+.eb-pt { cursor: pointer; outline: none; transition: opacity 0.2s; }
+.eb-hit { fill: transparent; }
+.eb-dot { fill: #8d97a6; stroke: #fff; stroke-width: 2; }
+.eb-pub .eb-dot { fill: #fff; stroke: #8d97a6; stroke-width: 2; }
+.eb-ours .eb-dot { fill: var(--eb-blue); }
+.eb-halo { fill: var(--eb-blue); opacity: 0.16; }
+.eb-ours .eb-lbl { font-size: 15px; font-weight: 700; fill: var(--eb-blue); }
+.eb-pt:hover .eb-dot, .eb-pt:focus-visible .eb-dot { stroke: var(--eb-ink); }
+.eb-dim { opacity: 0.28; }
+
+/* Hover card */
+.eb-tip {
+  position: absolute;
+  z-index: 2;
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 9rem;
+  padding: 0.5rem 0.7rem;
+  background: #fff;
+  border: 1px solid var(--eb-line);
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 2px rgb(16 24 40 / 0.05), 0 10px 24px -10px rgb(16 24 40 / 0.2);
+  font: 0.8125rem/1.45 var(--font-sans);
+  color: var(--eb-muted);
+  white-space: nowrap;
+}
+.eb-tip b { color: var(--eb-ink); font-weight: 600; }
+
+/* Timeline rows */
+.eb-row { cursor: default; outline: none; transition: opacity 0.2s; }
+.eb-row .eb-dot { fill: #8d97a6; stroke: none; }
+.eb-row.eb-ours .eb-dot { fill: var(--eb-blue); }
+.eb-row.eb-ours .eb-lbl, .eb-row.eb-ours .eb-val { fill: var(--eb-blue); font-weight: 700; }
+.eb-stem { stroke: #c3cad4; stroke-width: 2; stroke-dasharray: 2 4; }
+.eb-row.eb-ours .eb-stem { stroke: var(--eb-blue); }
+
+/* Series colours (bars, calibration lines, legend) */
+.eb-series { transition: opacity 0.2s; }
+.eb-s0 { --c: var(--eb-s0); }
+.eb-s1 { --c: var(--eb-s1); }
+.eb-s2 { --c: var(--eb-s2); }
+.eb-s3 { --c: var(--eb-s3); }
+.eb-bar { fill: var(--c); }
+.eb-line { fill: none; stroke: var(--c); stroke-width: 2.25; }
+.eb-mark { fill: var(--c); stroke: #fff; stroke-width: 1.5; cursor: pointer; }
+.eb-legend { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 0.6rem; font-family: var(--font-sans); }
+.eb-legend button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.8125rem;
+  color: var(--eb-ink);
+  border: 1px solid var(--eb-line);
+  border-radius: 999px;
+  padding: 0.25rem 0.7rem;
+  background: #fff;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+.eb-legend i { width: 0.65rem; height: 0.65rem; border-radius: 3px; background: var(--c); }
+
+/* Training example */
+.eb-wave { fill: #475467; }
+.eb-wave.eb-off { fill: #e4e7ec; }
+.eb-cut { stroke: var(--eb-blue); stroke-width: 1.5; stroke-dasharray: 4 3; }
+.eb-chip { fill: #f2f4f7; }
+.eb-chip.eb-cur { fill: var(--eb-blue-soft); stroke: var(--eb-blue); }
+.eb-chip.eb-guess { fill: none; stroke: #98a2b3; stroke-dasharray: 4 3; }
+.eb-word { font-size: 15px; font-weight: 500; fill: var(--eb-ink); }
+.eb-slider { display: flex; align-items: center; gap: 0.9rem; margin-top: 0.6rem; font: 0.8125rem var(--font-sans); color: var(--muted-foreground); }
+.eb-slider input { flex: 1; accent-color: var(--eb-blue); }
+
+/* Tables: the Paradee table, with an Earlybird column highlight */
+.eb .pd-table td.eb-us, .eb .pd-table th.eb-us { color: var(--eb-blue); font-weight: 600; }
+.eb .pd-table b { color: var(--foreground); font-weight: 600; }

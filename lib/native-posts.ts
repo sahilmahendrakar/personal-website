@@ -38,7 +38,17 @@ export const PARADEE_12_POST: PostData = {
   coverImage: '/writings/paradee-1-2/img/cover.jpg',
 };
 
-const NATIVE_POSTS: PostData[] = [PARADEE_POST, PARADEE_11_POST, PARADEE_12_POST];
+export const EARLYBIRD_POST: PostData = {
+  id: 'earlybird',
+  title: 'Earlybird: predictive speech-to-text in 17 MB',
+  subtitle: 'A small streaming speech-to-text model that predicts each word before the speaker finishes saying it, with the probability that it\u2019s right.',
+  date: '2026-11-11',
+  contentHtml: '',
+  substackUrl: '',
+  readingMinutes: 7,
+};
+
+const NATIVE_POSTS: PostData[] = [EARLYBIRD_POST, PARADEE_POST, PARADEE_11_POST, PARADEE_12_POST];
 
 /** Native and Substack posts together, newest first. */
 export async function getAllPosts(): Promise<PostData[]> {
