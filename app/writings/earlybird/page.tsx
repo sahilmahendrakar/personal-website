@@ -133,8 +133,8 @@ export default function EarlybirdPost() {
             <li><span>Words predicted correctly before they end</span><b>69%</b><small>On audiobooks, counting only words not changed later. Other models: 3&ndash;25%</small></li>
           </ul>
           <p>
-            Earlybird is a 16.8 MB on-device speech-to-text model that predicts each word before the speaker finishes saying it,
-            with the probability that it&rsquo;s right. On audiobook speech, a typical word is predicted correctly 90 ms before it
+            Earlybird is a 16.8 MB on-device speech-to-text model that predicts each word before the speaker finishes saying it
+            along with the probability that it&rsquo;s right. On audiobook speech, a typical word is predicted correctly 90 ms before it
             ends. Released streaming models predict it correctly 90&ndash;400 ms after.
           </p>
           <p>
@@ -146,7 +146,7 @@ export default function EarlybirdPost() {
 
           <h2>Why earlier words matter</h2>
           <p>
-            Streaming speech-to-text models wait until a word is over before they show it. For live captions that is fine. For a
+            Streaming speech-to-text models wait until a word is over before they show it. For a
             voice agent every millisecond counts: the sooner the words exist, the sooner the agent can start a search or plan its
             reply.
           </p>
@@ -163,10 +163,10 @@ export default function EarlybirdPost() {
 
           <h2>Hear it on real speech</h2>
           <p>
-            These are real recordings. I fed each one to Earlybird and three released models in 80 ms chunks, as if it
+            Try out Earlybird and see how it compares to other models on real recordings. I fed each one to Earlybird and three released models in 80 ms chunks, as if it
             were live, and logged every change to each model&rsquo;s text. Each row shows what that model had
-            on screen at that moment. Slow it down to &frac14;&times; to watch Earlybird write a word while it is still being
-            said, with the darker blue meaning it is more confident.
+            on screen at that moment. At &frac14;&times; speed you can see Earlybird write each word while it is still being said.
+            Darker blue means more confident.
           </p>
           <Figure caption="A replay of each model's logged output on the recording, in time with the audio, not models running in your browser. The number next to each model is its median word latency on that clip. Guesses under 15% confidence are hidden. The recordings were never used in training: voice commands from SLURP, public speech from People's Speech and an audiobook from LibriSpeech.">
             <SamplePlayer ids={SAMPLE_IDS} />
@@ -198,7 +198,8 @@ export default function EarlybirdPost() {
             </table>
           </div>
           <p>
-            I fed each model the audio in order and logged every change to its text against the audio&rsquo;s timeline. The times
+            I streamed each recording into each model 80 ms at a time, as if it were live, and recorded the model&rsquo;s text
+            after every chunk. The times
             measure how much audio a model had to hear before it got the word right. Computing time depends on the hardware and is
             not included. A word&rsquo;s <strong>word latency</strong> is the first moment the word is on screen, spelled correctly
             and in the right location, and stays unchanged after that. I measure it from when the speaker finishes the word, so a
@@ -270,10 +271,9 @@ export default function EarlybirdPost() {
 
           <h2>Speed, accuracy and size</h2>
           <p>
-            In all three charts the top left is better; hover a point for its numbers. Earlybird is the only model that gets a
-            typical word right before it ends, short of one 70 times its size, and its accuracy sits with the other models under
-            100 MB: close to Whistle and Whisper tiny, ahead of Moonshine Tiny. Larger models such as Whisper base are more
-            accurate.
+            In all three charts the top left is better; hover a point for its numbers. Earlybird is the only model under 1 GB
+            that gets most words right before they end. Its accuracy is in line with the other models under 100 MB: close to
+            Whistle and Whisper tiny, and ahead of Moonshine Tiny.
           </p>
           <Figure
             title="Word latency against accuracy"
@@ -323,8 +323,8 @@ export default function EarlybirdPost() {
 
           <h2>Confidence: knowing when to trust an early word</h2>
           <p>
-            Earlybird gives every word it shows a confidence, the probability that the word is right, including the word the
-            speaker is still saying. This is the model&rsquo;s raw output, with no extra calibration step, and it matches how often
+            Earlybird gives every word it shows a confidence, which measures the probability that the word is right.
+            This is the model&rsquo;s raw output, with no extra calibration step, and it matches how often
             the model is right: when Earlybird is at least 90% confident in a word it hasn&rsquo;t heard the end of, it is right
             91&ndash;96% of the time.
           </p>
@@ -362,8 +362,8 @@ export default function EarlybirdPost() {
           <p>
             Zink et al. (2024) train an offline recognizer to predict masked words at the end of an utterance. Yusuf et al. (2024)
             run a language model, prompted with audio, ahead of a streaming recognizer. Chang et al. (2020) and Schwarz et al.
-            (2023) show that early, stable partial transcripts help voice assistants. Earlybird does the prediction inside a small
-            streaming recognizer, and reports calibration and stability along with earliness.
+            (2023) show that early, stable partial transcripts help voice assistants. Earlybird makes the prediction inside a small
+            streaming recognizer, and measures how well calibrated and how stable its words are, not only how early they come.
           </p>
 
           <h2>Links</h2>
