@@ -28,11 +28,11 @@ const SETS: [string, [number, number][]][] = [
   ['Synthetic speech', [[-73, 5.6], [292, 7.0], [424, 7.5], [90, 4.8]]],
 ];
 
-const COMPARED: [string, string, string, string][] = [
-  ['Earlybird', '29M', '16.8 MB', 'updates every 80 ms'],
-  ['Moonshine Tiny', '34M', '45 MB', 'official streaming code'],
-  ['Whistle', '55M', '16.9 MB', 'Cactus live mode'],
-  ['Whisper base', '74M', '~145 MB', 're-run on all audio so far every 0.48 s'],
+const COMPARED: [string, string, string][] = [
+  ['Earlybird', '29M', '16.8 MB'],
+  ['Moonshine Tiny', '34M', '45 MB'],
+  ['Whistle', '55M', '16.9 MB'],
+  ['Whisper base', '74M', '~145 MB'],
 ];
 
 // Mean WER over the 8 English Open ASR Leaderboard sets, on the clips all four models share. results/open_asr.md
@@ -127,6 +127,11 @@ export default function EarlybirdPost() {
         </div>
 
         <div className="pd-col post-body">
+          <ul className="eb-facts" aria-label="Headline numbers">
+            <li><span>Size on disk</span><b>16.8 MB</b><small>29M parameters at 4 bits; 17.6 MB with the tokenizer</small></li>
+            <li><span>Word latency</span><b>−90 ms</b><small>Median, relative to the end of the word, on audiobooks. Other models: +90 to +400 ms</small></li>
+            <li><span>Words predicted correctly before they end</span><b>69%</b><small>On audiobooks, counting only words not changed later. Other models: 3&ndash;25%</small></li>
+          </ul>
           <p>
             Earlybird is a 16.8 MB on-device speech-to-text model that predicts each word before the speaker finishes saying it,
             with the probability that it&rsquo;s right. On audiobook speech, a typical word is predicted correctly 90 ms before it
@@ -138,11 +143,6 @@ export default function EarlybirdPost() {
               Try it with your microphone
             </a>
           </p>
-          <ul className="eb-facts" aria-label="Headline numbers">
-            <li><span>Size on disk</span><b>16.8 MB</b><small>29M parameters at 4 bits; 17.6 MB with the tokenizer</small></li>
-            <li><span>Word latency</span><b>−90 ms</b><small>Median, relative to the end of the word, on audiobooks. Other models: +90 to +400 ms</small></li>
-            <li><span>Words predicted correctly before they end</span><b>69%</b><small>On audiobooks, counting only words not changed later. Other models: 3&ndash;25%</small></li>
-          </ul>
 
           <h2>Why earlier words matter</h2>
           <p>
@@ -176,15 +176,14 @@ export default function EarlybirdPost() {
           <div className="pd-table-wrap">
             <table className="pd-table pd-table-text">
               <thead>
-                <tr><th scope="col">Model</th><th scope="col">Parameters</th><th scope="col">File size</th><th scope="col">How it runs</th></tr>
+                <tr><th scope="col">Model</th><th scope="col">Parameters</th><th scope="col">File size</th></tr>
               </thead>
               <tbody>
-                {COMPARED.map(([m, n, s, how], i) => (
+                {COMPARED.map(([m, n, s], i) => (
                   <tr key={m}>
                     <th scope="row" className={i ? '' : 'eb-us'}>{m}</th>
                     <td className={i ? '' : 'eb-us'}>{n}</td>
                     <td className={i ? '' : 'eb-us'}>{s}</td>
-                    <td className={i ? '' : 'eb-us'}>{how}</td>
                   </tr>
                 ))}
               </tbody>
@@ -194,7 +193,7 @@ export default function EarlybirdPost() {
             I fed each model the audio in order and logged every change to its text against the audio&rsquo;s timeline. The times
             measure how much audio a model had to hear before it got the word right. Computing time depends on the hardware and is
             not included. A word&rsquo;s <strong>word latency</strong> is the first moment the word is on screen, spelled correctly
-            and in the right place, and stays unchanged after that. I measure it from when the speaker finishes the word, so a
+            and in the right location, and stays unchanged after that. I measure it from when the speaker finishes the word, so a
             negative number means before.
           </p>
 
