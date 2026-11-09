@@ -10,7 +10,8 @@ import '../paradee/paradee.css';
 
 const ASSETS = '/writings/paradee-1-3';
 const URL = `https://sahilmahendrakar.com/writings/${post.id}`;
-const COVER = post.coverImage ? [`https://sahilmahendrakar.com${post.coverImage}`] : undefined;
+// www directly, so crawlers fetch the image without following the apex-to-www redirect.
+const COVER = post.coverImage ? [`https://www.sahilmahendrakar.com${post.coverImage}`] : undefined;
 const HF = 'https://huggingface.co/sahilmahendrakar/Paradee-8M-v1.3';
 const STORE = 'https://chromewebstore.google.com/detail/chickadee/nbghebngnkkjcgpcmhchpijmcdkclndm';
 
