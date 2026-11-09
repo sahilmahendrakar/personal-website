@@ -41,7 +41,7 @@ export const PARADEE_12_POST: PostData = {
 export const EARLYBIRD_POST: PostData = {
   id: 'earlybird',
   title: 'Earlybird: predictive speech-to-text in 17 MB',
-  subtitle: 'A small streaming speech-to-text model that predicts each word before the speaker finishes saying it, with the probability that it\u2019s right.',
+  subtitle: 'A tiny streaming speech-to-text model that predicts each word before the speaker finishes saying it with the probability that it\u2019s right.',
   date: '2026-11-11',
   contentHtml: '',
   substackUrl: '',

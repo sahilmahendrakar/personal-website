@@ -7,6 +7,7 @@ import { ReadingProgress } from '@/components/ReadingProgress';
 import { Calibration, KeptBars, Scatter, Timeline, TrainingExample } from '@/components/earlybird/Charts';
 import { SamplePlayer } from '@/components/earlybird/Samples';
 import { LiveDemo } from '@/components/earlybird/Live';
+import { TabbedFigure } from '@/components/earlybird/Tabs';
 import { MODELS, ms, pct, type Point } from '@/components/earlybird/format';
 import '../paradee/paradee.css';
 import './earlybird.css';
@@ -26,13 +27,6 @@ const SETS: [string, [number, number][]][] = [
   ['Public speech', [[-66, 14.5], [290, 16.7], [477, 14.2], [127, 10.5]]],
   ['Earnings calls', [[-46, 18.4], [309, 21.6], [535, 17.8], [142, 13.3]]],
   ['Synthetic speech', [[-73, 5.6], [292, 7.0], [424, 7.5], [90, 4.8]]],
-];
-
-const COMPARED: [string, string, string][] = [
-  ['Earlybird', '29M', '16.8 MB'],
-  ['Moonshine Tiny', '34M', '45 MB'],
-  ['Whistle', '55M', '16.9 MB'],
-  ['Whisper base', '74M', '~145 MB'],
 ];
 
 // Mean WER over the 8 English Open ASR Leaderboard sets, on the clips all four models share. results/open_asr.md
@@ -140,9 +134,9 @@ export default function EarlybirdPost() {
 
           <h2>Why earlier words matter</h2>
           <p>
-            Streaming speech-to-text models wait until a word is over before they show it. For a
-            voice agent every millisecond counts: the sooner the words exist, the sooner the agent can start a search or plan its
-            reply.
+            Streaming speech-to-text models usually wait at least 100ms after a word has finished being spoken before they
+            output it. For a voice agent every millisecond counts: the sooner the words exist, the sooner the agent can start a
+            search or plan its reply.
           </p>
           <p>
             Earlybird cuts that wait with a change to training: <strong>train the model on audio cut off partway through a word, and ask it
@@ -155,179 +149,20 @@ export default function EarlybirdPost() {
             <Timeline />
           </Figure>
 
-          <h2>Hear it on real speech</h2>
+          <h2>See it on real speech</h2>
           <p>
-            Try out Earlybird and see how it compares to other models on real recordings. I fed each one to Earlybird and three released models in 80 ms chunks, as if it
-            were live, and logged every change to each model&rsquo;s text. Each row shows what that model had
-            on screen at that moment. At &frac14;&times; speed you can see Earlybird write each word while it is still being said.
-            Darker blue means more confident.
+            Try out Earlybird and see how it compares to other models on real recordings. Each recording was fed to Earlybird and
+            three released models in 80 ms chunks, as if it were live. At &frac14;&times; speed you can see Earlybird write each
+            word while it is still being said. Darker blue means more confident.
           </p>
           <Figure caption="A replay of each model's logged output on the recording, in time with the audio, not models running in your browser. The number next to each model is its median word latency on that clip. Guesses under 15% confidence are hidden. The recordings were never used in training: voice commands from SLURP, public speech, a news read and an interview from People's Speech, and an audiobook from LibriSpeech.">
             <SamplePlayer ids={SAMPLE_IDS} />
           </Figure>
-
-          <h2 id="try">Try it yourself</h2>
-          <p>
-            This is the real 4-bit model, running on a small CPU server. Press the microphone and talk, or play one of the
-            recordings through it. Each word shows its confidence underneath, and its guesses for the next words are in dashed boxes.
+          <p id="try" className="eb-anchor">
+            Or try it yourself. This is the real 4-bit model, running on a small CPU server. Press the microphone and talk, or
+            play one of the recordings through it.
           </p>
           <LiveDemo />
-
-          <h2>What I compare against</h2>
-          <p>The results below compare Earlybird with three released models on the same audio:</p>
-          <div className="pd-table-wrap">
-            <table className="pd-table pd-table-text">
-              <thead>
-                <tr><th scope="col">Model</th><th scope="col">Parameters</th><th scope="col">File size</th></tr>
-              </thead>
-              <tbody>
-                {COMPARED.map(([m, n, s], i) => (
-                  <tr key={m}>
-                    <th scope="row" className={i ? '' : 'eb-us'}>{m}</th>
-                    <td className={i ? '' : 'eb-us'}>{n}</td>
-                    <td className={i ? '' : 'eb-us'}>{s}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-          <p>
-            I streamed each recording into each model 80 ms at a time, as if it were live, and recorded the model&rsquo;s text
-            after every chunk. The times
-            measure how much audio a model had to hear before it got the word right. Computing time depends on the hardware and is
-            not included. A word&rsquo;s <strong>word latency</strong> is the first moment the word is on screen, spelled correctly
-            and in the right location, and stays unchanged after that. I measure it from when the speaker finishes the word, so a
-            negative number means before.
-          </p>
-
-          <h2>Earlier on every test set</h2>
-          <p>
-            On all six test sets, Earlybird predicts words correctly about 360 ms sooner than Moonshine Tiny, 490&ndash;580 ms
-            sooner than Whistle and 160&ndash;200 ms sooner than Whisper base. It makes fewer errors than Moonshine Tiny on every
-            set. Whistle is ahead on two sets, by at most 0.6 points, and Whisper base is the most accurate of the four.
-          </p>
-          <div className="pd-table-wrap">
-            <table className="pd-table">
-              <thead>
-                <tr>
-                  <th scope="col">Test set</th>
-                  {MODELS.map((m, i) => <th key={m} scope="col" className={i ? '' : 'eb-us'}>{m}</th>)}
-                </tr>
-              </thead>
-              <tbody>
-                {SETS.map(([set, cells]) => {
-                  const bt = Math.min(...cells.map((c) => c[0])), bw = Math.min(...cells.map((c) => c[1]));
-                  return (
-                    <tr key={set}>
-                      <th scope="row">{set}</th>
-                      {cells.map(([t, w], i) => (
-                        <td key={i} className={i ? '' : 'eb-us'}>
-                          {t === bt ? <b>{ms(t)}</b> : ms(t)}
-                          <br />
-                          {w === bw ? <b>{pct(w)}</b> : pct(w)}
-                        </td>
-                      ))}
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
-          <p className="text-[0.8125rem] leading-relaxed text-muted-foreground font-sans">
-            Each cell: median word latency, then word error rate. All models are scored on the same utterances in each set, 67 to
-            150 per set. Bold is the best in each row.
-          </p>
-          <p>
-            I also scored the four models on the 8 English test sets of the Hugging Face Open ASR Leaderboard, using its text
-            normalizer. Earlybird makes fewer errors than Moonshine Tiny on all 8 sets and roughly ties Whistle. Whisper base is
-            more accurate, at about 9 times the size.
-          </p>
-          <div className="pd-table-wrap">
-            <table className="pd-table">
-              <thead>
-                <tr><th scope="col">Model</th><th scope="col">Size</th><th scope="col">Mean word error rate, 8 Open ASR sets</th></tr>
-              </thead>
-              <tbody>
-                {OPEN_ASR.map(([m, s, w]) => (
-                  <tr key={m}>
-                    <th scope="row" className={m === 'Earlybird' ? 'eb-us' : ''}>{m}</th>
-                    <td className={m === 'Earlybird' ? 'eb-us' : ''}>{s}</td>
-                    <td className={m === 'Earlybird' ? 'eb-us' : ''}>{pct(w)}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-          <p className="text-[0.8125rem] leading-relaxed text-muted-foreground font-sans">
-            On the clips all four models share. Whistle is slow to run, so outside TED it was scored on about 200 clips per set,
-            which makes its number less precise.
-          </p>
-
-          <h2>Speed, accuracy and size</h2>
-          <p>
-            In all three charts the top left is better; hover a point for its numbers. Earlybird is the only model under 1 GB
-            that gets most words right before they end. Its accuracy is in line with the other models under 100 MB: close to
-            Whistle and Whisper tiny, and ahead of Moonshine Tiny.
-          </p>
-          <Figure
-            title="Word latency against accuracy"
-            caption="Median word latency on LibriSpeech against mean word error rate on the 8 Open ASR Leaderboard sets. Earlybird is shown at its 4-bit error rate. Parakeet's error rate is its published leaderboard number and its timing comes from 150 other clips."
-          >
-            <Scatter
-              points={LATENCY_ACC}
-              x="latency"
-              y="wer"
-              shade="x"
-              shadeLabel="before the word ends"
-              desc="Word latency against mean word error rate. Earlybird is the only small model that predicts words before they end."
-            />
-          </Figure>
-          <Figure
-            title="Size against accuracy"
-            caption="Mean word error rate over the 8 English Open ASR Leaderboard sets. Hollow points are published leaderboard numbers from each model's card; filled points are my own runs. Full-precision models are shown at their 16-bit size. Whistle was scored on about 200 clips per set."
-          >
-            <Scatter
-              points={SIZE_ACC}
-              x="size"
-              y="wer"
-              desc="Size on disk against mean word error rate on the Open ASR Leaderboard sets."
-            />
-          </Figure>
-          <Figure
-            title="Size against word latency"
-            caption="Median word latency on LibriSpeech audiobooks, all timed by me. The same 67 utterances for every model except Parakeet, which was timed on 150 others (Earlybird: −80 ms on those) and re-run every 240 ms. Nemotron is the int8 streaming build with 80 ms chunks."
-          >
-            <Scatter
-              points={SIZE_LAT}
-              x="size"
-              y="latency"
-              shade="y"
-              shadeLabel="before the word ends ↑"
-              desc="Size on disk against median word latency. Earlybird is the smallest model and the only one well before the word ends."
-            />
-          </Figure>
-
-          <h2>Words before the speaker finishes them</h2>
-          <Figure
-            title="Words predicted correctly before they end, and not changed later"
-            caption="Counts transcript words and guesses shown at 50% confidence or more. All models are scored on the same utterances in each set: 50 audiobook, 38 TED, 100 public-speech and 50 synthetic utterances where all four models produced output. Moonshine Tiny and Whistle are built to wait for each word to end. Whisper base gets some words early because each re-run hears a little more audio."
-          >
-            <KeptBars />
-          </Figure>
-
-          <h2>Confidence: knowing when to trust an early word</h2>
-          <p>
-            Earlybird gives every word it shows a confidence, which measures the probability that the word is right.
-            This is the model&rsquo;s raw output, with no extra calibration step, and it matches how often
-            the model is right: when Earlybird is at least 90% confident in a word it hasn&rsquo;t heard the end of, it is right
-            91&ndash;96% of the time.
-          </p>
-          <Figure
-            title="Stated confidence against how often the word is right"
-            caption="Words still being spoken, at every 80 ms step, 200 utterances per test set. Points on the diagonal are perfectly calibrated. Calibration error is 3.7–5.5 points (audiobooks 4.3, TED 3.7, public speech 5.5, synthetic 3.7), and 0.7–4.4 points for the next-word guesses."
-          >
-            <Calibration />
-          </Figure>
 
           <h2>How it&rsquo;s trained</h2>
           <Figure
@@ -345,22 +180,164 @@ export default function EarlybirdPost() {
           </ol>
           <p>Three training runs with different seeds agree to within 3 ms and 0.5 WER points on every test set.</p>
 
-          <h2>Limits</h2>
+          <h2>Results</h2>
+          <p>
+            I compare Earlybird with three released models on the same audio: Moonshine Tiny (34M parameters, 45 MB), Whistle
+            (55M, 16.9 MB) and Whisper base (74M, about 145 MB). I streamed each recording into each model 80 ms at a time, as if
+            it were live, and recorded the model&rsquo;s text after every chunk. The times measure how much audio a model had to
+            hear before it got the word right. Computing time depends on the hardware and is not included. A word&rsquo;s{' '}
+            <strong>word latency</strong> is the first moment the word is on screen, spelled correctly and in the right location,
+            and stays unchanged after that. I measure it from when the speaker finishes the word, so a negative number means before.
+          </p>
+          <p>
+            On all six test sets, Earlybird predicts words correctly about 360 ms sooner than Moonshine Tiny, 490&ndash;580 ms
+            sooner than Whistle and 160&ndash;200 ms sooner than Whisper base. It makes fewer errors than Moonshine Tiny on every
+            set. Whistle is ahead on two sets, by at most 0.6 points, and Whisper base is the most accurate of the four. On the 8
+            English test sets of the Hugging Face Open ASR Leaderboard, Earlybird makes fewer errors than Moonshine Tiny on all 8
+            and roughly ties Whistle. Whisper base is more accurate, at about 9 times the size.
+          </p>
+          <TabbedFigure
+            label="Results tables"
+            tabs={[
+              {
+                label: 'Per test set',
+                caption: 'Each cell: median word latency, then word error rate. All models are scored on the same utterances in each set, 67 to 150 per set. Bold is the best in each row.',
+                content: (
+                  <div className="pd-table-wrap">
+                    <table className="pd-table">
+                      <thead>
+                        <tr>
+                          <th scope="col">Test set</th>
+                          {MODELS.map((m, i) => <th key={m} scope="col" className={i ? '' : 'eb-us'}>{m}</th>)}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {SETS.map(([set, cells]) => {
+                          const bt = Math.min(...cells.map((c) => c[0])), bw = Math.min(...cells.map((c) => c[1]));
+                          return (
+                            <tr key={set}>
+                              <th scope="row">{set}</th>
+                              {cells.map(([t, w], i) => (
+                                <td key={i} className={i ? '' : 'eb-us'}>
+                                  {t === bt ? <b>{ms(t)}</b> : ms(t)}
+                                  <br />
+                                  {w === bw ? <b>{pct(w)}</b> : pct(w)}
+                                </td>
+                              ))}
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+                ),
+              },
+              {
+                label: 'Open ASR Leaderboard',
+                caption: "On the clips all four models share, using the leaderboard's text normalizer. Whistle is slow to run, so outside TED it was scored on about 200 clips per set, which makes its number less precise.",
+                content: (
+                  <div className="pd-table-wrap">
+                    <table className="pd-table">
+                      <thead>
+                        <tr><th scope="col">Model</th><th scope="col">Size</th><th scope="col">Mean word error rate, 8 Open ASR sets</th></tr>
+                      </thead>
+                      <tbody>
+                        {OPEN_ASR.map(([m, s, w]) => (
+                          <tr key={m}>
+                            <th scope="row" className={m === 'Earlybird' ? 'eb-us' : ''}>{m}</th>
+                            <td className={m === 'Earlybird' ? 'eb-us' : ''}>{s}</td>
+                            <td className={m === 'Earlybird' ? 'eb-us' : ''}>{pct(w)}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                ),
+              },
+            ]}
+          />
+          <p>
+            Earlybird is the only model under 1 GB that gets most words right before they end. Its accuracy is in line with the
+            other models under 100 MB: close to Whistle and Whisper tiny, and ahead of Moonshine Tiny. In the charts below the top
+            left is better; hover a point for its numbers.
+          </p>
+          <TabbedFigure
+            label="Results charts"
+            tabs={[
+              {
+                label: 'Latency vs accuracy',
+                title: 'Word latency against accuracy',
+                caption: "Median word latency on LibriSpeech against mean word error rate on the 8 Open ASR Leaderboard sets. Earlybird is shown at its 4-bit error rate. Parakeet's error rate is its published leaderboard number and its timing comes from 150 other clips.",
+                content: (
+                  <Scatter
+                    points={LATENCY_ACC}
+                    x="latency"
+                    y="wer"
+                    shade="x"
+                    shadeLabel="before the word ends"
+                    desc="Word latency against mean word error rate. Earlybird is the only small model that predicts words before they end."
+                  />
+                ),
+              },
+              {
+                label: 'Size vs accuracy',
+                title: 'Size against accuracy',
+                caption: "Mean word error rate over the 8 English Open ASR Leaderboard sets. Hollow points are published leaderboard numbers from each model's card; filled points are my own runs. Full-precision models are shown at their 16-bit size. Whistle was scored on about 200 clips per set.",
+                content: (
+                  <Scatter points={SIZE_ACC} x="size" y="wer" desc="Size on disk against mean word error rate on the Open ASR Leaderboard sets." />
+                ),
+              },
+              {
+                label: 'Size vs latency',
+                title: 'Size against word latency',
+                caption: 'Median word latency on LibriSpeech audiobooks, all timed by me. The same 67 utterances for every model except Parakeet, which was timed on 150 others (Earlybird: −80 ms on those) and re-run every 240 ms. Nemotron is the int8 streaming build with 80 ms chunks.',
+                content: (
+                  <Scatter
+                    points={SIZE_LAT}
+                    x="size"
+                    y="latency"
+                    shade="y"
+                    shadeLabel="before the word ends ↑"
+                    desc="Size on disk against median word latency. Earlybird is the smallest model and the only one well before the word ends."
+                  />
+                ),
+              },
+              {
+                label: 'Words before they end',
+                title: 'Words predicted correctly before they end, and not changed later',
+                caption: 'Counts transcript words and guesses shown at 50% confidence or more. All models are scored on the same utterances in each set: 50 audiobook, 38 TED, 100 public-speech and 50 synthetic utterances where all four models produced output. Moonshine Tiny and Whistle are built to wait for each word to end. Whisper base gets some words early because each re-run hears a little more audio.',
+                content: <KeptBars />,
+              },
+            ]}
+          />
+
+          <h2>Confidence: knowing when to trust an early word</h2>
+          <p>
+            Earlybird gives every word it shows a confidence, which measures the probability that the word is right.
+            This is the model&rsquo;s raw output, with no extra calibration step, and it matches how often
+            the model is right: when Earlybird is at least 90% confident in a word it hasn&rsquo;t heard the end of, it is right
+            91&ndash;96% of the time.
+          </p>
+          <Figure
+            title="Stated confidence against how often the word is right"
+            caption="Words still being spoken, at every 80 ms step, 200 utterances per test set. Points on the diagonal are perfectly calibrated. Calibration error is 3.7–5.5 points (audiobooks 4.3, TED 3.7, public speech 5.5, synthetic 3.7), and 0.8–4.4 points for the next-word guesses."
+          >
+            <Calibration />
+          </Figure>
+
+          <h2>Limits and related work</h2>
           <ul>
             <li><strong>Accuracy.</strong> Whisper base, 2.5 times larger, makes fewer errors on every test set except audiobooks, where they tie. The gap is widest with background chatter: at 10 dB, Earlybird gets 32% of words wrong and Whisper base 8.9%.</li>
             <li><strong>Rewrites.</strong> Showing words early means changing them more often: 1.3 changes per word on audiobooks (Whistle 0.2, Whisper base 0.4, Moonshine Tiny 2.1), and 2&ndash;6 on spontaneous or noisy speech.</li>
             <li><strong>Next-word guesses help less.</strong> At 50% confidence or more, about 1 word in 7 is guessed correctly before it ends. Most early words come from the transcript itself.</li>
           </ul>
-
-          <h2>Related work</h2>
           <p>
             Zink et al. (2024) train an offline recognizer to predict masked words at the end of an utterance. Yusuf et al. (2024)
             run a language model, prompted with audio, ahead of a streaming recognizer. Chang et al. (2020) and Schwarz et al.
             (2023) show that early, stable partial transcripts help voice assistants. Earlybird makes the prediction inside a small
             streaming recognizer, and measures how well calibrated and how stable its words are, not only how early they come.
           </p>
-
-          <h2>Links</h2>
+          <p><strong>Links</strong></p>
           <ul>
             <li>Live demo: <a href="#try">try it with your microphone</a> or recorded samples</li>
             <li>Model: <a href={HF}>Hugging Face</a></li>

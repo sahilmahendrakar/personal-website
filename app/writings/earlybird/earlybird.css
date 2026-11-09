@@ -269,7 +269,7 @@
 @media (max-width: 640px) { .ebl-screen .ebs-text { font-size: 1.2rem; } }
 
 @media (prefers-reduced-motion: reduce) { .ebs-win .ebs-text, .ebl-mic, .ebl-mic.on::before, .ebs-play, .ebs-wave rect, .ebs-said .ebs-text span { transition: none; } }
-.eb .post-body h2[id] { scroll-margin-top: 5rem; }
+.eb .post-body h2[id], .eb .post-body .eb-anchor { scroll-margin-top: 5rem; }
 
 /* Tabbed figure: underlined tabs above the chart, distinct from the legend pills */
 .eb-tabs { display: flex; gap: 1.1rem; overflow-x: auto; scrollbar-width: none; border-bottom: 1px solid var(--eb-line); margin-bottom: 0.9rem; font-family: var(--font-sans); }
