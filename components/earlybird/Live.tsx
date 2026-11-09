@@ -254,11 +254,11 @@ export function LiveDemo() {
           ) : (
             <p className="ebs-text">
               {words.map(([w, p], i) => (
-                <span key={i} className={`c${i === nowIdx ? ' ahead' : ''}`} style={confStyle(p)} title={`${pct(p)} confident`}>{w}</span>
+                <span key={i} className={`c${i === nowIdx ? ' ahead' : ''}`} style={confStyle(p)} title={`${pct(p)} confident`}><span className="w">{w}</span><small>{pct(p)}</small></span>
               ))}
               {ghost.map(([g, p], i) => (
                 <span key={`g${i}`} className="g c" style={confStyle(p)} title={`guess, ${pct(p)} confident`}>
-                  {g}<sup>{pct(p)}</sup>
+                  <span className="w">{g}</span><small>{pct(p)}</small>
                 </span>
               ))}
             </p>

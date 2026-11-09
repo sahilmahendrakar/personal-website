@@ -251,7 +251,15 @@
 }
 .ebl-clear:hover { color: var(--eb-ink); border-color: var(--eb-pale); }
 .ebl-screen { min-height: 7.5rem; padding: 1.1rem 1.1rem 1rem; }
-.ebl-screen .ebs-text { font-size: 1.4rem; }
+.ebl-screen .ebs-text { font-size: 1.4rem; line-height: 1.25; }
+/* Live demo: each word's confidence sits under it */
+.ebl-screen .ebs-text span.c { display: inline-flex; flex-direction: column; align-items: center; margin: 0 0.25em 0.35em 0; vertical-align: top; }
+/* The highlight and the guess box wrap the word only, not its percent */
+.ebl-screen .ebs-text span.c.ahead, .ebl-screen .ebs-text span.c.g { background: none; box-shadow: none; outline: none; padding: 0; }
+.ebl-screen .ebs-text span.c .w { border-radius: 0.3rem; padding: 0 0.15em; margin: 0; }
+.ebl-screen .ebs-text span.ahead .w { background: var(--eb-blue-soft); box-shadow: inset 0 -2px 0 color-mix(in oklab, var(--eb-blue) 45%, transparent); }
+.ebl-screen .ebs-text span.g .w { outline: 1.5px dashed color-mix(in oklab, var(--eb-blue) 45%, transparent); outline-offset: -1.5px; padding: 0 0.3em; }
+.ebl-screen .ebs-text span.c small { font: 400 0.5em/1.3 var(--font-sans); font-style: normal; color: var(--eb-muted); font-variant-numeric: tabular-nums; }
 .ebl-screen .ebs-wait { font-size: 1.05rem; }
 .ebl-said { margin: 0 !important; padding: 0 1.1rem 1rem; font-size: 0.9375rem; line-height: 1.5; color: var(--eb-muted); }
 .ebl-said span { display: block; font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 0.15rem; }
@@ -262,3 +270,11 @@
 
 @media (prefers-reduced-motion: reduce) { .ebs-win .ebs-text, .ebl-mic, .ebl-mic.on::before, .ebs-play, .ebs-wave rect, .ebs-said .ebs-text span { transition: none; } }
 .eb .post-body h2[id] { scroll-margin-top: 5rem; }
+
+/* Tabbed figure: underlined tabs above the chart, distinct from the legend pills */
+.eb-tabs { display: flex; gap: 1.1rem; overflow-x: auto; scrollbar-width: none; border-bottom: 1px solid var(--eb-line); margin-bottom: 0.9rem; font-family: var(--font-sans); }
+.eb-tabs::-webkit-scrollbar { display: none; }
+.eb-tabs button { flex: none; padding: 0.45rem 0 0.55rem; margin-bottom: -1px; border-bottom: 2px solid transparent; font-size: 0.875rem; color: var(--muted-foreground); background: none; cursor: pointer; transition: color 0.15s, border-color 0.15s; }
+.eb-tabs button:hover { color: var(--eb-ink); }
+.eb-tabs button[aria-selected='true'] { color: var(--eb-blue); border-bottom-color: var(--eb-blue); font-weight: 600; }
+.eb-tabs button:focus-visible { outline: 2px solid var(--eb-blue); outline-offset: 2px; border-radius: 4px; }

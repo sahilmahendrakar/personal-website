@@ -169,7 +169,7 @@ export default function EarlybirdPost() {
           <h2 id="try">Try it yourself</h2>
           <p>
             This is the real 4-bit model, running on a small CPU server. Press the microphone and talk, or play one of the
-            recordings through it. Words are colored by confidence, and its guesses for the next words are in dashed boxes.
+            recordings through it. Each word shows its confidence underneath, and its guesses for the next words are in dashed boxes.
           </p>
           <LiveDemo />
 
