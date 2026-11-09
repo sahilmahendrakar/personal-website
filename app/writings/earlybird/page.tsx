@@ -164,22 +164,6 @@ export default function EarlybirdPost() {
           </p>
           <LiveDemo />
 
-          <h2>How it&rsquo;s trained</h2>
-          <Figure
-            title="One training example"
-            caption="Wherever the audio stops, the target asks for every word heard so far, the half-heard word written in full, and a guess of the next one. At every 80 ms step while streaming, Earlybird is in exactly this position."
-          >
-            <TrainingExample />
-          </Figure>
-          <ol>
-            <li><strong>Start from Moonshine Tiny.</strong> I cut its vocabulary to the 19,007 tokens that English speech uses. That brings it to 29M parameters with no loss in accuracy.</li>
-            <li><strong>Train on cut-off audio.</strong> Each training example is an utterance cut off at a random 80 ms step, which is what the model sees while streaming. The target is every word due by that point, an end marker, and a guess of the next two words. A word is due at whichever comes later: 300 ms before it ends, or 50 ms after it starts.</li>
-            <li><strong>Learn from the teacher only where it&rsquo;s right.</strong> Moonshine Tiny also acts as a teacher, but only on tokens where its top choice matches the label. Using it everywhere made the guesses less decisive.</li>
-            <li><strong>Add padding frames.</strong> After the audio heard so far, the model sees three frames computed from silence, which lets it finish a word as if the speaker had stopped. This uses no future audio, and it moved the median from −50 to −90 ms.</li>
-            <li><strong>Quantize to 4 bits.</strong> Quantization-aware training brings the weights to 4 bits, with the audio front end at 8 bits. The file is 16.8 MB, or 17.6 MB with the tokenizer and config.</li>
-          </ol>
-          <p>Three training runs with different seeds agree to within 3 ms and 0.5 WER points on every test set.</p>
-
           <h2>Results</h2>
           <p>
             I compare Earlybird with three released models on the same audio: Moonshine Tiny (34M parameters, 45 MB), Whistle
@@ -310,6 +294,22 @@ export default function EarlybirdPost() {
               },
             ]}
           />
+
+          <h2>How it&rsquo;s trained</h2>
+          <Figure
+            title="One training example"
+            caption="Wherever the audio stops, the target asks for every word heard so far, the half-heard word written in full, and a guess of the next one. At every 80 ms step while streaming, Earlybird is in exactly this position."
+          >
+            <TrainingExample />
+          </Figure>
+          <ol>
+            <li><strong>Start from Moonshine Tiny.</strong> I cut its vocabulary to the 19,007 tokens that English speech uses. That brings it to 29M parameters with no loss in accuracy.</li>
+            <li><strong>Train on cut-off audio.</strong> Each training example is an utterance cut off at a random 80 ms step, which is what the model sees while streaming. The target is every word due by that point, an end marker, and a guess of the next two words. A word is due at whichever comes later: 300 ms before it ends, or 50 ms after it starts.</li>
+            <li><strong>Learn from the teacher only where it&rsquo;s right.</strong> Moonshine Tiny also acts as a teacher, but only on tokens where its top choice matches the label. Using it everywhere made the guesses less decisive.</li>
+            <li><strong>Add padding frames.</strong> After the audio heard so far, the model sees three frames computed from silence, which lets it finish a word as if the speaker had stopped. This uses no future audio, and it moved the median from −50 to −90 ms.</li>
+            <li><strong>Quantize to 4 bits.</strong> Quantization-aware training brings the weights to 4 bits, with the audio front end at 8 bits. The file is 16.8 MB, or 17.6 MB with the tokenizer and config.</li>
+          </ol>
+          <p>Three training runs with different seeds agree to within 3 ms and 0.5 WER points on every test set.</p>
 
           <h2>Confidence: knowing when to trust an early word</h2>
           <p>
