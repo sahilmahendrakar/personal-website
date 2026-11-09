@@ -15,7 +15,7 @@ const URL = `https://sahilmahendrakar.com/writings/${post.id}`;
 const HF = 'https://huggingface.co/sahilmahendrakar/earlybird';
 
 // Recordings in the sample player, in picker order (components/earlybird/samples.json).
-const SAMPLE_IDS = ['s4', 's1', 's0', 's7', 's9', 'l3', 'l4'];
+const SAMPLE_IDS = ['s4', 's2', 's7', 's9', 'l3', 'l4'];
 
 // Median word latency (ms) · word error rate (%), same utterances for every model in each set (67 to 150).
 // Earlybird repo: results/four.md
