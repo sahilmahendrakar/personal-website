@@ -339,7 +339,6 @@ export default function EarlybirdPost() {
           </p>
           <p><strong>Links</strong></p>
           <ul>
-            <li>Live demo: <a href="#try">try it with your microphone</a> or recorded samples</li>
             <li>Model: <a href={HF}>Hugging Face</a></li>
             <li>Built on <a href="https://huggingface.co/UsefulSensors/moonshine-streaming-tiny">Moonshine Tiny</a> by Useful Sensors (MIT)</li>
           </ul>
