@@ -339,6 +339,7 @@ export default function EarlybirdPost() {
           </p>
           <p><strong>Links</strong></p>
           <ul>
+            <li>Code: <a href="https://github.com/sahilmahendrakar/earlybird">GitHub</a></li>
             <li>Model: <a href={HF}>Hugging Face</a></li>
             <li>Built on <a href="https://huggingface.co/UsefulSensors/moonshine-streaming-tiny">Moonshine Tiny</a> by Useful Sensors (MIT)</li>
           </ul>
