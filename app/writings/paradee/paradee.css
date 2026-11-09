@@ -327,11 +327,12 @@
 /* Paradee 1.3: one card, a tab per language */
 .pd-langs {
   margin-top: 1.4em;
-  border: 1px solid var(--border);
+  border: 1px solid #d3deea;
   border-radius: 1rem;
-  background: var(--pd-panel);
+  background: linear-gradient(180deg, #f3f7fb 0%, #ffffff 70%);
   padding: 0.5rem;
   font-family: var(--font-sans);
+  box-shadow: 0 12px 28px -24px rgba(54, 89, 124, 0.55);
 }
 .pd-langs-tabs {
   display: grid;
@@ -339,33 +340,39 @@
   gap: 0.25rem;
   padding: 0.25rem;
   border-radius: 0.75rem;
-  background: var(--pd-band);
+  background: var(--pd-blue-soft);
 }
 .pd-langs-tab {
   border-radius: 0.55rem;
   padding: 0.45rem 0.5rem;
   font-size: 0.875rem;
   font-weight: 500;
-  color: var(--pd-muted);
+  color: #5b7590;
   cursor: pointer;
   transition: background 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
 }
-.pd-langs-tab:hover { color: var(--pd-ink); }
+.pd-langs-tab:hover { color: var(--pd-blue); }
 .pd-langs-tab[aria-selected='true'] {
-  background: var(--pd-panel);
-  color: var(--pd-ink);
-  box-shadow: 0 1px 2px rgba(16, 24, 40, 0.08), 0 0 0 1px var(--border);
+  background: #ffffff;
+  color: var(--pd-blue);
+  box-shadow: 0 1px 2px rgba(54, 89, 124, 0.12), 0 0 0 1px #d3deea;
 }
-.pd-langs-panel { padding: 1rem 0.5rem 0.25rem; }
+.pd-langs-panel { padding: 1.1rem 0.5rem 0.25rem; }
 .pd .post-body .pd-langs-text {
   font-family: var(--font-serif);
   font-style: italic;
-  font-size: 1.1rem;
-  line-height: 1.55;
+  font-size: 1.35rem;
+  line-height: 1.5;
   color: var(--pd-ink);
-  min-height: 3.1em;
+  min-height: 3em;
   margin: 0 0.5rem 0.75rem;
 }
+.pd-langs-text [data-w] { transition: color 0.12s ease, opacity 0.12s ease; }
+.pd-langs-text [data-w='ahead'] { opacity: 0.32; }
+.pd-langs-text [data-w='now'] { color: var(--pd-blue); }
 .pd-langs .pd-clip { border: 0; background: transparent; padding: 0.25rem 0.5rem 0.5rem; }
+.pd-langs .pd-playbtn { background: var(--pd-blue); color: #fff; }
+.pd-langs .pd-track { background: #dbe4ee; }
+.pd-langs .pd-track-fill { background: var(--pd-blue); }
 .pd .post-body .pd-langs + p { margin-top: 1.6em; }
 .pd-table-scores td { white-space: nowrap; }
