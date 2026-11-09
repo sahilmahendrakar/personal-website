@@ -134,8 +134,8 @@ export default function EarlybirdPost() {
 
           <h2>Why earlier words matter</h2>
           <p>
-            Streaming speech-to-text models usually wait at least 100ms after a word has finished being spoken before they
-            output it. For a voice agent every millisecond counts: the sooner the words exist, the sooner the agent can start a
+            Streaming speech recognizers output a word only after the speaker has finished it, typically 90&ndash;400 ms later.
+            For a voice agent every millisecond counts: the sooner the words exist, the sooner the agent can start a
             search or plan its reply.
           </p>
           <p>
