@@ -38,7 +38,19 @@ export const PARADEE_12_POST: PostData = {
   coverImage: '/writings/paradee-1-2/img/cover.jpg',
 };
 
-const NATIVE_POSTS: PostData[] = [PARADEE_POST, PARADEE_11_POST, PARADEE_12_POST];
+export const PARADEE_13_POST: PostData = {
+  id: 'paradee-1-3',
+  title: 'Paradee 1.3: The smallest multilingual TTS model',
+  subtitle:
+    'Paradee now speaks Hindi, French and Spanish along with English, without growing in size or losing quality on existing voices.',
+  date: '2026-11-09',
+  contentHtml: '',
+  substackUrl: '',
+  readingMinutes: 4,
+  coverImage: '/writings/paradee-1-3/img/cover.jpg',
+};
+
+const NATIVE_POSTS: PostData[] = [PARADEE_POST, PARADEE_11_POST, PARADEE_12_POST, PARADEE_13_POST];
 
 /** Native and Substack posts together, newest first. */
 export async function getAllPosts(): Promise<PostData[]> {
