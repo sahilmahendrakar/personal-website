@@ -228,7 +228,8 @@ export function Calibration() {
             </g>
           ))}
           <line x1={x(0)} y1={y(0)} x2={x(100)} y2={y(100)} className="eb-diag" />
-          <text x={x(70)} y={y(70) - 10} textAnchor="end" className="eb-note" transform={`rotate(-28 ${x(70)} ${y(70) - 10})`}>perfectly calibrated</text>
+          <line x1={x(100) - 178} x2={x(100) - 152} y1={y(8) - 4} y2={y(8) - 4} className="eb-diag" />
+          <text x={x(100)} y={y(8)} textAnchor="end" className="eb-note">perfectly calibrated</text>
           <text x={L + (W - L - R) / 2} y={H - 8} textAnchor="middle" className="eb-axis">Earlybird&rsquo;s confidence in the word</text>
           <text x={14} y={cy} textAnchor="middle" className="eb-axis" transform={`rotate(-90 14 ${cy})`}>How often it is right</text>
           {REL.map(([n, pts], i) => (
@@ -280,8 +281,13 @@ export function TrainingExample() {
             </g>
           );
         })}
-        {cur >= 0 && <text x={(WORDS[cur][1] + WORDS[cur][2]) / 2} y={192} textAnchor="middle" className="eb-note eb-acc">whole word, half heard</text>}
-        {last + 1 < WORDS.length && <text x={(WORDS[last + 1][1] + WORDS[last + 1][2]) / 2} y={192} textAnchor="middle" className="eb-note">guess</text>}
+        {/* With both labels showing, the first ends at its chip's right edge and the second starts at the next chip, so they never overlap. */}
+        {cur >= 0 && (last + 1 < WORDS.length
+          ? <text x={WORDS[cur][2]} y={192} textAnchor="end" className="eb-note eb-acc">whole word, half heard</text>
+          : <text x={(WORDS[cur][1] + WORDS[cur][2]) / 2} y={192} textAnchor="middle" className="eb-note eb-acc">whole word, half heard</text>)}
+        {last + 1 < WORDS.length && (cur >= 0
+          ? <text x={WORDS[last + 1][1] + 2} y={192} textAnchor="start" className="eb-note">guess</text>
+          : <text x={(WORDS[last + 1][1] + WORDS[last + 1][2]) / 2} y={192} textAnchor="middle" className="eb-note">guess</text>)}
       </svg>
       <label className="eb-slider">
         <span>Move where the audio stops</span>
