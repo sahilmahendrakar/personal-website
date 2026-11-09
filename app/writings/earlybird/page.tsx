@@ -139,7 +139,7 @@ export default function EarlybirdPost() {
             search or plan its reply.
           </p>
           <p>
-            Earlybird cuts that wait with a change to training: <strong>train the model on audio cut off partway through a word, and ask it
+            Earlybird outputs words earlier with a change to training: <strong>train the model on audio cut off partway through a word, and ask it
             to guess the whole word, with the confidence that it is right</strong>.
           </p>
           <Figure
