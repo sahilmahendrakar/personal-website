@@ -24,25 +24,9 @@
 .dark .eb .ebs { --eb-pale: #3d4a5e; }
 
 /* Spacing next to the site's post typography */
-.eb .post-body :is(.eb-figure, .eb-facts, .eb-cta, .pd-table-wrap) + :is(p, h2, ul, ol),
-.eb .post-body :is(p, ul, ol) + :is(.eb-figure, .eb-facts, .eb-cta, .pd-table-wrap) { margin-top: 1.6em; }
+.eb .post-body :is(.eb-figure, .eb-facts, .pd-table-wrap) + :is(p, h2, ul, ol),
+.eb .post-body :is(p, ul, ol) + :is(.eb-figure, .eb-facts, .pd-table-wrap) { margin-top: 1.6em; }
 .eb .post-body h2 + .eb-figure { margin-top: 1em; }
-
-/* Live demo button */
-.eb-cta {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.6rem;
-  font: 500 0.9375rem var(--font-sans);
-  background: var(--foreground);
-  color: var(--background) !important;
-  text-decoration: none !important;
-  border-radius: 999px;
-  padding: 0.7rem 1.2rem 0.7rem 1rem;
-  transition: transform 0.15s ease;
-}
-.eb-cta:hover { transform: translateY(-1px); }
-.eb-cta i { width: 0.6rem; height: 0.6rem; border-radius: 999px; background: #e5484d; box-shadow: 0 0 0 4px rgb(229 72 77 / 0.25); }
 
 /* Headline numbers */
 .eb-facts {

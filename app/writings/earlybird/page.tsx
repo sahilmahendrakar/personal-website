@@ -137,12 +137,6 @@ export default function EarlybirdPost() {
             along with the probability that it&rsquo;s right. On audiobook speech, a typical word is predicted correctly 90 ms before it
             ends. Released streaming models predict it correctly 90&ndash;400 ms after.
           </p>
-          <p>
-            <a className="eb-cta" href="#try">
-              <i aria-hidden="true" />
-              Try it live with your microphone or recorded samples
-            </a>
-          </p>
 
           <h2>Why earlier words matter</h2>
           <p>
