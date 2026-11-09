@@ -271,10 +271,11 @@
 @media (prefers-reduced-motion: reduce) { .ebs-win .ebs-text, .ebl-mic, .ebl-mic.on::before, .ebs-play, .ebs-wave rect, .ebs-said .ebs-text span { transition: none; } }
 .eb .post-body h2[id], .eb .post-body .eb-anchor { scroll-margin-top: 5rem; }
 
-/* Tabbed figure: underlined tabs above the chart, distinct from the legend pills */
-.eb-tabs { display: flex; gap: 1.1rem; overflow-x: auto; scrollbar-width: none; border-bottom: 1px solid var(--eb-line); margin-bottom: 0.9rem; font-family: var(--font-sans); }
+/* Tabbed figure: a segmented control above the chart, distinct from the legend pills */
+.eb-tabs { display: flex; gap: 0.25rem; width: fit-content; max-width: 100%; overflow-x: auto; scrollbar-width: none; padding: 0.25rem; margin-bottom: 1.1rem; border-radius: 0.7rem; background: color-mix(in oklab, var(--eb-line) 55%, transparent); box-shadow: inset 0 0 0 1px var(--eb-line); font-family: var(--font-sans); }
 .eb-tabs::-webkit-scrollbar { display: none; }
-.eb-tabs button { flex: none; padding: 0.45rem 0 0.55rem; margin-bottom: -1px; border-bottom: 2px solid transparent; font-size: 0.875rem; color: var(--muted-foreground); background: none; cursor: pointer; transition: color 0.15s, border-color 0.15s; }
-.eb-tabs button:hover { color: var(--eb-ink); }
-.eb-tabs button[aria-selected='true'] { color: var(--eb-blue); border-bottom-color: var(--eb-blue); font-weight: 600; }
-.eb-tabs button:focus-visible { outline: 2px solid var(--eb-blue); outline-offset: 2px; border-radius: 4px; }
+.eb-tabs button { flex: none; padding: 0.4rem 0.85rem; border-radius: 0.5rem; font-size: 0.875rem; font-weight: 500; color: var(--eb-ink); opacity: 0.72; background: none; cursor: pointer; white-space: nowrap; transition: background-color 0.15s, color 0.15s, opacity 0.15s, box-shadow 0.15s; }
+.eb-tabs button:hover { opacity: 1; background: color-mix(in oklab, var(--background) 60%, transparent); }
+.eb-tabs button[aria-selected='true'] { opacity: 1; color: var(--eb-blue); font-weight: 600; background: var(--background); box-shadow: 0 1px 2px rgb(0 0 0 / 0.08), 0 0 0 1px var(--eb-line); }
+.eb-tabs button:focus-visible { outline: 2px solid var(--eb-blue); outline-offset: 1px; }
+@media (max-width: 560px) { .eb-tabs { flex-wrap: wrap; overflow: visible; width: auto; } .eb-tabs button { padding: 0.35rem 0.7rem; font-size: 0.8125rem; } }
