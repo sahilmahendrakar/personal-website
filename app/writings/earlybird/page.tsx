@@ -133,9 +133,9 @@ export default function EarlybirdPost() {
 
         <div className="pd-col post-body">
           <ul className="eb-facts" aria-label="Headline numbers">
-            <li><span>Size on disk</span><b>16.8 MB</b><small>29M parameters at 4 bits; 17.6 MB with the tokenizer</small></li>
+            <li><span>Size</span><b>29M &middot; 16.8 MB</b><small>29M parameters at 4 bits; 17.6 MB with the tokenizer</small></li>
             <li><span>Word latency</span><b>−90 ms</b><small>Median, relative to the end of the word, on audiobooks. Other models: +90 to +400 ms</small></li>
-            <li><span>Words predicted correctly before they end</span><b>69%</b><small>On audiobooks, counting only words not changed later. Other models: 3&ndash;25%</small></li>
+            <li><span>Words predicted correctly before they end</span><b>69%</b><small>On audiobooks, counting only words not corrected later. Other models: 3&ndash;25%</small></li>
           </ul>
           <p>
             Earlybird is a 16.8 MB on-device speech-to-text model that predicts each word before the speaker finishes saying it
@@ -145,7 +145,7 @@ export default function EarlybirdPost() {
 
           <h2 id="why">Why earlier words matter</h2>
           <p>
-            Streaming speech recognizers output a word only after the speaker has finished it, typically 90&ndash;400 ms later.
+            Streaming speech-to-text models output a word only after the speaker has finished it, typically 90&ndash;400 ms later.
             For a voice agent, that delay is time it could have spent starting a search, fetching a record, or planning a
             reply while the speaker is still talking.
           </p>
@@ -253,8 +253,7 @@ export default function EarlybirdPost() {
           />
           <p>
             Earlybird is the only model under 1 GB that predicts the median word correctly before it ends. Its accuracy is in line with the
-            other models under 100 MB: close to Whistle and Whisper tiny, and ahead of Moonshine Tiny. In the charts below the top
-            left is better; hover a point for its numbers.
+            other models under 100 MB: close to Whistle and Whisper tiny, and ahead of Moonshine Tiny.
           </p>
           <TabbedFigure
             label="Results charts"
@@ -299,7 +298,7 @@ export default function EarlybirdPost() {
               },
               {
                 label: 'Words before they end',
-                title: 'Words predicted correctly before they end, and not changed later',
+                title: 'Words predicted correctly before they end, and not corrected later',
                 caption: 'Counts transcript words and guesses shown at 50% confidence or more. All models are scored on the same utterances in each set: 50 audiobook, 38 TED, 100 public-speech and 50 synthetic utterances where all four models produced output. Moonshine Tiny and Whistle are built to wait for each word to end. Whisper base gets some words early because each re-run hears a little more audio.',
                 content: <KeptBars />,
               },
