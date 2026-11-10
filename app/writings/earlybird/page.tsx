@@ -78,7 +78,8 @@ const SIZE_LAT: Point[] = [
   { name: 'Parakeet TDT 0.6B', x: 1236, y: -10, label: 'left', lines: ['1.2 GB at 16 bits', 'word latency −10 ms (other clips)'] },
 ];
 
-const COVER = `https://sahilmahendrakar.com${post.coverImage}`;
+// www directly, so crawlers fetch the image without following the apex-to-www redirect.
+const COVER = `https://www.sahilmahendrakar.com${post.coverImage}`;
 
 export const metadata: Metadata = {
   title: post.title,
