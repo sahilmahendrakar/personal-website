@@ -349,7 +349,7 @@ export default function EarlybirdPost() {
             <li><strong>Close the accuracy gap.</strong> Whisper base, 2.5 times larger, still makes fewer errors on every test set except audiobooks, where they tie. The gap is widest with background chatter: at 10 dB, Earlybird gets 32% of words wrong and Whisper base 8.9%.</li>
             <li><strong>Fewer rewrites.</strong> Showing words early means changing them more often: 1.3 changes per word on audiobooks (Whistle 0.2, Whisper base 0.4, Moonshine Tiny 2.1), and 2&ndash;6 on spontaneous or noisy speech. I want to bring that down without giving up earliness.</li>
             <li><strong>Better next-word guesses.</strong> At 50% confidence or more, only about 1 word in 7 is guessed correctly before it ends.</li>
-            <li><strong>Voice commands.</strong> Commands to a voice agent are short and predictable, so they should be easier to guess early. Tuning Earlybird for them is a separate project.</li>
+            <li><strong>Voice commands.</strong> Commands to a voice agent are short and predictable, so they should be easier to guess early. Earlybird could be tuned on them specifically.</li>
           </ul>
           <h2 id="links">Links</h2>
           <ul>
