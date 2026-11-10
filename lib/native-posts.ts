@@ -40,7 +40,7 @@ export const PARADEE_12_POST: PostData = {
 
 export const EARLYBIRD_POST: PostData = {
   id: 'earlybird',
-  title: 'Earlybird: predictive speech-to-text in 17 MB',
+  title: 'Earlybird: predictive speech-to-text in 29M parameters',
   subtitle: 'A tiny streaming speech-to-text model that predicts words before the speaker finishes saying them with a confidence score.',
   date: '2026-11-11',
   contentHtml: '',
