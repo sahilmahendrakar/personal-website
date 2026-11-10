@@ -14,6 +14,9 @@ export function Toc({ items }: { items: TocItem[] }) {
       const line = window.innerHeight * 0.3;
       let cur: string | null = null;
       for (const e of els) if (e.getBoundingClientRect().top <= line) cur = e.id;
+      // At the very bottom, the last section may be too short to reach the line; mark it anyway.
+      const atEnd = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2;
+      if (atEnd && cur && els.length) cur = els[els.length - 1].id;
       setActive(cur);
     };
     onScroll();

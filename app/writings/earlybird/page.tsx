@@ -101,7 +101,9 @@ const TOC = [
   { id: 'results', label: 'Results' },
   { id: 'training', label: 'How it’s trained' },
   { id: 'confidence', label: 'Confidence' },
-  { id: 'limits', label: 'Limits and related work' },
+  { id: 'related-work', label: 'Related work' },
+  { id: 'next-steps', label: 'Next steps' },
+  { id: 'links', label: 'Links' },
 ];
 
 export default function EarlybirdPost() {
@@ -335,20 +337,23 @@ export default function EarlybirdPost() {
             <Calibration />
           </Figure>
 
-          <h2 id="limits">Limits and related work</h2>
-          <ul>
-            <li><strong>Accuracy.</strong> Whisper base, 2.5 times larger, makes fewer errors on every test set except audiobooks, where they tie. The gap is widest with background chatter: at 10 dB, Earlybird gets 32% of words wrong and Whisper base 8.9%.</li>
-            <li><strong>Rewrites.</strong> Showing words early means changing them more often: 1.3 changes per word on audiobooks (Whistle 0.2, Whisper base 0.4, Moonshine Tiny 2.1), and 2&ndash;6 on spontaneous or noisy speech.</li>
-            <li><strong>Next-word guesses help less.</strong> At 50% confidence or more, about 1 word in 7 is guessed correctly before it ends. Most early words come from the transcript itself.</li>
-          </ul>
+          <h2 id="related-work">Related work</h2>
           <p>
             Zink et al. (2024) train an offline recognizer to predict masked words at the end of an utterance. Yusuf et al. (2024)
             run a language model, prompted with audio, ahead of a streaming recognizer. Chang et al. (2020) and Schwarz et al.
             (2023) show that early, stable partial transcripts help voice assistants. Earlybird makes the prediction inside a small
             streaming recognizer, and measures how well calibrated and how stable its words are, not only how early they come.
           </p>
-          <p><strong>Links</strong></p>
+          <h2 id="next-steps">Next steps</h2>
           <ul>
+            <li><strong>Close the accuracy gap.</strong> Whisper base, 2.5 times larger, still makes fewer errors on every test set except audiobooks, where they tie. The gap is widest with background chatter: at 10 dB, Earlybird gets 32% of words wrong and Whisper base 8.9%.</li>
+            <li><strong>Fewer rewrites.</strong> Showing words early means changing them more often: 1.3 changes per word on audiobooks (Whistle 0.2, Whisper base 0.4, Moonshine Tiny 2.1), and 2&ndash;6 on spontaneous or noisy speech. I want to bring that down without giving up earliness.</li>
+            <li><strong>Better next-word guesses.</strong> At 50% confidence or more, only about 1 word in 7 is guessed correctly before it ends. Most early words still come from the transcript itself.</li>
+            <li><strong>Voice commands.</strong> Commands to a voice agent are short and predictable, so they should be easier to guess early. Tuning Earlybird for them is a separate project.</li>
+          </ul>
+          <h2 id="links">Links</h2>
+          <ul>
+            <li>Paper: arXiv (link coming soon)</li>
             <li>Model: <a href={HF}>Hugging Face</a></li>
             <li>Code: <a href="https://github.com/sahilmahendrakar/earlybird">GitHub</a></li>
             <li>Built on <a href="https://huggingface.co/moonshine-ai/moonshine-streaming-tiny">Moonshine Tiny</a> by Moonshine AI (MIT)</li>
