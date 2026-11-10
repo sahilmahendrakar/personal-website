@@ -296,11 +296,6 @@ export function SamplePlayer({ ids }: { ids?: string[] }) {
         </div>
       </div>
 
-      <div className="ebs-legend">
-        <span><i className="ebs-lg-conf" />Earlybird&rsquo;s confidence, low to high</span>
-        <span><i className="ebs-lg-ahead" />shown before the speaker finished the word</span>
-        <span><i className="ebs-lg-guess" />guess of the next word</span>
-      </div>
     </div>
   );
 }

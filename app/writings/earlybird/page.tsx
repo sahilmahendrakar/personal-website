@@ -85,12 +85,12 @@ export const metadata: Metadata = {
   twitter: { card: 'summary_large_image', title: post.title, description: post.subtitle },
 };
 
-function Figure({ title, caption, children }: { title?: string; caption: ReactNode; children: ReactNode }) {
+function Figure({ title, caption, children }: { title?: string; caption?: ReactNode; children: ReactNode }) {
   return (
     <figure className="eb-figure">
       {title && <div className="eb-figure-title">{title}</div>}
       {children}
-      <figcaption>{caption}</figcaption>
+      {caption && <figcaption>{caption}</figcaption>}
     </figure>
   );
 }
@@ -167,7 +167,7 @@ export default function EarlybirdPost() {
             three released models in 80 ms chunks, as if it were live. At &frac14;&times; speed you can see Earlybird write each
             word while it is still being said. Darker blue means more confident.
           </p>
-          <Figure caption="A replay of each model's logged output on the recording, in time with the audio, not models running in your browser. The number next to each model is its median word latency on that clip. Guesses under 15% confidence are hidden. The recordings were never used in training: voice commands from SLURP, public speech, a news read and an interview from People's Speech, and an audiobook from LibriSpeech.">
+          <Figure>
             <SamplePlayer ids={SAMPLE_IDS} />
           </Figure>
           <p id="try" className="eb-anchor">
@@ -183,7 +183,7 @@ export default function EarlybirdPost() {
             it were live, and recorded the model&rsquo;s text after every chunk. The times measure how much audio a model had to
             hear before it got the word right. Computing time depends on the hardware and is not included. A word&rsquo;s{' '}
             <strong>word latency</strong> is the first moment the word is on screen, spelled correctly and in the right location,
-            and stays unchanged after that. I measure it from when the speaker finishes the word, so a negative number means before.
+            and stays unchanged after that. I measure it from when the speaker finishes the word, so a negative number means the model outputted the word before the speaker finished saying it.
           </p>
           <p>
             On all six test sets, Earlybird predicts words correctly about 360 ms sooner than Moonshine Tiny, 490&ndash;580 ms
