@@ -13,7 +13,7 @@ import '../paradee/paradee.css';
 import './earlybird.css';
 
 const URL = `https://sahilmahendrakar.com/writings/${post.id}`;
-const HF = 'https://huggingface.co/sahilmahendrakar/earlybird';
+const HF = 'https://huggingface.co/sahilmahendrakar/Earlybird-29M';
 
 // Recordings in the sample player, in picker order (components/earlybird/samples.json).
 const SAMPLE_IDS = ['s2', 's4', 's7', 's9', 'l3', 'l4'];
