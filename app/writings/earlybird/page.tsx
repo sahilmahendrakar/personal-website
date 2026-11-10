@@ -135,7 +135,7 @@ export default function EarlybirdPost() {
 
         <div className="pd-col post-body">
           <ul className="eb-facts" aria-label="Headline numbers">
-            <li><span>Size</span><b>29M &middot; 16.8 MB</b><small>29M parameters at 4 bits; 17.6 MB with the tokenizer</small></li>
+            <li><span>Size</span><b>29M &middot; 16.8 MB</b><small>29M parameters at 4 bits</small></li>
             <li><span>Word latency</span><b>−90 ms</b><small>Median, relative to the end of the word, on audiobooks. Other models: +90 to +400 ms</small></li>
             <li><span>Words predicted correctly before they end</span><b>69%</b><small>On audiobooks, counting only words not corrected later. Other models: 3&ndash;25%</small></li>
           </ul>
