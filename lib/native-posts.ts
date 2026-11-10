@@ -38,6 +38,17 @@ export const PARADEE_12_POST: PostData = {
   coverImage: '/writings/paradee-1-2/img/cover.jpg',
 };
 
+export const EARLYBIRD_POST: PostData = {
+  id: 'earlybird',
+  title: 'Earlybird: predictive speech-to-text in 29M parameters',
+  subtitle: 'A tiny streaming speech-to-text model that predicts words before the speaker finishes saying them with a confidence score.',
+  date: '2026-11-10',
+  contentHtml: '',
+  substackUrl: '',
+  readingMinutes: 7,
+  coverImage: '/writings/earlybird/img/cover.png',
+};
+
 export const PARADEE_13_POST: PostData = {
   id: 'paradee-1-3',
   title: 'Paradee 1.3: The smallest multilingual TTS model',
@@ -50,7 +61,7 @@ export const PARADEE_13_POST: PostData = {
   coverImage: '/writings/paradee-1-3/img/cover.jpg',
 };
 
-const NATIVE_POSTS: PostData[] = [PARADEE_POST, PARADEE_11_POST, PARADEE_12_POST, PARADEE_13_POST];
+const NATIVE_POSTS: PostData[] = [EARLYBIRD_POST, PARADEE_POST, PARADEE_11_POST, PARADEE_12_POST, PARADEE_13_POST];
 
 /** Native and Substack posts together, newest first. */
 export async function getAllPosts(): Promise<PostData[]> {
