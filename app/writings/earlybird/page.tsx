@@ -353,9 +353,9 @@ export default function EarlybirdPost() {
           </ul>
           <h2 id="links">Links</h2>
           <ul>
-            <li>Paper: arXiv (link coming soon)</li>
             <li>Model: <a href={HF}>Hugging Face</a></li>
             <li>Code: <a href="https://github.com/sahilmahendrakar/earlybird">GitHub</a></li>
+            <li>Paper: arXiv (link coming soon)</li>
             <li>Built on <a href="https://huggingface.co/moonshine-ai/moonshine-streaming-tiny">Moonshine Tiny</a> by Moonshine AI (MIT)</li>
           </ul>
         </div>
