@@ -171,8 +171,7 @@ export default function EarlybirdPost() {
             <SamplePlayer ids={SAMPLE_IDS} />
           </Figure>
           <p id="try" className="eb-anchor">
-            Or try it yourself. This is the real 4-bit model, running on a small CPU server. Press the microphone and talk, or
-            play one of the recordings through it.
+            Or try it yourself. This is the real 4-bit model, running on a small CPU server. Press the microphone and talk.
           </p>
           <LiveDemo />
 
