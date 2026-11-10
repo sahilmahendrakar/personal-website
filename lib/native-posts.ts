@@ -46,6 +46,7 @@ export const EARLYBIRD_POST: PostData = {
   contentHtml: '',
   substackUrl: '',
   readingMinutes: 7,
+  coverImage: '/writings/earlybird/img/cover.png',
 };
 
 const NATIVE_POSTS: PostData[] = [EARLYBIRD_POST, PARADEE_POST, PARADEE_11_POST, PARADEE_12_POST];

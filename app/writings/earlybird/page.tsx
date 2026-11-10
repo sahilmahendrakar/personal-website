@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { format, parseISO } from 'date-fns';
 import { EARLYBIRD_POST as post } from '@/lib/native-posts';
 import { ReadingProgress } from '@/components/ReadingProgress';
+import { PostCover } from '@/components/PostCover';
 import { Calibration, KeptBars, Scatter, Timeline, TrainingExample } from '@/components/earlybird/Charts';
 import { SamplePlayer } from '@/components/earlybird/Samples';
 import { LiveDemo } from '@/components/earlybird/Live';
@@ -77,12 +78,14 @@ const SIZE_LAT: Point[] = [
   { name: 'Parakeet TDT 0.6B', x: 1236, y: -10, label: 'left', lines: ['1.2 GB at 16 bits', 'word latency −10 ms (other clips)'] },
 ];
 
+const COVER = `https://sahilmahendrakar.com${post.coverImage}`;
+
 export const metadata: Metadata = {
   title: post.title,
   description: post.subtitle,
   alternates: { canonical: URL },
-  openGraph: { type: 'article', title: post.title, description: post.subtitle, publishedTime: post.date, url: URL },
-  twitter: { card: 'summary_large_image', title: post.title, description: post.subtitle },
+  openGraph: { type: 'article', title: post.title, description: post.subtitle, publishedTime: post.date, url: URL, images: [COVER] },
+  twitter: { card: 'summary_large_image', title: post.title, description: post.subtitle, images: [COVER] },
 };
 
 function Figure({ title, caption, children }: { title?: string; caption?: ReactNode; children: ReactNode }) {
@@ -130,6 +133,14 @@ export default function EarlybirdPost() {
             <p className="font-serif text-xl md:text-[1.4rem] leading-snug text-muted-foreground text-pretty mt-4">
               {post.subtitle}
             </p>
+            {post.coverImage && (
+              <PostCover
+                src={post.coverImage}
+                className="aspect-[16/9] w-full mt-8 md:mt-10"
+                sizes="(max-width: 768px) 100vw, 46rem"
+                priority
+              />
+            )}
           </header>
         </div>
 
