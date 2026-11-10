@@ -3,7 +3,7 @@ import { Hero } from '@/components/Hero';
 import { About } from '@/components/About';
 import { Projects } from '@/components/Projects';
 import { Timeline } from '@/components/Timeline';
-import { Patents } from '@/components/Patents';
+import { Publications } from '@/components/Publications';
 import { Now } from '@/components/Now';
 import { BlogPreview } from '@/components/BlogPreview';
 import { Contact } from '@/components/Contact';
@@ -21,7 +21,7 @@ export default function Home() {
           <Projects />
           <BlogPreview />
           <Timeline />
-          <Patents />
+          <Publications />
           <Now />
           <Contact />
         </div>

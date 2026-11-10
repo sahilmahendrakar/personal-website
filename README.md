@@ -26,7 +26,7 @@ Open [http://localhost:3000](http://localhost:3000) to view the site.
 Edit the data files in `lib/data/`:
 - `experience.ts` - Work experience and education
 - `projects.ts` - Featured projects
-- `patents.ts` - Patent information
+- `publications.ts` - Papers and patents
 
 ### Blog Posts (`/writings`)
 The blog mirrors posts from a Substack publication via its RSS feed. Set
@@ -71,7 +71,7 @@ components/
 ├── About.tsx         # Brief bio
 ├── Projects.tsx      # Featured project cards
 ├── Timeline.tsx      # Work experience with animated line
-├── Patents.tsx       # Patent highlights
+├── Publications.tsx  # Papers and patents
 ├── Now.tsx          # Current focus & interests
 ├── BlogPreview.tsx   # Recent posts preview
 ├── Contact.tsx       # Contact info & social links
