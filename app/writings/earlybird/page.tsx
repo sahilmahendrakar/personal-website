@@ -8,6 +8,7 @@ import { Calibration, KeptBars, Scatter, Timeline, TrainingExample } from '@/com
 import { SamplePlayer } from '@/components/earlybird/Samples';
 import { LiveDemo } from '@/components/earlybird/Live';
 import { TabbedFigure } from '@/components/earlybird/Tabs';
+import { Toc } from '@/components/earlybird/Toc';
 import { MODELS, ms, pct, type Point } from '@/components/earlybird/format';
 import '../paradee/paradee.css';
 import './earlybird.css';
@@ -94,10 +95,20 @@ function Figure({ title, caption, children }: { title?: string; caption: ReactNo
   );
 }
 
+const TOC = [
+  { id: 'why', label: 'Why earlier words matter' },
+  { id: 'see-it', label: 'See it on real speech' },
+  { id: 'results', label: 'Results' },
+  { id: 'training', label: 'How it’s trained' },
+  { id: 'confidence', label: 'Confidence' },
+  { id: 'limits', label: 'Limits and related work' },
+];
+
 export default function EarlybirdPost() {
   return (
     <main className="pd eb min-h-screen">
       <ReadingProgress />
+      <Toc items={TOC} />
       <article className="py-12 md:py-16">
         <div className="pd-col">
           <div className="mb-12 md:mb-16">
@@ -132,7 +143,7 @@ export default function EarlybirdPost() {
             ends. Released streaming models predict it correctly 90&ndash;400 ms after.
           </p>
 
-          <h2>Why earlier words matter</h2>
+          <h2 id="why">Why earlier words matter</h2>
           <p>
             Streaming speech recognizers output a word only after the speaker has finished it, typically 90&ndash;400 ms later.
             For a voice agent every millisecond counts: the sooner the words exist, the sooner the agent can start a
@@ -149,7 +160,7 @@ export default function EarlybirdPost() {
             <Timeline />
           </Figure>
 
-          <h2>See it on real speech</h2>
+          <h2 id="see-it">See it on real speech</h2>
           <p>
             Try out Earlybird and see how it compares to other models on real recordings. Each recording was fed to Earlybird and
             three released models in 80 ms chunks, as if it were live. At &frac14;&times; speed you can see Earlybird write each
@@ -164,7 +175,7 @@ export default function EarlybirdPost() {
           </p>
           <LiveDemo />
 
-          <h2>Results</h2>
+          <h2 id="results">Results</h2>
           <p>
             I compare Earlybird with three released models on the same audio: Moonshine Tiny (34M parameters, 45 MB), Whistle
             (55M, 16.9 MB) and Whisper base (74M, about 145 MB). I streamed each recording into each model 80 ms at a time, as if
@@ -295,7 +306,7 @@ export default function EarlybirdPost() {
             ]}
           />
 
-          <h2>How it&rsquo;s trained</h2>
+          <h2 id="training">How it&rsquo;s trained</h2>
           <Figure
             title="One training example"
             caption="Wherever the audio stops, the target asks for every word heard so far, the half-heard word written in full, and a guess of the next one. At every 80 ms step while streaming, Earlybird is in exactly this position."
@@ -311,7 +322,7 @@ export default function EarlybirdPost() {
           </ol>
           <p>Three training runs with different seeds agree to within 3 ms and 0.5 WER points on every test set.</p>
 
-          <h2>Confidence: knowing when to trust an early word</h2>
+          <h2 id="confidence">Confidence: knowing when to trust an early word</h2>
           <p>
             Earlybird gives every word it shows a confidence, which measures the probability that the word is right.
             This is the model&rsquo;s raw output, with no extra calibration step, and it matches how often
@@ -325,7 +336,7 @@ export default function EarlybirdPost() {
             <Calibration />
           </Figure>
 
-          <h2>Limits and related work</h2>
+          <h2 id="limits">Limits and related work</h2>
           <ul>
             <li><strong>Accuracy.</strong> Whisper base, 2.5 times larger, makes fewer errors on every test set except audiobooks, where they tie. The gap is widest with background chatter: at 10 dB, Earlybird gets 32% of words wrong and Whisper base 8.9%.</li>
             <li><strong>Rewrites.</strong> Showing words early means changing them more often: 1.3 changes per word on audiobooks (Whistle 0.2, Whisper base 0.4, Moonshine Tiny 2.1), and 2&ndash;6 on spontaneous or noisy speech.</li>
