@@ -139,19 +139,20 @@ export default function EarlybirdPost() {
           </ul>
           <p>
             Earlybird is a 16.8 MB on-device speech-to-text model that predicts each word before the speaker finishes saying it
-            along with the probability that it&rsquo;s right. On audiobook speech, a typical word is predicted correctly 90 ms before it
+            along with a confidence score. On audiobook speech, a typical word is predicted correctly 90 ms before it
             ends. Released streaming models predict it correctly 90&ndash;400 ms after.
           </p>
 
           <h2 id="why">Why earlier words matter</h2>
           <p>
             Streaming speech recognizers output a word only after the speaker has finished it, typically 90&ndash;400 ms later.
-            For a voice agent every millisecond counts: the sooner the words exist, the sooner the agent can start a
-            search or plan its reply.
+            For a voice agent, that delay is time it could have spent starting a search, fetching a record, or planning a
+            reply while the speaker is still talking.
           </p>
           <p>
-            Earlybird outputs words earlier with a change to training: <strong>train the model on audio cut off partway through a word, and ask it
-            to guess the whole word, with the confidence that it is right</strong>.
+            Earlybird learns from audio cut off at random points, including partway through a word, and is asked to predict
+            every word that is due by then in full, plus a guess of the next two words. Its raw token probabilities give a
+            confidence for every word including the one still being spoken.
           </p>
           <Figure
             title="When a typical word is predicted correctly"
@@ -252,7 +253,7 @@ export default function EarlybirdPost() {
             ]}
           />
           <p>
-            Earlybird is the only model under 1 GB that gets most words right before they end. Its accuracy is in line with the
+            Earlybird is the only model under 1 GB that predicts the median word correctly before it ends. Its accuracy is in line with the
             other models under 100 MB: close to Whistle and Whisper tiny, and ahead of Moonshine Tiny. In the charts below the top
             left is better; hover a point for its numbers.
           </p>
@@ -314,11 +315,11 @@ export default function EarlybirdPost() {
             <TrainingExample />
           </Figure>
           <ol>
-            <li><strong>Start from Moonshine Tiny.</strong> I cut its vocabulary to the 19,007 tokens that English speech uses. That brings it to 29M parameters with no loss in accuracy.</li>
+            <li><strong>Start from Moonshine Tiny.</strong> I cut its vocabulary to the 19,007 tokens that English speech uses. That brings it to 29M parameters with almost no loss in accuracy.</li>
             <li><strong>Train on cut-off audio.</strong> Each training example is an utterance cut off at a random 80 ms step, which is what the model sees while streaming. The target is every word due by that point, an end marker, and a guess of the next two words. A word is due at whichever comes later: 300 ms before it ends, or 50 ms after it starts.</li>
             <li><strong>Learn from the teacher only where it&rsquo;s right.</strong> Moonshine Tiny also acts as a teacher, but only on tokens where its top choice matches the label. Using it everywhere made the guesses less decisive.</li>
             <li><strong>Add padding frames.</strong> After the audio heard so far, the model sees three frames computed from silence, which lets it finish a word as if the speaker had stopped. This uses no future audio, and it moved the median from −50 to −90 ms.</li>
-            <li><strong>Quantize to 4 bits.</strong> Quantization-aware training brings the weights to 4 bits, with the audio front end at 8 bits. The file is 16.8 MB, or 17.6 MB with the tokenizer and config.</li>
+            <li><strong>Quantize to 4 bits.</strong> Quantization-aware training brings the weights to 4 bits, with the audio front end at 8 bits. The file is 16.8 MB, or 17.6 MB with the tokenizer and config. It runs about twice as fast as real time on one CPU thread.</li>
           </ol>
           <p>Three training runs with different seeds agree to within 3 ms and 0.5 WER points on every test set.</p>
 
@@ -352,7 +353,7 @@ export default function EarlybirdPost() {
           <ul>
             <li>Model: <a href={HF}>Hugging Face</a></li>
             <li>Code: <a href="https://github.com/sahilmahendrakar/earlybird">GitHub</a></li>
-            <li>Built on <a href="https://huggingface.co/UsefulSensors/moonshine-streaming-tiny">Moonshine Tiny</a> by Useful Sensors (MIT)</li>
+            <li>Built on <a href="https://huggingface.co/moonshine-ai/moonshine-streaming-tiny">Moonshine Tiny</a> by Moonshine AI (MIT)</li>
           </ul>
         </div>
 
