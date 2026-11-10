@@ -353,7 +353,7 @@ export default function EarlybirdPost() {
           <ul>
             <li>Model: <a href={HF}>Hugging Face</a></li>
             <li>Code: <a href="https://github.com/sahilmahendrakar/earlybird">GitHub</a></li>
-            <li>Fine-tuned from <a href="https://huggingface.co/moonshine-ai/moonshine-streaming-tiny">Moonshine Tiny</a> by Moonshine AI (MIT)</li>
+            <li>Built on <a href="https://huggingface.co/moonshine-ai/moonshine-streaming-tiny">Moonshine Tiny</a> by Moonshine AI (MIT)</li>
           </ul>
         </div>
 
