@@ -10,6 +10,15 @@ export interface Publication {
 
 export const publications: Publication[] = [
   {
+    id: 'earlybird',
+    kind: 'paper',
+    number: 'arXiv:2611.14421',
+    title: 'Earlybird: Predictive Streaming Speech Recognition in 29M Parameters',
+    description: 'A tiny streaming speech-to-text model that predicts each word before the speaker finishes saying it, with a confidence score on every word.',
+    year: '2026',
+    url: 'https://arxiv.org/abs/2611.14421',
+  },
+  {
     id: 'paradee',
     kind: 'paper',
     number: 'arXiv:2610.06817',
