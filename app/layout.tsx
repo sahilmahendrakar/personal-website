@@ -16,11 +16,11 @@ export const metadata: Metadata = {
     default: 'Sahil Mahendrakar',
     template: '%s | Sahil Mahendrakar',
   },
-  description: 'Software Engineer at AWS. Building AI-native tools for learning and reading. Ex-founder/CTO.',
+  description: 'Building in stealth. Previously agentic AI at AWS.',
   icons: {
     icon: '/images/profile.png',
   },
-  keywords: ['software engineer', 'AWS', 'AI', 'machine learning', 'React', 'TypeScript', 'Next.js'],
+  keywords: ['software engineer', 'AI', 'machine learning', 'React', 'TypeScript', 'Next.js'],
   authors: [{ name: 'Sahil Mahendrakar' }],
   creator: 'Sahil Mahendrakar',
   openGraph: {
@@ -28,21 +28,21 @@ export const metadata: Metadata = {
     locale: 'en_US',
     url: 'https://sahilmahendrakar.com',
     title: 'Sahil Mahendrakar',
-    description: 'Software Engineer at AWS. Building AI-native tools for learning and reading.',
+    description: 'Building in stealth. Previously agentic AI at AWS.',
     siteName: 'Sahil Mahendrakar',
     images: [
       {
         url: 'https://sahilmahendrakar.com/images/thumbnail.png',
         width: 1200,
         height: 630,
-        alt: 'Sahil Mahendrakar - Software Engineer',
+        alt: 'Sahil Mahendrakar',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Sahil Mahendrakar',
-    description: 'Software Engineer at AWS. Building AI-native tools for learning and reading.',
+    description: 'Building in stealth. Previously agentic AI at AWS.',
     images: ['https://sahilmahendrakar.com/images/thumbnail.png'],
   },
   robots: {
