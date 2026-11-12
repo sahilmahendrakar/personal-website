@@ -7,7 +7,7 @@
   --mono: var(--font-geist-mono), ui-monospace, Menlo, monospace;
 }
 .csf .post-body h2 { margin-top: 2.6em; }
-.csf .post-body pre { font-size: 0.68em; line-height: 1.55; padding: 1rem 1.25rem; }
+.csf .post-body pre { font-size: 0.68em; line-height: 1.55; padding: 1rem 1.25rem; background: #f1f6fd; border-color: #d9e6f7; color: #1d2a3d; }
 .csf .post-body .csf-fig { margin: 2em 0; font-family: var(--sans); font-size: 17px; line-height: 1.5; color: var(--ink-2); }
 .csf .post-body p + .csf-fig, .csf .post-body .csf-fig + p { margin-top: 1.75em; }
 .csf .stage { border: 1px solid var(--hair); border-radius: 14px; padding: 16px 16px 12px; background: var(--paper); }
@@ -16,11 +16,10 @@
 .csf .hint { font: 11.5px var(--mono); color: var(--muted); }
 .csf .ctl { display: flex; align-items: center; gap: 8px; }
 .csf .ctl .spd { margin-right: 6px; }
-.csf .spd { display: inline-flex; gap: 2px; padding: 3px; background: var(--soft); border: 1px solid var(--hair); border-radius: 999px; }
-.csf .spd button { font: 11.5px var(--mono); color: var(--muted); background: none; border: 0; border-radius: 999px; padding: 4px 9px; cursor: pointer; font-variant-numeric: tabular-nums; }
-.csf .spd button:hover { color: var(--ink); }
-.csf .spd button[aria-pressed='true'] { background: var(--paper); color: var(--ink); box-shadow: 0 0 0 1px var(--hair); }
-.csf .spd button:focus-visible { outline: 2px solid var(--ours); outline-offset: 1px; }
+.csf .spd { display: inline-flex; align-items: center; gap: 8px; font: 11.5px var(--mono); color: var(--muted); }
+.csf .spd input { width: 96px; accent-color: var(--ours); }
+.csf .spd output { min-width: 3em; color: var(--ink-2); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.csf .spd output[hidden] { display: none; }
 .csf .pp { width: 32px; height: 32px; display: grid; place-items: center; border-radius: 999px; border: 1px solid var(--hair); background: var(--soft); color: var(--ink); cursor: pointer; padding: 0; }
 .csf .pp:hover { border-color: var(--muted); }
 .csf .pp:focus-visible { outline: 2px solid var(--ours); outline-offset: 2px; }
@@ -62,3 +61,5 @@
 .csf .csf-fig.is-max { position: fixed; z-index: 70; left: 50%; top: 50%; transform: translate(-50%, -50%); margin: 0; max-height: 96vh; overflow: auto; padding: 14px; background: var(--paper); border-radius: 18px; box-shadow: 0 24px 80px rgba(11, 12, 14, 0.28); }
 .csf .csf-backdrop { position: fixed; inset: 0; z-index: 65; background: rgba(11, 12, 14, 0.5); }
 .csf .csf-backdrop[hidden] { display: none; }
+
+@media (max-width: 560px) { .csf .spd .rt-r, .csf .spd .spd-l { display: none; } .csf .spd input { width: 72px; } .csf .ctl { gap: 6px; } }
