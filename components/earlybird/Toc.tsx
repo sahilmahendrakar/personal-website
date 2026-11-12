@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 
 export type TocItem = { id: string; label: string };
 
-/** Table of contents fixed in the left margin on wide screens; highlights the section being read. */
+/** Table of contents fixed in the left margin on wide screens, always shown; highlights the section being read. */
 export function Toc({ items }: { items: TocItem[] }) {
   const [active, setActive] = useState<string | null>(null);
 
@@ -29,7 +29,7 @@ export function Toc({ items }: { items: TocItem[] }) {
   }, [items]);
 
   return (
-    <nav className="eb-toc" aria-label="Contents" data-shown={active ? 'true' : 'false'}>
+    <nav className="eb-toc" aria-label="Contents">
       <div className="eb-toc-title">Contents</div>
       <ol>
         {items.map((i) => (
