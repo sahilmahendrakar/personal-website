@@ -24,7 +24,6 @@ export const metadata: Metadata = {
 };
 
 const TOC = [
-  { id: 'inference', label: 'How inference works' },
   { id: 'frontier', label: 'Serving frontier models' },
   { id: 'custom', label: 'Serving custom models' },
   { id: 'scale-to-zero', label: 'Idle time and scaling to zero' },
@@ -92,7 +91,7 @@ export default function ColdStartsPost() {
             not the model itself: how do you serve a custom model efficiently at low traffic?
           </p>
 
-          <h2 id="inference">Review of how inference works and its bottlenecks</h2>
+          <h2 id="frontier">Serving frontier models efficiently</h2>
           <p>
             Before we dive into serving custom models, let’s review how inference works in the first place and what its
             bottlenecks are. In order for an LLM to generate a token based on an input, it has to do a series of matrix
@@ -112,7 +111,6 @@ export default function ColdStartsPost() {
           </p>
           <Fig id="passb" />
 
-          <h2 id="frontier">Serving frontier models efficiently</h2>
           <p>
             Frontier model providers serve millions of requests from thousands of customers on a shared fleet of GPUs. As we
             mentioned before, generating text is limited mostly by memory bandwidth: a model writes its answer one token at a
