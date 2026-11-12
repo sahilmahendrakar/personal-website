@@ -229,7 +229,7 @@ export default function ColdStartsPost() {
             <code>{SNAPSHOT_CODE}</code>
           </pre>
 
-          <h2 id="fast-cold-starts">Serving a custom model efficiently with fast cold starts</h2>
+          <h2 id="fast-cold-starts">Serving with fast cold starts</h2>
           <p>
             Fast cold starts significantly improve custom model serving economics, especially with low or bursty traffic. A
             fast cold start allows you to scale-to-zero aggressively, and respond to customers with lower latency. With quick
