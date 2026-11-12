@@ -7,7 +7,7 @@
   --mono: var(--font-geist-mono), ui-monospace, Menlo, monospace;
 }
 .csf .post-body h2 { margin-top: 2.6em; }
-.csf .post-body pre { font-size: 0.68em; line-height: 1.55; padding: 1rem 1.25rem; background: #f1f6fd; border-color: #d9e6f7; color: #1d2a3d; }
+.csf .post-body pre { font-size: 0.68em; line-height: 1.55; padding: 1rem 1.25rem; background: #ffffff; border-color: #d9e6f7; color: #1d2a3d; }
 .csf .post-body .csf-fig { margin: 2em 0; font-family: var(--sans); font-size: 17px; line-height: 1.5; color: var(--ink-2); }
 .csf .post-body p + .csf-fig, .csf .post-body .csf-fig + p { margin-top: 1.75em; }
 .csf .stage { border: 1px solid var(--hair); border-radius: 14px; padding: 16px 16px 12px; background: var(--paper); }
