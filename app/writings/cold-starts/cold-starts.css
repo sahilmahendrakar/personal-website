@@ -1,0 +1,54 @@
+/* Animated figures of the cold-start post. Everything is scoped under .csf. */
+.csf {
+  --paper: #ffffff; --ink: #0b0c0e; --ink-2: #3b3f47; --muted: #7a808c; --hair: #e4e7ec; --grid: #f0f1f3; --soft: #f5f6f8;
+  --ours: #2878d6; --gpt: #e8673a; --slot: #eef0f3;
+  --sans: var(--font-urbanist), ui-sans-serif, system-ui, sans-serif;
+  --mono: var(--font-geist-mono), ui-monospace, Menlo, monospace;
+}
+.csf .post-body h2 { margin-top: 2.6em; }
+.csf .post-body .csf-fig { margin: 2em 0; font-family: var(--sans); font-size: 17px; line-height: 1.5; color: var(--ink-2); }
+.csf .post-body p + .csf-fig, .csf .post-body .csf-fig + p { margin-top: 1.75em; }
+.csf .stage { border: 1px solid var(--hair); border-radius: 14px; padding: 16px 16px 12px; background: var(--paper); }
+.csf .stage svg { display: block; width: 100%; height: auto; overflow: visible; }
+.csf .bar { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--grid); }
+.csf .hint { font: 11.5px var(--mono); color: var(--muted); }
+.csf .ctl { display: flex; align-items: center; gap: 14px; }
+.csf .spd { display: inline-flex; align-items: center; gap: 8px; font: 11.5px var(--mono); color: var(--muted); }
+.csf .spd input { width: 96px; accent-color: var(--ours); }
+.csf .spd output { min-width: 3em; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+.csf .pp { width: 32px; height: 32px; display: grid; place-items: center; border-radius: 999px; border: 1px solid var(--hair); background: var(--soft); color: var(--ink); cursor: pointer; padding: 0; }
+.csf .pp:hover { border-color: var(--muted); }
+.csf .pp:focus-visible { outline: 2px solid var(--ours); outline-offset: 2px; }
+.csf .pp svg { width: 12px; height: 12px; }
+.csf .seg { display: flex; flex-wrap: wrap; gap: 4px; padding: 4px; margin: 0 0 12px; width: fit-content; max-width: 100%; background: var(--soft); border: 1px solid var(--hair); border-radius: 12px; }
+.csf .seg:empty { display: none; }
+.csf .seg button { font: 500 13.5px var(--sans); color: var(--muted); background: transparent; border: 0; border-radius: 8px; padding: 7px 12px; cursor: pointer; }
+.csf .seg button:hover { color: var(--ink); }
+.csf .seg button[aria-selected="true"] { background: var(--paper); color: var(--ink); box-shadow: 0 0 0 1px var(--hair), 0 1px 2px rgba(0,0,0,.06); }
+.csf .seg button:focus-visible { outline: 2px solid var(--ours); outline-offset: 1px; }
+@media (max-width: 560px) { .csf .stage { padding: 10px 8px 10px; } .csf .hint { display: none; } .csf .bar { justify-content: flex-end; } }
+
+.csf svg text { font-family: var(--sans); }
+.csf svg .mono { font-family: var(--mono); }
+.csf svg .cap { font-family: var(--mono); font-size: 10.5px; letter-spacing: .08em; fill: var(--muted); }
+.csf svg .t-ink { fill: var(--ink); }
+.csf svg .t-2 { fill: var(--ink-2); }
+.csf svg .t-mut { fill: var(--muted); }
+.csf svg .wire { stroke: var(--hair); stroke-width: 1.2; fill: none; }
+.csf svg .box { fill: none; stroke: var(--ink); stroke-width: 1.2; }
+.csf svg .box-off { fill: none; stroke: var(--muted); stroke-width: 1.2; stroke-dasharray: 3 4; }
+.csf svg .slot { fill: var(--slot); }
+.csf svg .fillc, .csf svg .pkt, .csf svg .ans, .csf svg .use { fill: var(--ours); }
+.csf svg .src { fill: var(--muted); }
+.csf svg .track { fill: var(--grid); }
+.csf svg .work { fill: var(--ours); fill-opacity: .16; }
+.csf svg .bill { fill: var(--gpt); fill-opacity: .85; }
+.csf svg .head { stroke: var(--ink); stroke-width: 1; }
+.csf svg .layer { fill: var(--ink-2); }
+.csf svg .layer-o { fill: none; stroke: var(--hair); stroke-width: 1; }
+.csf svg .store { fill: var(--soft); stroke: var(--hair); stroke-width: 1; }
+.csf svg .rd { stroke: var(--ink-2); stroke-width: 1.6; fill: none; stroke-dasharray: 4 5; stroke-linecap: round; }
+.csf svg .hatch-l { stroke: var(--muted); stroke-width: 1.4; }
+.csf svg .knob { fill: var(--ink); pointer-events: none; }
+.csf svg .hit { fill: transparent; cursor: ew-resize; touch-action: none; outline: none; }
+.csf svg .hit:focus-visible { stroke: var(--ours); stroke-width: 1.5; }

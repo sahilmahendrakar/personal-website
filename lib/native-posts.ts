@@ -61,7 +61,17 @@ export const PARADEE_13_POST: PostData = {
   coverImage: '/writings/paradee-1-3/img/cover.jpg',
 };
 
-const NATIVE_POSTS: PostData[] = [EARLYBIRD_POST, PARADEE_POST, PARADEE_11_POST, PARADEE_12_POST, PARADEE_13_POST];
+export const COLD_STARTS_POST: PostData = {
+  id: 'cold-starts',
+  title: 'Serving a fine-tuned model efficiently on Modal with 15-second cold starts',
+  subtitle: 'How GPU memory snapshots cut a custom model’s cold start from minutes to seconds, and what that does to the cost of serving it at low traffic.',
+  date: '2026-11-12',
+  contentHtml: '',
+  substackUrl: '',
+  readingMinutes: 7,
+};
+
+const NATIVE_POSTS: PostData[] = [COLD_STARTS_POST, EARLYBIRD_POST, PARADEE_POST, PARADEE_11_POST, PARADEE_12_POST, PARADEE_13_POST];
 
 /** Native and Substack posts together, newest first. */
 export async function getAllPosts(): Promise<PostData[]> {
