@@ -5,7 +5,9 @@ import { format, parseISO } from 'date-fns';
 import { COLD_STARTS_POST as post } from '@/lib/native-posts';
 import { ReadingProgress } from '@/components/ReadingProgress';
 import { Fig, FiguresRuntime } from '@/components/cold-starts/Figures';
+import { Toc } from '@/components/earlybird/Toc';
 import '../paradee/paradee.css';
+import '../earlybird/earlybird.css';
 import './cold-starts.css';
 
 // The figures were drawn in Urbanist; keep it so their labels fit.
@@ -20,6 +22,17 @@ export const metadata: Metadata = {
   openGraph: { type: 'article', title: post.title, description: post.subtitle, publishedTime: post.date, url: URL },
   twitter: { card: 'summary_large_image', title: post.title, description: post.subtitle },
 };
+
+const TOC = [
+  { id: 'inference', label: 'How inference works' },
+  { id: 'frontier', label: 'Serving frontier models' },
+  { id: 'custom', label: 'Serving custom models' },
+  { id: 'scale-to-zero', label: 'Idle time and scaling to zero' },
+  { id: 'breakdown', label: 'Breaking down a cold start' },
+  { id: 'snapshots', label: 'How GPU memory snapshots work' },
+  { id: 'fast-cold-starts', label: 'Serving with fast cold starts' },
+  { id: 'next-steps', label: 'Next steps' },
+];
 
 const SNAPSHOT_CODE = `@app.cls(gpu=["L4", "A10G", "L40S"], scaledown_window=10,
          enable_memory_snapshot=True,
@@ -40,8 +53,9 @@ class Reader:
 
 export default function ColdStartsPost() {
   return (
-    <main className={`pd csf min-h-screen ${urbanist.variable}`}>
+    <main className={`pd eb csf min-h-screen ${urbanist.variable}`}>
       <ReadingProgress />
+      <Toc items={TOC} />
       <article className="py-12 md:py-16">
         <div className="pd-col">
           <div className="mb-12 md:mb-16">
@@ -78,7 +92,7 @@ export default function ColdStartsPost() {
             not the model itself: how do you serve a custom model efficiently at low traffic?
           </p>
 
-          <h2>Review of how inference works and its bottlenecks</h2>
+          <h2 id="inference">Review of how inference works and its bottlenecks</h2>
           <p>
             Before we dive into serving custom models, let’s review how inference works in the first place and what its
             bottlenecks are. In order for an LLM to generate a token based on an input, it has to do a series of matrix
@@ -98,7 +112,7 @@ export default function ColdStartsPost() {
           </p>
           <Fig id="passb" />
 
-          <h2>Serving frontier models efficiently</h2>
+          <h2 id="frontier">Serving frontier models efficiently</h2>
           <p>
             Frontier model providers serve millions of requests from thousands of customers on a shared fleet of GPUs. As we
             mentioned before, generating text is limited mostly by memory bandwidth: a model writes its answer one token at a
@@ -109,7 +123,7 @@ export default function ColdStartsPost() {
           </p>
           <Fig id="frontier" />
 
-          <h2>Serving custom models</h2>
+          <h2 id="custom">Serving custom models</h2>
           <p>
             Batching works when there is enough traffic that many requests can be combined into a single forward pass. Custom
             models rarely get that much traffic, especially for a customer that is operating at a smaller scale. Since custom
@@ -124,7 +138,7 @@ export default function ColdStartsPost() {
             less costly.
           </p>
 
-          <h2>Idle time and scaling to zero</h2>
+          <h2 id="scale-to-zero">Idle time and scaling to zero</h2>
           <p>
             If custom model deployments have high GPU idle time, which leads to large serving costs, we can try to release the
             GPU when it is not serving requests. That is, we can scale to zero: run the GPU only while there is work, and
@@ -149,7 +163,7 @@ export default function ColdStartsPost() {
           </p>
           <p>In this post we show how GPU memory snapshots can cut the cold start time from many minutes to about 15 seconds.</p>
 
-          <h2>Breaking down a cold start</h2>
+          <h2 id="breakdown">Breaking down a cold start</h2>
           <p>
             We timed three ways to get a model ready for serving: starting our own stopped GPU box on AWS, a fresh container on
             Modal, and a Modal container restored from a GPU memory snapshot. In each of these scenarios, we looked at where
@@ -177,7 +191,7 @@ export default function ColdStartsPost() {
             of 18).
           </p>
 
-          <h2>How GPU memory snapshots work</h2>
+          <h2 id="snapshots">How GPU memory snapshots work</h2>
           <p>
             During a cold start, there is a bunch of deterministic setup that takes time to compute: Python imports thousands
             of modules, CUDA creates a context and loads its libraries, allocates the KV cache, compiles kernels, and captures
@@ -203,7 +217,7 @@ export default function ColdStartsPost() {
             <code>{SNAPSHOT_CODE}</code>
           </pre>
 
-          <h2>Serving a custom model efficiently with fast cold starts</h2>
+          <h2 id="fast-cold-starts">Serving a custom model efficiently with fast cold starts</h2>
           <p>
             Fast cold starts significantly improve custom model serving economics, especially with low or bursty traffic. A
             fast cold start allows you to scale-to-zero aggressively, and respond to customers with lower latency. With quick
@@ -216,7 +230,7 @@ export default function ColdStartsPost() {
             The first answer in each burst arrives in about 30 seconds instead of over 5 minutes.
           </p>
 
-          <h2>Next Steps</h2>
+          <h2 id="next-steps">Next Steps</h2>
           <p>
             Fast cold starts, achieved through GPU snapshots, make custom model serving much more economically feasible.
             However, it is still often more expensive than the same model on a busy GPU. Scaling to zero removes idle time, but
