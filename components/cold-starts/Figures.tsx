@@ -7,12 +7,12 @@ type FigId = 'pass' | 'passb' | 'frontier' | 'custom' | 'cold' | 'dissect' | 'co
 
 const FIGS: Record<FigId, { h: number; label: string; hint: string; tabs?: string }> = {
   pass: {
-    h: 354,
+    h: 368,
     label: "One forward pass: each layer's weights are read from GPU memory and multiplied with the activations, layer by layer, until the next token comes out",
     hint: 'Drag the pass bar to scrub',
   },
   passb: {
-    h: 424,
+    h: 438,
     label: "One forward pass for a batch of four requests: each layer's weights are read from GPU memory once and multiplied with all four requests' activations, so one pass writes the next token for all four",
     hint: 'Drag the pass bar to scrub',
   },

@@ -14,10 +14,13 @@
 .csf .stage svg { display: block; width: 100%; height: auto; overflow: visible; }
 .csf .bar { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--grid); }
 .csf .hint { font: 11.5px var(--mono); color: var(--muted); }
-.csf .ctl { display: flex; align-items: center; gap: 14px; }
-.csf .spd { display: inline-flex; align-items: center; gap: 8px; font: 11.5px var(--mono); color: var(--muted); }
-.csf .spd input { width: 96px; accent-color: var(--ours); }
-.csf .spd output { min-width: 3em; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+.csf .ctl { display: flex; align-items: center; gap: 8px; }
+.csf .ctl .spd { margin-right: 6px; }
+.csf .spd { display: inline-flex; gap: 2px; padding: 3px; background: var(--soft); border: 1px solid var(--hair); border-radius: 999px; }
+.csf .spd button { font: 11.5px var(--mono); color: var(--muted); background: none; border: 0; border-radius: 999px; padding: 4px 9px; cursor: pointer; font-variant-numeric: tabular-nums; }
+.csf .spd button:hover { color: var(--ink); }
+.csf .spd button[aria-pressed='true'] { background: var(--paper); color: var(--ink); box-shadow: 0 0 0 1px var(--hair); }
+.csf .spd button:focus-visible { outline: 2px solid var(--ours); outline-offset: 1px; }
 .csf .pp { width: 32px; height: 32px; display: grid; place-items: center; border-radius: 999px; border: 1px solid var(--hair); background: var(--soft); color: var(--ink); cursor: pointer; padding: 0; }
 .csf .pp:hover { border-color: var(--muted); }
 .csf .pp:focus-visible { outline: 2px solid var(--ours); outline-offset: 2px; }
@@ -54,3 +57,8 @@
 .csf svg .knob { fill: var(--ink); pointer-events: none; }
 .csf svg .hit { fill: transparent; cursor: ew-resize; touch-action: none; outline: none; }
 .csf svg .hit:focus-visible { stroke: var(--ours); stroke-width: 1.5; }
+
+/* Bigger view */
+.csf .csf-fig.is-max { position: fixed; z-index: 70; left: 50%; top: 50%; transform: translate(-50%, -50%); margin: 0; max-height: 96vh; overflow: auto; padding: 14px; background: var(--paper); border-radius: 18px; box-shadow: 0 24px 80px rgba(11, 12, 14, 0.28); }
+.csf .csf-backdrop { position: fixed; inset: 0; z-index: 65; background: rgba(11, 12, 14, 0.5); }
+.csf .csf-backdrop[hidden] { display: none; }

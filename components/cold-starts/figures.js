@@ -10,14 +10,59 @@ export function mountServingFigures() {
   const ICON_PAUSE = '<svg viewBox="0 0 12 12" aria-hidden="true"><rect x="2" y="1.5" width="2.6" height="9" rx="0.8" fill="currentColor"/><rect x="7.4" y="1.5" width="2.6" height="9" rx="0.8" fill="currentColor"/></svg>';
   const ICON_PLAY = '<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M3 1.6v8.8a.6.6 0 0 0 .9.5l7-4.4a.6.6 0 0 0 0-1L3.9 1.1a.6.6 0 0 0-.9.5z" fill="currentColor"/></svg>';
 
-  // Play/pause button and speed slider, the same for every figure.
+  const ICON_REPLAY = '<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2.3 6a3.7 3.7 0 1 0 1.1-2.6" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><path d="M2.6 1.4v2.4H5" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  const SPEEDS = [0.25, 0.5, 1];
+  const ICON_MAX = '<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M7.2 1.5h3.3v3.3M4.8 10.5H1.5V7.2M10.5 1.5 7 5M1.5 10.5 5 7" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  const ICON_MIN = '<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M10.5 4.8H7.2V1.5M1.5 7.2h3.3v3.3M7.2 4.8 10.8 1.2M4.8 7.2 1.2 10.8" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+  // Bigger view: the figure floats over a dimmed page, sized to fit the window.
+  let open = null;
+  const backdrop = document.createElement('div');
+  backdrop.className = 'csf-backdrop'; backdrop.hidden = true;
+  document.querySelector('.csf')?.appendChild(backdrop);
+  const fit = () => {
+    if (!open) return;
+    const vb = open.fig.querySelector('svg[id^="fig-"]').viewBox.baseVal;
+    const chrome = open.fig.offsetHeight - open.fig.querySelector('svg[id^="fig-"]').getBoundingClientRect().height;
+    const w = Math.min(1240, window.innerWidth * 0.96, (window.innerHeight * 0.94 - chrome) * vb.width / vb.height);
+    open.fig.style.width = `${Math.round(w)}px`;
+  };
+  const setMax = (fig, btn, on) => {
+    if (on) {
+      if (open) setMax(open.fig, open.btn, false);
+      const ph = document.createElement('div'); ph.style.height = `${fig.offsetHeight}px`; ph.className = 'csf-ph';
+      fig.after(ph); open = { fig, btn, ph };
+      fig.classList.add('is-max'); backdrop.hidden = false; document.documentElement.style.overflow = 'hidden';
+      fit(); fit();
+    } else if (open && open.fig === fig) {
+      fig.classList.remove('is-max'); fig.style.width = ''; open.ph.remove(); open = null;
+      backdrop.hidden = true; document.documentElement.style.overflow = '';
+    }
+    btn.innerHTML = on ? ICON_MIN : ICON_MAX;
+    btn.setAttribute('aria-label', on ? 'Close the bigger view' : 'Open in a bigger view');
+    btn.setAttribute('aria-expanded', String(on));
+  };
+  const closeOpen = () => { if (open) setMax(open.fig, open.btn, false); };
+  const onKey = e => { if (e.key === 'Escape') closeOpen(); };
+  backdrop.addEventListener('click', closeOpen);
+  window.addEventListener('keydown', onKey);
+  window.addEventListener('resize', fit);
+
+  // Speed choices, replay and play/pause, the same for every figure.
   function controls(id, f) {
     const host = document.querySelector(`[data-fig="${id}"]`);
-    host.innerHTML = `<label class="spd">Speed <input type="range" min="0.1" max="1" step="0.05" value="${f.speed}" aria-label="Animation speed"><output>${f.speed}×</output></label><button type="button" class="pp"></button>`;
-    const spd = host.querySelector('input'), out = host.querySelector('output'), btn = host.querySelector('button');
+    host.innerHTML = `<div class="spd" role="group" aria-label="Animation speed">${SPEEDS.map(v => `<button type="button" data-v="${v}" aria-pressed="${v === f.speed}">${v}×</button>`).join('')}</div><button type="button" class="pp rp" aria-label="Replay from the start">${ICON_REPLAY}</button><button type="button" class="pp pl"></button><button type="button" class="pp mx"></button>`;
+    const btn = host.querySelector('.pl');
     const label = () => { btn.innerHTML = f.playing ? ICON_PAUSE : ICON_PLAY; btn.setAttribute('aria-label', f.playing ? 'Pause' : 'Play'); };
     btn.addEventListener('click', () => { f.playing = !f.playing; label(); });
-    spd.addEventListener('input', () => { f.speed = Number(spd.value); out.textContent = `${f.speed.toFixed(2).replace(/0$/, '').replace(/\.$/, '')}×`; });
+    const mx = host.querySelector('.mx'), fig = host.closest('figure');
+    setMax(fig, mx, false);
+    mx.addEventListener('click', () => setMax(fig, mx, !fig.classList.contains('is-max')));
+    host.querySelector('.rp').addEventListener('click', () => { f.t = 0; f.draw(0); f.playing = true; label(); });
+    host.querySelectorAll('.spd button').forEach(b => b.addEventListener('click', () => {
+      f.speed = Number(b.dataset.v);
+      host.querySelectorAll('.spd button').forEach(o => o.setAttribute('aria-pressed', String(o === b)));
+    }));
     label();
     return label;
   }
@@ -112,7 +157,7 @@ export function mountServingFigures() {
       const picking = !inLayer, pp = picking ? (u - L * LT) / PICK : 0;
       tokTxt.textContent = picking ? OUT[tokIdx].trim() : '';
       tokBox.setAttribute('stroke', picking ? 'var(--ours)' : 'var(--hair)');
-      status.textContent = picking ? 'Next token' : reading ? 'Read weights' : sliding ? '' : 'Multiply';
+      status.textContent = '';
       segs.forEach((s, i) => { const full = i < L ? (i < li || !inLayer ? 1 : i === li ? v : 0) : pp; s.setAttribute('width', Math.max(0, (segW - 2) * clamp(full))); });
     }
     const f = { t: reduce ? 3 * LT + 0.3 : 0, playing: !reduce, speed: 0.5, T: TOT, rate: 1, draw };
@@ -223,7 +268,7 @@ export function mountServingFigures() {
         tokTxt[b].textContent = picking ? REQ[b].out[tokIdx].trim() : '';
         tokBox[b].setAttribute('stroke', picking ? 'var(--ours)' : 'var(--hair)');
       }
-      status.textContent = picking ? 'Next tokens' : reading ? 'Read weights once' : sliding ? '' : 'Multiply';
+      status.textContent = '';
       segs.forEach((s, i) => { const full = i < L ? (i < li || !inLayer ? 1 : i === li ? v : 0) : pp; s.setAttribute('width', Math.max(0, (segW - 2) * clamp(full))); });
     }
     const f = { t: reduce ? 2 * PASS + 3 * LT + 0.56 : 0, playing: !reduce, speed: 0.5, T: TOT, rate: 1, draw };
@@ -812,6 +857,8 @@ export function mountServingFigures() {
   return () => {
     cancelAnimationFrame(raf);
     if (io) io.disconnect();
+    closeOpen(); backdrop.remove();
+    window.removeEventListener('keydown', onKey); window.removeEventListener('resize', fit);
     document.querySelectorAll('.csf svg[id^="fig-"], .csf [data-fig], .csf [data-seg]').forEach((n) => { n.innerHTML = ''; });
   };
 }
