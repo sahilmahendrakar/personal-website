@@ -394,7 +394,7 @@ export function mountServingFigures() {
     for (let i = 0; i < N; i++) { const t = (i + 0.5) / N * T; let b = 0; for (const j of jobs) if (inBatch(j, t)) b++; samples[i] = Math.min(32, b) / 32; work[i] = b > 0; }
     const avg = samples.reduce((a, b) => a + b, 0) / N;
     const xAt = t => TX + t / T * TW;
-    const billedShare = cold ? ups.reduce((a, u) => a + (u.downEnd - u.coldStart - GPU_T), 0) / T : 1;
+    const billedShare = cold ? ups.reduce((a, u) => a + (u.downEnd - u.coldStart), 0) / T : 1;
     el('text', { x: 20, y: Y_USE - 1, class: 'mono t-2', 'font-size': 11.5 }, svg, 'Utilization');
     el('text', { x: 20, y: Y_USE + 13, class: 'mono t-mut', 'font-size': 10.5 }, svg, `avg ${Math.round(avg * 100)}%`);
     el('text', { x: 20, y: Y_BILL - 1, class: 'mono t-2', 'font-size': 11.5 }, svg, 'Billed');
@@ -409,7 +409,7 @@ export function mountServingFigures() {
     for (let i = 0; i < N; i++) if (work[i]) { const x0 = (TX + i / N * TW).toFixed(1), dw = (TW / N + 0.4).toFixed(2); wd += `M${x0} ${Y_USE - 15}h${dw}v30h-${dw}Z`; ud += `M${x0} ${Y_USE + 15}h${dw}v-${(samples[i] * 30).toFixed(2)}h-${dw}Z`; }
     el('path', { d: wd, class: 'work' }, g2);
     el('path', { d: ud, class: 'use' }, g2);
-    if (cold) ups.forEach(u => el('rect', { x: xAt(u.coldStart + GPU_T), y: Y_BILL - 6, width: xAt(u.downEnd) - xAt(u.coldStart + GPU_T), height: 12, rx: 3, class: 'bill' }, g2));
+    if (cold) ups.forEach(u => el('rect', { x: xAt(u.coldStart), y: Y_BILL - 6, width: xAt(u.downEnd) - xAt(u.coldStart), height: 12, rx: 3, class: 'bill' }, g2));
     else el('rect', { x: TX, y: Y_BILL - 6, width: TW, height: 12, rx: 3, class: 'bill' }, g2);
     const head = el('line', { x1: TX, x2: TX, y1: Y_USE - 20, y2: Y_BILL + 9, class: 'head' }, svg);
     const knob = el('circle', { cx: TX, cy: Y_USE - 20, r: 4.5, class: 'knob' }, svg);
