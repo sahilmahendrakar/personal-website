@@ -1,11 +1,13 @@
-/* Animated figures of the cold-start post. Everything is scoped under .csf. */
-.csf {
+/* Animated figures of the cold-start post. Everything is scoped under .csf.
+   The figure tokens live on each figure so they don't override the site's own --muted etc. in the prose. */
+.csf .csf-fig {
   --paper: #ffffff; --ink: #0b0c0e; --ink-2: #3b3f47; --muted: #7a808c; --hair: #e4e7ec; --grid: #f0f1f3; --soft: #f5f6f8;
   --ours: #2878d6; --gpt: #e8673a; --slot: #eef0f3;
   --sans: var(--font-urbanist), ui-sans-serif, system-ui, sans-serif;
   --mono: var(--font-geist-mono), ui-monospace, Menlo, monospace;
 }
 .csf .post-body h2 { margin-top: 2.6em; }
+.csf .post-body pre { font-size: 0.68em; line-height: 1.55; padding: 1rem 1.25rem; }
 .csf .post-body .csf-fig { margin: 2em 0; font-family: var(--sans); font-size: 17px; line-height: 1.5; color: var(--ink-2); }
 .csf .post-body p + .csf-fig, .csf .post-body .csf-fig + p { margin-top: 1.75em; }
 .csf .stage { border: 1px solid var(--hair); border-radius: 14px; padding: 16px 16px 12px; background: var(--paper); }

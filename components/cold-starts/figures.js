@@ -533,9 +533,9 @@ export function mountServingFigures() {
       const g = el('g', { 'clip-path': `url(#${svg.id}-r${r})` }, svg);
       p.stages.forEach(s => el('rect', { x: xAt(s.a), y, width: Math.max(1, xAt(s.b) - xAt(s.a) - 1), height: RH, ...STYLE[s.id] }, g));
       const bg = el('rect', { x: 10, y: y - 9, width: AX - 18, height: RH + 18, rx: 7, fill: 'var(--soft)', stroke: 'var(--hair)', 'stroke-width': 1, opacity: 0 }, svg);
-      el('circle', { cx: 24, cy: y + 4, r: 5.5, fill: 'none', stroke: 'var(--muted)', 'stroke-width': 1.2 }, svg);
-      const radio = el('circle', { cx: 24, cy: y + 4, r: 3, class: 'fillc', opacity: 0 }, svg);
-      const name = el('text', { x: 36, y: y + 8, 'font-size': 13 }, svg, p.name);
+      el('circle', { cx: 24, cy: y + 9, r: 5.5, fill: 'none', stroke: 'var(--muted)', 'stroke-width': 1.2 }, svg);
+      const radio = el('circle', { cx: 24, cy: y + 9, r: 3, class: 'fillc', opacity: 0 }, svg);
+      const name = el('text', { x: 36, y: y + 13.5, 'font-size': 13 }, svg, p.name);
       const tot = el('text', { x: 36, y: y + 22, class: 't-mut', 'font-size': 11.5 }, svg, '');
       const done = el('text', { x: xAt(p.total) + 6, y: y + 13, class: 'mono t-ink', 'font-size': 10.5, opacity: 0 }, svg, fmt(p.total));
       const hit = el('rect', { x: 10, y: y - 8, width: AX - 16, height: RH + 16, rx: 6, fill: 'transparent', style: 'cursor:pointer', tabindex: 0, role: 'button', 'aria-label': `Follow ${p.name} in the diagram` }, svg);
