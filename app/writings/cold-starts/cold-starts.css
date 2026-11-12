@@ -18,8 +18,6 @@
 .csf .ctl .spd { margin-right: 6px; }
 .csf .spd { display: inline-flex; align-items: center; gap: 8px; font: 11.5px var(--mono); color: var(--muted); }
 .csf .spd input { width: 96px; accent-color: var(--ours); }
-.csf .spd output { min-width: 3em; color: var(--ink-2); font-variant-numeric: tabular-nums; white-space: nowrap; }
-.csf .spd output[hidden] { display: none; }
 .csf .pp { width: 32px; height: 32px; display: grid; place-items: center; border-radius: 999px; border: 1px solid var(--hair); background: var(--soft); color: var(--ink); cursor: pointer; padding: 0; }
 .csf .pp:hover { border-color: var(--muted); }
 .csf .pp:focus-visible { outline: 2px solid var(--ours); outline-offset: 2px; }
@@ -62,4 +60,4 @@
 .csf .csf-backdrop { position: fixed; inset: 0; z-index: 65; background: rgba(11, 12, 14, 0.5); }
 .csf .csf-backdrop[hidden] { display: none; }
 
-@media (max-width: 560px) { .csf .spd .rt-r, .csf .spd .spd-l { display: none; } .csf .spd input { width: 72px; } .csf .ctl { gap: 6px; } }
+@media (max-width: 560px) { .csf .spd .spd-l { display: none; } .csf .spd input { width: 72px; } .csf .ctl { gap: 6px; } }

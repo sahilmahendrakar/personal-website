@@ -7,8 +7,6 @@ export function mountServingFigures() {
   const rng = seed => () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
   const mod = (a, n) => ((a % n) + n) % n, clamp = v => Math.max(0, Math.min(1, v)), ease = p => p * p * (3 - 2 * p);
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  // One decode step (a full forward pass for one token) of the 9B model in FP8 on an L40S: about 20 ms.
-  const REAL_PASS = 0.02;
   const ICON_PAUSE = '<svg viewBox="0 0 12 12" aria-hidden="true"><rect x="2" y="1.5" width="2.6" height="9" rx="0.8" fill="currentColor"/><rect x="7.4" y="1.5" width="2.6" height="9" rx="0.8" fill="currentColor"/></svg>';
   const ICON_PLAY = '<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M3 1.6v8.8a.6.6 0 0 0 .9.5l7-4.4a.6.6 0 0 0 0-1L3.9 1.1a.6.6 0 0 0-.9.5z" fill="currentColor"/></svg>';
 
@@ -50,28 +48,17 @@ export function mountServingFigures() {
   window.addEventListener('resize', fit);
 
   // Speed slider, replay, play/pause and bigger view, the same for every figure.
-  // f.unit is how many real seconds one unit of figure time stands for; with it the readout says how far
-  // the animation is from real time. Figures that are only illustrative (no unit) show the slider alone.
-  const nice = n => n >= 100 ? Math.round(n / 10 ** (Math.floor(Math.log10(n)) - 1)) * 10 ** (Math.floor(Math.log10(n)) - 1) : Math.round(n);
-  const realTime = f => {
-    if (!f.unit) return '';
-    const k = f.speed * f.rate * f.unit; // real seconds shown per second on screen
-    const n = nice(k >= 1 ? k : 1 / k);
-    return n === 1 ? '<span>real time</span>' : `<span>${n.toLocaleString('en-US')}× ${k >= 1 ? 'faster' : 'slower'}</span><span class="rt-r"> than real</span>`;
-  };
   function controls(id, f) {
     const host = document.querySelector(`[data-fig="${id}"]`);
-    host.innerHTML = `<label class="spd"><span class="spd-l">Speed</span><input type="range" min="0.1" max="1" step="0.05" value="${f.speed}" aria-label="Animation speed"><output></output></label><button type="button" class="pp rp" aria-label="Replay from the start">${ICON_REPLAY}</button><button type="button" class="pp pl"></button><button type="button" class="pp mx"></button>`;
-    const spd = host.querySelector('input'), out = host.querySelector('output'), btn = host.querySelector('.pl');
-    const readout = () => { out.innerHTML = realTime(f); out.hidden = !f.unit; };
+    host.innerHTML = `<label class="spd"><span class="spd-l">Speed</span><input type="range" min="0.1" max="1" step="0.05" value="${f.speed}" aria-label="Animation speed"></label><button type="button" class="pp rp" aria-label="Replay from the start">${ICON_REPLAY}</button><button type="button" class="pp pl"></button><button type="button" class="pp mx"></button>`;
+    const spd = host.querySelector('input'), btn = host.querySelector('.pl');
     const label = () => { btn.innerHTML = f.playing ? ICON_PAUSE : ICON_PLAY; btn.setAttribute('aria-label', f.playing ? 'Pause' : 'Play'); };
     btn.addEventListener('click', () => { f.playing = !f.playing; label(); });
-    spd.addEventListener('input', () => { f.speed = Number(spd.value); readout(); });
+    spd.addEventListener('input', () => { f.speed = Number(spd.value); });
     const mx = host.querySelector('.mx'), fig = host.closest('figure');
     setMax(fig, mx, false);
     mx.addEventListener('click', () => setMax(fig, mx, !fig.classList.contains('is-max')));
     host.querySelector('.rp').addEventListener('click', () => { f.t = 0; f.draw(0); f.playing = true; label(); });
-    readout();
     label();
     return label;
   }
@@ -169,7 +156,7 @@ export function mountServingFigures() {
       status.textContent = '';
       segs.forEach((s, i) => { const full = i < L ? (i < li || !inLayer ? 1 : i === li ? v : 0) : pp; s.setAttribute('width', Math.max(0, (segW - 2) * clamp(full))); });
     }
-    const f = { t: reduce ? 3 * LT + 0.3 : 0, playing: !reduce, speed: 0.5, T: TOT, rate: 1, unit: REAL_PASS / PASS, draw };
+    const f = { t: reduce ? 3 * LT + 0.3 : 0, playing: !reduce, speed: 0.5, T: TOT, rate: 1, draw };
     const label = controls('pass', f);
     // The pass bar scrubs within the current token's pass.
     const toLocal = x => Math.floor(f.t / PASS) * PASS + clamp((x - sx0) / sw) * (PASS - 0.001);
@@ -280,7 +267,7 @@ export function mountServingFigures() {
       status.textContent = '';
       segs.forEach((s, i) => { const full = i < L ? (i < li || !inLayer ? 1 : i === li ? v : 0) : pp; s.setAttribute('width', Math.max(0, (segW - 2) * clamp(full))); });
     }
-    const f = { t: reduce ? 2 * PASS + 3 * LT + 0.56 : 0, playing: !reduce, speed: 0.5, T: TOT, rate: 1, unit: REAL_PASS / PASS, draw };
+    const f = { t: reduce ? 2 * PASS + 3 * LT + 0.56 : 0, playing: !reduce, speed: 0.5, T: TOT, rate: 1, draw };
     const label = controls('passb', f);
     const toLocal = x => Math.floor(f.t / PASS) * PASS + clamp((x - sx0) / sw) * (PASS - 0.001);
     const fromLocal = (t, dir, big) => t + dir * (big ? PASS : LT / 2);
@@ -649,7 +636,7 @@ export function mountServingFigures() {
       if (cur) { stepA.textContent = `${fmt(t)} · ${cur.label}`; stepB.textContent = ''; }
       else { stepA.textContent = `${fmt(p.total)} · Ready`; stepB.textContent = ''; }
     }
-    const f = { t: reduce ? 120 : 0, playing: !reduce, speed: 0.5, T: SIMT, rate: 20, unit: 1, draw }; // seconds
+    const f = { t: reduce ? 120 : 0, playing: !reduce, speed: 0.5, T: SIMT, rate: 20, draw };
     const label = controls('dissect', f);
     scrubber(svg, f, { x: AX - 6, y: 196, width: AW + 12, height: 132 }, SIMT, x => (x - AX) / AW * AMAX, (t, dir, big) => t + dir * (big ? 60 : 10), draw, label);
     return f;
@@ -833,7 +820,7 @@ export function mountServingFigures() {
     const segBtns = V.map((v, i) => { const b = document.createElement('button'); b.type = 'button'; b.setAttribute('role', 'tab'); b.textContent = v.name; b.addEventListener('click', () => select(i)); document.querySelector('[data-seg="compare"]').appendChild(b); return b; });
     const select = i => { sel = i; segBtns.forEach((b, j) => b.setAttribute('aria-selected', j === i)); f.draw(f.t); };
     segBtns.forEach((b, j) => b.setAttribute('aria-selected', j === sel));
-    const f = { t: reduce ? 25.9 : 0, playing: !reduce, speed: 0.5, T, rate: 1.2, unit: 60, draw }; // minutes
+    const f = { t: reduce ? 25.9 : 0, playing: !reduce, speed: 0.5, T, rate: 1.2, draw };
     const lbl = controls('compare', f);
     scrubber(svg, f, { x: AX - 6, y: HT - 6, width: AW + 12, height: AY - HT - 6 }, T, x => (x - AX) / AW * T, (t, dir, big) => t + dir * (big ? 5 : 0.5), draw, lbl);
     return f;
