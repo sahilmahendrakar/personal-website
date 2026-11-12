@@ -63,7 +63,7 @@ export const PARADEE_13_POST: PostData = {
 
 export const COLD_STARTS_POST: PostData = {
   id: 'cold-starts',
-  title: 'Serving a custom model efficiently with fast cold starts',
+  title: 'Serving custom models efficiently with fast cold starts',
   subtitle: 'How GPU memory snapshots cut a custom model’s cold start from minutes to seconds, and how that improves the feasibility of serving custom models at low traffic.',
   date: '2026-11-12',
   contentHtml: '',
