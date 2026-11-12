@@ -123,11 +123,14 @@ export default function ColdStartsPost() {
 
           <h2 id="custom">Serving custom models</h2>
           <p>
-            Batching works when there is enough traffic that many requests can be combined into a single forward pass. Custom
-            models rarely get that much traffic, especially for a customer that is operating at a smaller scale. Since custom
-            models have weights tuned for one customer, each one gets a dedicated deployment, which means a GPU is reserved for
-            that model alone. Requests arrive one at a time, minutes or hours apart, or in a burst when someone uploads a batch
-            of work. With low or bursty traffic, the GPU sits idle while the customer is billed the whole time.
+            A custom model’s weights are tuned for one customer, so custom models are usually served on a dedicated GPU that
+            can’t share anyone else’s traffic. Batching works when there is enough traffic that many requests can be combined
+            into a single forward pass. Custom models rarely get that much traffic, especially for a customer that is operating
+            at a smaller scale.
+          </p>
+          <p>
+            In practice, a custom model might see a few requests an hour, or occasional bursts of traffic. The GPU spends most
+            of its time idle, but the customer is still billed for all that time.
           </p>
           <Fig id="custom" />
           <p>
