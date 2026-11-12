@@ -68,6 +68,7 @@ export const COLD_STARTS_POST: PostData = {
   date: '2026-11-12',
   contentHtml: '',
   substackUrl: '',
+  coverImage: '/writings/cold-starts/img/cover.gif',
   readingMinutes: 7,
 };
 

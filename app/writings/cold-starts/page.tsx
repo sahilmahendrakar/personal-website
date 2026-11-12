@@ -6,6 +6,7 @@ import { COLD_STARTS_POST as post } from '@/lib/native-posts';
 import { ReadingProgress } from '@/components/ReadingProgress';
 import { Fig, FiguresRuntime } from '@/components/cold-starts/Figures';
 import { Toc } from '@/components/earlybird/Toc';
+import { PostCover } from '@/components/PostCover';
 import '../paradee/paradee.css';
 import '../earlybird/earlybird.css';
 import './cold-starts.css';
@@ -14,13 +15,15 @@ import './cold-starts.css';
 const urbanist = Urbanist({ subsets: ['latin'], weight: ['400', '500', '600'], variable: '--font-urbanist' });
 
 const URL = `https://sahilmahendrakar.com/writings/${post.id}`;
+// The cover is an animated GIF; link previews get a titled still. www directly so crawlers skip the redirect.
+const SHARE_IMAGE = 'https://www.sahilmahendrakar.com/writings/cold-starts/img/og.png';
 
 export const metadata: Metadata = {
   title: post.title,
   description: post.subtitle,
   alternates: { canonical: URL },
-  openGraph: { type: 'article', title: post.title, description: post.subtitle, publishedTime: post.date, url: URL },
-  twitter: { card: 'summary_large_image', title: post.title, description: post.subtitle },
+  openGraph: { type: 'article', title: post.title, description: post.subtitle, publishedTime: post.date, url: URL, images: [SHARE_IMAGE] },
+  twitter: { card: 'summary_large_image', title: post.title, description: post.subtitle, images: [SHARE_IMAGE] },
 };
 
 const TOC = [
@@ -74,6 +77,14 @@ export default function ColdStartsPost() {
             <p className="font-serif text-xl md:text-[1.4rem] leading-snug text-muted-foreground text-pretty mt-4">
               {post.subtitle}
             </p>
+            {post.coverImage && (
+              <PostCover
+                src={post.coverImage}
+                className="aspect-[16/9] w-full mt-8 md:mt-10"
+                sizes="(max-width: 768px) 100vw, 46rem"
+                priority
+              />
+            )}
           </header>
         </div>
 

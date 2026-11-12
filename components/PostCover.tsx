@@ -33,6 +33,8 @@ export function PostCover({ src, alt = '', className, sizes, priority }: PostCov
         fill
         sizes={sizes}
         priority={priority}
+        // Animated GIFs are served as-is so they keep moving.
+        unoptimized={src.endsWith('.gif')}
         className="object-cover transition-transform duration-500 ease-out group-hover:scale-[1.03]"
       />
     </div>
