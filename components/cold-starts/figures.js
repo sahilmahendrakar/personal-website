@@ -389,7 +389,7 @@ export function mountServingFigures() {
       el('text', { x: 32, y: SB + 18, class: 'cap' }, svg, 'STORAGE');
       el('text', { x: 32, y: SB + 33, class: 't-2', 'font-size': 12.5 }, svg, 'model weights');
       const stY = SB + 21;
-      stLine = el('line', { x1: 176, y1: stY, x2: mx - 6, y2: stY, class: 'rd', 'stroke-opacity': 0.25 }, svg);
+      stLine = el('line', { x1: 176, y1: stY, x2: G.x - 6, y2: stY, class: 'rd', 'stroke-opacity': 0.25 }, svg);
       stTile = el('rect', { x: 176, y: stY - 5, width: 22, height: 10, rx: 2, class: 'layer', opacity: 0 }, svg);
     }
 
@@ -440,7 +440,7 @@ export function mountServingFigures() {
         memTxt.textContent = 'WEIGHTS';
         const loading = name === 'load';
         stLine.setAttribute('stroke-opacity', loading ? 0.9 : 0.25);
-        if (loading) { stLine.setAttribute('stroke-dashoffset', (-t * 30).toFixed(1)); stTile.setAttribute('x', (176 + (mx - 30 - 176) * ease(mod(ph.p * LAYERS, 1))).toFixed(1)); }
+        if (loading) { stLine.setAttribute('stroke-dashoffset', (-t * 30).toFixed(1)); stTile.setAttribute('x', (176 + (G.x - 28 - 176) * ease(mod(ph.p * LAYERS, 1))).toFixed(1)); }
         stTile.setAttribute('opacity', loading ? 1 : 0);
       }
       rdLine.setAttribute('stroke-opacity', serving ? 0.9 : 0.25);
@@ -718,7 +718,7 @@ export function mountServingFigures() {
     el('rect', { x: 20, y: SB, width: 150, height: 42, rx: 8, class: 'store' }, svg);
     el('text', { x: 32, y: SB + 18, class: 'cap' }, svg, 'STORAGE');
     el('text', { x: 32, y: SB + 33, class: 't-2', 'font-size': 12.5 }, svg, 'model weights');
-    const stLine = el('line', { x1: 176, y1: stY, x2: mx - 6, y2: stY, class: 'rd' }, svg);
+    const stLine = el('line', { x1: 176, y1: stY, x2: G.x - 6, y2: stY, class: 'rd' }, svg);
     const stTile = el('rect', { x: 176, y: stY - 5, width: 22, height: 10, rx: 2, class: 'layer', opacity: 0 }, svg);
     const pk = OFFS.map(() => el('circle', { r: 4.5, class: 'pkt', opacity: 0 }, svg));
     const an = OFFS.map(() => el('circle', { r: 4.5, class: 'ans', opacity: 0 }, svg));
@@ -788,7 +788,7 @@ export function mountServingFigures() {
       memTxt.textContent = 'WEIGHTS';
       stLine.setAttribute('stroke-opacity', name === 'weights' ? 0.9 : 0.25);
       stTile.setAttribute('opacity', name === 'weights' ? 1 : 0);
-      if (name === 'weights') { stLine.setAttribute('stroke-dashoffset', (-t * 300).toFixed(1)); stTile.setAttribute('x', (176 + (mx - 30 - 176) * ease(mod(loaded * LAYERS, 1))).toFixed(1)); }
+      if (name === 'weights') { stLine.setAttribute('stroke-dashoffset', (-t * 300).toFixed(1)); stTile.setAttribute('x', (176 + (G.x - 28 - 176) * ease(mod(loaded * LAYERS, 1))).toFixed(1)); }
       rdLine.setAttribute('stroke-opacity', name === 'serve' ? 0.9 : 0.25);
       if (name === 'serve') rdLine.setAttribute('stroke-dashoffset', (-t * 300).toFixed(1));
       statusTxt.textContent = label; statusTxt.setAttribute('class', name === 'off' ? 'mono t-mut' : 'mono t-ink');
