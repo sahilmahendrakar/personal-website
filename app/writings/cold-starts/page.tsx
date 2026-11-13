@@ -208,7 +208,7 @@ export default function ColdStartsPost() {
           <h2 id="snapshots">How GPU memory snapshots work</h2>
           <p>
             During a cold start, there is a bunch of deterministic setup that takes time to compute: Python imports thousands
-            of modules, CUDA creates a context and loads its libraries, allocates the KV cache, compiles kernels, and captures
+            of modules, CUDA creates a context and loads its libraries, and vLLM allocates the KV cache, compiles kernels, and captures
             CUDA graphs. Each step is slow to compute, but the result is just bytes sitting in CPU and GPU memory.
           </p>
           <p>
