@@ -135,7 +135,7 @@ export default function ColdStartsPost() {
           <h2 id="custom">Serving custom models</h2>
           <p>
             A custom model’s weights are tuned for one customer, so custom models are usually served on a dedicated GPU that
-            can’t share anyone else’s traffic. Batching works when there is enough traffic that many requests can be combined
+            can’t share anyone else’s traffic. Batching only pays off when there is enough traffic that many requests can be combined
             into a single forward pass. Custom models rarely get that much traffic, especially for a customer that is operating
             at a smaller scale.
           </p>
