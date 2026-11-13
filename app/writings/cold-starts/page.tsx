@@ -244,7 +244,7 @@ export default function ColdStartsPost() {
           </p>
           <ul>
             <li>
-              <strong>Faster first answers.</strong> A request that wakes the GPU can be served within seconds instead of
+              <strong>Lower latency on cold responses.</strong> A request that wakes the GPU can be served within seconds instead of
               minutes.
             </li>
             <li>
