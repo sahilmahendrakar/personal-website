@@ -212,7 +212,7 @@ export default function ColdStartsPost() {
             CUDA graphs. Each step is slow to compute, but the result is just bytes sitting in CPU and GPU memory.
           </p>
           <p>
-            A GPU memory snapshot saves those bytes to storage once, and later restores copy them directly into memory instead
+            A GPU memory snapshot saves those bytes to storage once. Restoring from the snapshot then copies them directly into memory instead
             of recomputing them. This significantly reduces cold start times.
           </p>
           <p>
