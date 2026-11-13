@@ -71,3 +71,12 @@
 .csf .post-body pre.hl .t-n { color: #b4441f; }
 .csf .post-body pre.hl .t-fn { color: #6b3fc0; font-weight: 600; }
 .csf .post-body pre.hl .t-call { color: #6b3fc0; }
+
+/* Cost table */
+.csf .post-body .csf-table { margin-top: 1.75em; }
+.csf .post-body .csf-table .pd-table { font-size: 0.8125rem; }
+.csf .post-body .csf-table thead th { vertical-align: bottom; }
+.csf .post-body .csf-table tbody tr:last-child th,
+.csf .post-body .csf-table tbody tr:last-child td { border-top: 1px solid var(--foreground); }
+.csf .post-body p.csf-note { margin-top: 0.75em; font-size: 0.8125rem; line-height: 1.5; color: var(--muted-foreground); }
+.csf .post-body .csf-table .pd-table { min-width: 600px; }

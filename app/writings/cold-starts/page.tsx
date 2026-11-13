@@ -54,6 +54,13 @@ class Reader:
         rpc("reload_draft_weights")            # speculative-decoding head, ~1.3 s
         post("/wake_up", params={"tags": "kv_cache"})`;
 
+const COST_ROWS: string[][] = [
+  ['300 bursts (1,500 requests)', '~$700', '~$20', '~$7', '~$23'],
+  ['3,000 bursts (15,000 requests)', '~$700', '~$200', '~$70', '~$230'],
+  ['10,000 bursts (50,000 requests)', '~$700', '~$670', '~$240', '~$765'],
+  ['First answer after a quiet spell', '~12 s', '~3 min', '~30 s', '~9 s'],
+];
+
 export default function ColdStartsPost() {
   return (
     <main className={`pd eb csf min-h-screen ${urbanist.variable}`}>
@@ -232,15 +239,59 @@ export default function ColdStartsPost() {
 
           <h2 id="fast-cold-starts">Serving with fast cold starts</h2>
           <p>
-            Fast cold starts significantly improve custom model serving economics, especially with low or bursty traffic. A
-            fast cold start allows you to scale-to-zero aggressively, and respond to customers with lower latency. With quick
-            cold starts, you significantly reduce billed GPU idle time.
+            Fast cold starts improve both the cost and the experience of serving a custom model, especially with low or
+            bursty traffic:
           </p>
+          <ul>
+            <li>
+              <strong>Faster first answers.</strong> A request that wakes the GPU can be served within seconds instead of
+              minutes.
+            </li>
+            <li>
+              <strong>Less billed cold start time.</strong> Since a cold start is billed GPU time, a shorter one costs less on
+              every start up.
+            </li>
+            <li>
+              <strong>Scale-to-zero aggressively.</strong> When waking up is quick and cheap, you can release the GPU after a
+              few seconds of idle time, which cuts the idle time you pay for.
+            </li>
+          </ul>
           <Fig id="compare" />
           <p>
             In our experiments serving a 9B model on an L4, each wake costs about $0.01 from a snapshot versus
             $0.10 from a fresh start. For a model that gets 300 small bursts a month, that is about $8 a month versus about $35.
             The first answer in each burst arrives in about 30 seconds instead of over 5 minutes.
+          </p>
+
+          <div className="pd-table-wrap csf-table">
+            <table className="pd-table">
+              <thead>
+                <tr>
+                  <th scope="col">Traffic per month</th>
+                  <th scope="col">Always-on GPU</th>
+                  <th scope="col">Scale to zero, fresh starts</th>
+                  <th scope="col" className="eb-us">Scale to zero, snapshots</th>
+                  <th scope="col">GPT-5.2 API</th>
+                </tr>
+              </thead>
+              <tbody>
+                {COST_ROWS.map(([label, ...cells]) => (
+                  <tr key={label}>
+                    <th scope="row">{label}</th>
+                    {cells.map((c, i) => (
+                      <td key={i} className={i === 2 ? 'eb-us' : ''}>
+                        {c}
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <p className="csf-note">
+            Monthly cost for a 9B model on a Modal L4 (about $0.95 an hour with CPU and memory), billed from container start
+            until it scales down. Each burst is 5 requests of about 12 s. Snapshot start 20 s, fresh start 3 minutes, and a
+            10 s idle window for both. GPT-5.2 at $0.0153 and 8.7 s per request, measured on the same task.
           </p>
 
           <h2 id="next-steps">Next Steps</h2>
