@@ -290,7 +290,7 @@ export default function ColdStartsPost() {
           </div>
           <p className="csf-note">
             Monthly cost for a 9B model on a Modal L4 (about $0.95 an hour with CPU and memory), billed from container start
-            until it scales down. Each burst is 5 requests of about 12 s. Snapshot start 20 s, fresh start 3 minutes, and a
+            until it scales down. Each burst is 5 requests of about 12 s each. Snapshot start 20 s, fresh start 3 minutes, and a
             10 s idle window for both. GPT-5.2 at $0.0153 and 8.7 s per request, measured on the same task.
           </p>
 
