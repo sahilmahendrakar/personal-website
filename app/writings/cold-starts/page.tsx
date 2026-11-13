@@ -7,6 +7,7 @@ import { ReadingProgress } from '@/components/ReadingProgress';
 import { Fig, FiguresRuntime } from '@/components/cold-starts/Figures';
 import { Toc } from '@/components/earlybird/Toc';
 import { PostCover } from '@/components/PostCover';
+import { PyCode } from '@/components/cold-starts/PyCode';
 import '../paradee/paradee.css';
 import '../earlybird/earlybird.css';
 import './cold-starts.css';
@@ -227,9 +228,7 @@ export default function ColdStartsPost() {
             cache again (a second or two). The expensive part, working out how big the KV cache can be and capturing the graphs
             around it, is never redone.
           </p>
-          <pre>
-            <code>{SNAPSHOT_CODE}</code>
-          </pre>
+          <PyCode code={SNAPSHOT_CODE} />
 
           <h2 id="fast-cold-starts">Serving with fast cold starts</h2>
           <p>

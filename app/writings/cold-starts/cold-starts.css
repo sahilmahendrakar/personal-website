@@ -61,3 +61,13 @@
 .csf .csf-backdrop[hidden] { display: none; }
 
 @media (max-width: 560px) { .csf .spd .spd-l { display: none; } .csf .spd input { width: 72px; } .csf .ctl { gap: 6px; } }
+
+/* Python syntax colors for the snapshot code block */
+.csf .post-body pre.hl .t-k { color: #2878d6; font-weight: 600; }
+.csf .post-body pre.hl .t-b { color: #2878d6; }
+.csf .post-body pre.hl .t-s { color: #1f7a52; }
+.csf .post-body pre.hl .t-c { color: #8a919c; font-style: italic; }
+.csf .post-body pre.hl .t-d { color: #a35a12; }
+.csf .post-body pre.hl .t-n { color: #b4441f; }
+.csf .post-body pre.hl .t-fn { color: #6b3fc0; font-weight: 600; }
+.csf .post-body pre.hl .t-call { color: #6b3fc0; }
