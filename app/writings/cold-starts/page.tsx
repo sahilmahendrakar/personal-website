@@ -263,6 +263,9 @@ export default function ColdStartsPost() {
             The first answer in each burst arrives in about 30 seconds instead of over 5 minutes.
           </p>
 
+          <p>
+            Below is a cost and latency comparison across different hosting modalities on simulated, bursty traffic.
+          </p>
           <div className="pd-table-wrap csf-table">
             <table className="pd-table">
               <thead>

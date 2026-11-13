@@ -73,7 +73,7 @@
 .csf .post-body pre.hl .t-call { color: #6b3fc0; }
 
 /* Cost table */
-.csf .post-body .csf-table { margin-top: 1.75em; }
+.csf .post-body .csf-table { margin-top: 1.25em; }
 .csf .post-body .csf-table .pd-table { font-size: 0.8125rem; }
 .csf .post-body .csf-table thead th { vertical-align: bottom; }
 .csf .post-body .csf-table tbody tr:last-child th,
