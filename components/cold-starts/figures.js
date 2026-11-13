@@ -612,7 +612,9 @@ export function mountServingFigures() {
       boxOn.setAttribute('stroke-opacity', found ? 1 : 0); boxOff.setAttribute('stroke-opacity', found ? 0 : 1);
       boxOn.setAttribute('stroke', ready ? 'var(--ours)' : 'var(--ink)');
       inner.setAttribute('opacity', found ? 1 : 0.25);
-      waitTxt.textContent = found ? '' : `waiting for a free GPU${'.'.repeat(1 + Math.floor(T * 2) % 3)}`;
+      // A soft pulse while waiting, tied to the figure clock so scrubbing and stills stay steady.
+      waitTxt.textContent = found ? '' : 'waiting for a free GPU';
+      waitTxt.setAttribute('opacity', found ? 1 : (0.35 + 0.65 * (0.5 + 0.5 * Math.cos(2 * Math.PI * t / 20))).toFixed(3));
       const usesSnap = p.stages.some(s => s.id === 'restore');
       snapG.setAttribute('opacity', usesSnap ? 1 : 0.35);
       const pw = prog(p, 'weights', t), pr = prog(p, 'restore', t), pk = prog(p, 'kv', t), pwu = prog(p, 'warmup', t);
