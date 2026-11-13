@@ -245,7 +245,7 @@ export default function ColdStartsPost() {
           <h2 id="next-steps">Next Steps</h2>
           <p>
             Fast cold starts, achieved through GPU snapshots, make custom model serving much more economically feasible.
-            However, it is still often more expensive than the same model on a busy GPU. Scaling to zero removes idle time, but
+            However, it is still often more expensive than the same model on a fully utilized GPU. Scaling to zero removes idle time, but
             each model still occupies a dedicated GPU while it’s awake. Techniques like multi-LoRA serving and fast model
             swapping can increase GPU utilization for custom models.
           </p>
