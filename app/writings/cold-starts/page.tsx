@@ -184,8 +184,10 @@ export default function ColdStartsPost() {
           <Fig id="dissect" />
           <p>
             During a cold start, we need to allocate a GPU, initialize the inference engine, load the model weights into the
-            GPU’s memory, and initialize the KV cache, all before a request can be served. From our measurements, allocating a
-            GPU took up to a minute or more on AWS because of limited capacity, whereas through Modal it took about 5 seconds.
+            GPU’s memory, and initialize the KV cache, all before a request can be served.
+          </p>
+          <p>
+            From our measurements, allocating a GPU took up to a minute or more on AWS because of limited capacity, whereas through Modal it took about 5 seconds.
             Starting the inference engine ate up around a minute, and so did initializing the KV cache and capturing CUDA
             graphs for both a fresh Modal container and for AWS. Loading the weights took over two minutes through AWS (limited
             by the bandwidth of the EBS disk from where we fetched the weights) and on a fresh Modal container it took about
