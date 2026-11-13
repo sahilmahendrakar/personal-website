@@ -264,7 +264,7 @@ export default function ColdStartsPost() {
           </p>
 
           <p>
-            Below is a cost and latency comparison across different hosting modalities on simulated, bursty traffic.
+            Below is a cost and latency comparison for serving a fine-tuned Qwen3.5-9B on an L4, kept always on or scaled to zero, at three levels of simulated, bursty traffic. We compare to GPT-5.2 as a baseline.
           </p>
           <div className="pd-table-wrap csf-table">
             <table className="pd-table">
