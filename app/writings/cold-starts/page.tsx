@@ -159,12 +159,12 @@ export default function ColdStartsPost() {
           <Fig id="cold" />
           <p>
             The issue with releasing and reallocating GPUs on-demand is that finding a GPU and getting it ready to serve a model
-            is not instantaneous. There is a cold start problem. Starting our model from scratch took 3 to 7 minutes, too slow
-            for someone waiting on an answer, and the customer is still billed for the GPU during a cold start.
+            is not instantaneous. Starting our model from scratch took 3 to 7 minutes. There is a cold start problem.
           </p>
           <p>
-            With minutes of latency on a cold start, deciding to scale-to-zero has serious tradeoffs. It makes sense to try to
-            keep the GPU warm for as long as possible to minimize cold starts. This incurs serious GPU time costs.
+            With minutes of latency on a cold start, deciding to scale-to-zero has serious tradeoffs. Either the customer has
+            to wait minutes for their first answer, or you have to keep the GPU warm for as long as possible to minimize cold
+            starts. The former is not a great experience for users, and the latter incurs serious GPU time costs.
           </p>
           <p>
             Bringing down the cold start time is imperative to serving a custom model efficiently, especially with low or
