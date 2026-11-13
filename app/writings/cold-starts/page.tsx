@@ -258,9 +258,9 @@ export default function ColdStartsPost() {
           </ul>
           <Fig id="compare" />
           <p>
-            In our experiments serving a 9B model on an L4, each wake costs about $0.01 from a snapshot versus
-            $0.10 from a fresh start. For a model that gets 300 small bursts a month, that is about $8 a month versus about $35.
-            The first answer in each burst arrives in about 30 seconds instead of over 5 minutes.
+            In our experiments serving a 9B model on an L4, each wake costs about $0.01 to $0.02 from a snapshot
+            versus $0.05 to $0.07 from a fresh start. For a model that gets 300 small bursts a month, that is about $7 a month versus about $20.
+            The first answer in each burst arrives in about 30 seconds instead of about 3 minutes.
           </p>
 
           <p>
