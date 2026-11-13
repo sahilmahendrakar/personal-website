@@ -146,8 +146,8 @@ export default function ColdStartsPost() {
           <Fig id="custom" />
           <p>
             The usual assumption is that custom models only pay off at high volume. For one of our 9B-parameter models, we
-            needed about 50,000 requests per month before it beat GPT-5.2 on cost. On a busy GPU though, it could be over 10x
-            less costly.
+            needed about 50,000 requests per month before it beat GPT-5.2 on cost. On a fully utilized GPU though, our 9B parameter model could be over
+            50x less costly.
           </p>
 
           <h2 id="scale-to-zero">Idle time and scaling to zero</h2>
