@@ -305,8 +305,7 @@ export default function ColdStartsPost() {
             swapping can increase GPU utilization for custom models.
           </p>
           <p>
-            Owning your own intelligence requires innovation at the level of infrastructure. Fast cold starts with GPU
-            snapshots is one piece that brings us closer to the specialized intelligence era.
+            Owning your own intelligence requires innovation at the level of infrastructure. Fast cold starts are one piece that brings us closer to a world where everyone can run their own custom models.
           </p>
         </div>
 
