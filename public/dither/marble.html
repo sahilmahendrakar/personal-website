@@ -1,0 +1,389 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Sahil Mahendrakar</title>
+<meta name="description" content="Sahil Mahendrakar. A homepage set as a catalogue of antiquities, with every plate dithered in ink.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,500;1,6..96,400;1,6..96,500&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F2EEE5; --paper-2:#EAE5D9; --ink:#16140F; --ink-2:#4B463C; --ink-3:#857E70; --rule:#CFC8B8; --oxblood:#7B2219;
+  --display:'Bodoni Moda', 'Didot', Georgia, serif; --serif:'Newsreader', Georgia, serif; --mono:'IBM Plex Mono', ui-monospace, Menlo, monospace;
+  --gutter:clamp(16px,4vw,56px); --maxw:1220px;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html{background:var(--paper);-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--serif);font-size:18px;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit}
+::selection{background:var(--ink);color:var(--paper)}
+.wrap{max-width:var(--maxw);margin:0 auto;padding-inline:var(--gutter)}
+.mono{font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
+.sc{font-variant:small-caps;letter-spacing:.06em}
+
+/* running head */
+.runhead{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--paper) 92%,transparent);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border-bottom:1px solid var(--rule)}
+.runhead .wrap{display:flex;justify-content:space-between;align-items:center;height:48px;gap:16px}
+.runhead nav{display:flex;gap:clamp(12px,2.4vw,28px)}
+.runhead a{text-decoration:none}
+.runhead a:hover{color:var(--oxblood)}
+.runhead .mark{font-family:var(--display);font-style:italic;font-size:18px;letter-spacing:0;text-transform:none;color:var(--ink)}
+@media (max-width:720px){.runhead nav a:nth-child(n+3){display:none}}
+
+/* plates */
+.plate{position:relative;margin:0;background:var(--paper)}
+.plate .surface{position:relative;width:100%;overflow:hidden;cursor:zoom-in}
+.plate canvas{display:block;width:100%;height:100%;image-rendering:pixelated}
+.plate .loupe{position:absolute;width:190px;height:190px;border-radius:50%;pointer-events:none;opacity:0;transform:translate(-50%,-50%) scale(.85);transition:opacity .25s,transform .25s;box-shadow:0 0 0 1px var(--ink),0 0 0 6px var(--paper),0 0 0 7px var(--ink),0 18px 40px -18px rgba(0,0,0,.6);background-repeat:no-repeat;filter:grayscale(1) sepia(.18) contrast(1.05)}
+.plate .surface.on .loupe{opacity:1;transform:translate(-50%,-50%) scale(1)}
+.plate figcaption{display:grid;grid-template-columns:auto 1fr;gap:2px 14px;margin-top:14px;font-size:14.5px;line-height:1.45;color:var(--ink-2)}
+.plate figcaption .pl{font-family:var(--mono);font-size:11px;letter-spacing:.1em;color:var(--oxblood);padding-top:3px;grid-row:span 2}
+.plate figcaption i{font-family:var(--display);font-size:17px;color:var(--ink)}
+@media (hover:none){.plate .surface{cursor:default}}
+
+/* hero */
+.hero{padding-block:clamp(36px,6vw,80px) clamp(56px,8vw,110px)}
+.hero .wrap{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);gap:clamp(28px,5vw,80px);align-items:end}
+.hero .title{padding-bottom:clamp(8px,3vw,40px)}
+.hero .kicker{display:flex;gap:18px;flex-wrap:wrap;border-top:2px solid var(--ink);border-bottom:1px solid var(--ink);padding:9px 0;margin-bottom:clamp(28px,5vw,56px)}
+.hero h1{font-family:var(--display);font-weight:400;font-size:clamp(46px,6.3vw,96px);line-height:.9;letter-spacing:-.02em;margin:0 0 .3em}
+.hero h1 em{font-style:italic;display:block;padding-left:.4em}
+.hero .tag{font-family:var(--display);font-style:italic;font-size:clamp(21px,2.2vw,27px);line-height:1.3;margin:0 0 22px;max-width:22ch}
+.hero .roles{display:flex;flex-wrap:wrap;gap:6px 0;font-size:16px;color:var(--ink-2);margin:0 0 30px;padding:0;list-style:none}
+.hero .roles li:not(:last-child)::after{content:'·';margin:0 .6em;color:var(--ink-3)}
+.hero .links{display:flex;flex-wrap:wrap;gap:10px}
+.btn{display:inline-flex;align-items:center;gap:10px;padding:11px 18px;border:1px solid var(--ink);font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;text-decoration:none;transition:background .2s,color .2s}
+.btn:hover,.btn.solid{background:var(--ink);color:var(--paper)}
+.btn.solid:hover{background:var(--oxblood);border-color:var(--oxblood)}
+.hero .plate .surface{aspect-ratio:3/4}
+@media (max-width:860px){.hero .wrap{grid-template-columns:1fr}.hero .title{padding-bottom:0}.hero .plate{max-width:520px}}
+
+/* sections */
+section.part{padding-block:clamp(64px,9vw,128px);border-top:1px solid var(--rule)}
+.parthead{display:grid;grid-template-columns:120px 1fr;gap:20px;align-items:baseline;margin-bottom:clamp(32px,5vw,60px)}
+.parthead .num{font-family:var(--display);font-size:clamp(40px,5vw,64px);line-height:1;color:var(--oxblood);font-style:italic}
+.parthead h2{font-family:var(--display);font-weight:400;font-size:clamp(36px,5vw,64px);line-height:1;margin:0;letter-spacing:-.01em}
+.parthead p{grid-column:2;margin:12px 0 0;color:var(--ink-2);max-width:56ch}
+@media (max-width:640px){.parthead{grid-template-columns:1fr;gap:6px}.parthead p{grid-column:1}}
+
+.about{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:clamp(28px,5vw,72px);align-items:start}
+.about .plate .surface{aspect-ratio:3/4.2}
+.about .lede{font-size:clamp(21px,2.1vw,25px);line-height:1.5;margin:0 0 36px;text-wrap:pretty}
+.about .lede::first-letter{font-family:var(--display);float:left;font-size:4.1em;line-height:.8;padding:.06em .08em 0 0;color:var(--oxblood)}
+.about dl{margin:0;display:grid;gap:0;border-top:1px solid var(--ink)}
+.about dl div{display:grid;grid-template-columns:44px 1fr;gap:10px;padding:16px 0;border-bottom:1px solid var(--rule)}
+.about dt{font-family:var(--mono);font-size:11px;color:var(--ink-3);padding-top:5px}
+.about dd{margin:0}
+.about dd b{font-weight:500;display:block;font-family:var(--display);font-size:21px;line-height:1.2;margin-bottom:2px}
+.about dd span{color:var(--ink-2);font-size:16px}
+@media (max-width:860px){.about{grid-template-columns:1fr}.about .plate{max-width:460px}}
+
+.banner{margin-bottom:clamp(40px,6vw,72px)}
+.banner .surface{aspect-ratio:2/1}
+@media (max-width:640px){.banner .surface{aspect-ratio:4/3}}
+
+.cat{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(28px,3.4vw,48px) clamp(20px,2.6vw,36px)}
+@media (max-width:980px){.cat{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:600px){.cat{grid-template-columns:1fr}}
+.entry{display:flex;flex-direction:column;gap:12px;min-width:0}
+.entry .thumb{position:relative;aspect-ratio:16/10;overflow:hidden;border:1px solid var(--ink);background:var(--paper-2)}
+.entry .thumb canvas,.entry .thumb img{position:absolute;inset:0;width:100%;height:100%;display:block}
+.entry .thumb canvas{image-rendering:pixelated;transition:opacity .45s ease}
+.entry .thumb img{object-fit:cover;object-position:top}
+.entry:hover .thumb canvas,.entry:focus-within .thumb canvas{opacity:0}
+.entry .no{display:flex;justify-content:space-between}
+.entry h3{font-family:var(--display);font-weight:400;font-style:italic;font-size:28px;line-height:1.05;margin:0}
+.entry p{margin:0;color:var(--ink-2);font-size:16px;line-height:1.5}
+.entry .medium{font-size:13.5px;color:var(--ink-3);font-style:italic}
+.entry .lk{display:flex;gap:16px;font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;margin-top:auto}
+.entry .lk a{text-decoration:none;border-bottom:1px solid var(--rule);padding-bottom:1px}
+.entry .lk a:hover{border-color:var(--ink)}
+
+.split{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,.75fr);gap:clamp(28px,5vw,72px);align-items:start}
+.split.rev{grid-template-columns:minmax(0,.75fr) minmax(0,1.25fr)}
+.split .plate .surface{aspect-ratio:3/4.3}
+@media (max-width:860px){.split,.split.rev{grid-template-columns:1fr}.split .plate{max-width:420px;order:-1}}
+
+.prov{list-style:none;margin:0;padding:0;border-top:1px solid var(--ink)}
+.prov > li{display:grid;grid-template-columns:150px 1fr;gap:18px;padding:22px 0;border-bottom:1px solid var(--rule)}
+.prov .when{font-family:var(--mono);font-size:11.5px;letter-spacing:.06em;color:var(--ink-3);padding-top:6px;text-transform:uppercase}
+.prov h3{font-family:var(--display);font-weight:400;font-size:24px;line-height:1.15;margin:0}
+.prov h3 i{color:var(--ink-2)}
+.prov p{margin:6px 0 0;color:var(--ink-2);font-size:16px}
+.prov ul{margin:8px 0 0;padding-left:18px;color:var(--ink-2);font-size:15.5px;list-style:disc}
+.prov ul li{padding:2px 0}
+@media (max-width:600px){.prov > li{grid-template-columns:1fr;gap:4px}}
+
+.pubs{display:grid;gap:0;border-top:1px solid var(--ink)}
+.pub{display:grid;grid-template-columns:70px 1fr;gap:16px;padding:20px 0;border-bottom:1px solid var(--rule);text-decoration:none}
+.pub .k{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--oxblood);padding-top:6px}
+.pub h3{font-family:var(--display);font-weight:400;font-size:21px;line-height:1.2;margin:0}
+.pub:hover h3{text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:4px}
+.pub p{margin:4px 0 0;font-size:15px;color:var(--ink-2)}
+.pub .meta{display:block;margin-top:6px}
+
+.essays{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 clamp(24px,4vw,56px)}
+@media (max-width:760px){.essays{grid-template-columns:1fr}}
+.essay{display:grid;grid-template-columns:1fr auto;gap:4px 20px;padding:20px 0;border-top:1px solid var(--rule);text-decoration:none}
+.essay h3{font-family:var(--display);font-weight:400;font-size:22px;line-height:1.2;margin:0}
+.essay:hover h3{font-style:italic}
+.essay p{grid-column:1/-1;margin:0;color:var(--ink-2);font-size:15.5px}
+.essay .d{white-space:nowrap}
+
+.now{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(28px,5vw,72px)}
+@media (max-width:760px){.now{grid-template-columns:1fr}}
+.now ol{margin:0;padding:0;list-style:none;counter-reset:n}
+.now ol li{counter-increment:n;display:grid;grid-template-columns:44px 1fr;padding:14px 0;border-top:1px solid var(--rule);font-size:18px}
+.now ol li::before{content:counter(n,upper-roman)'.';font-family:var(--display);font-style:italic;color:var(--oxblood)}
+.tags{display:flex;flex-wrap:wrap;gap:8px}
+.tags span{border:1px solid var(--ink);padding:6px 12px;font-size:15px;font-style:italic}
+
+.contact{text-align:center}
+.contact h2{font-family:var(--display);font-weight:400;font-size:clamp(44px,7vw,96px);line-height:.95;margin:0 0 18px;letter-spacing:-.02em}
+.contact h2 em{color:var(--oxblood)}
+.contact p{color:var(--ink-2);margin:0 auto 36px;max-width:48ch}
+.contact ul{list-style:none;margin:0 auto;padding:0;max-width:720px;border-top:1px solid var(--ink)}
+.contact li a{display:grid;grid-template-columns:120px 1fr auto;gap:16px;align-items:baseline;padding:16px 4px;border-bottom:1px solid var(--rule);text-decoration:none;text-align:left}
+.contact li a:hover{background:var(--paper-2)}
+.contact li a span:nth-child(2){font-family:var(--display);font-size:20px;overflow-wrap:anywhere}
+@media (max-width:560px){.contact li a{grid-template-columns:1fr auto}.contact li a span:first-child{display:none}}
+
+footer{border-top:2px solid var(--ink);padding-block:28px 48px;margin-top:clamp(48px,7vw,96px)}
+footer .wrap{display:grid;grid-template-columns:1fr 1fr;gap:24px;font-size:14px;color:var(--ink-2)}
+footer p{margin:0}
+@media (max-width:700px){footer .wrap{grid-template-columns:1fr}}
+
+.reveal{opacity:0;transform:translateY(14px);transition:opacity .9s ease,transform .9s cubic-bezier(.2,.7,.2,1)}
+.reveal.in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}
+</style>
+</head>
+<body>
+<header class="runhead">
+  <div class="wrap">
+    <a class="mark" href="#top">S. Mahendrakar</a>
+    <nav class="mono">
+      <a href="#about">About</a><a href="#works">Works</a><a href="#provenance">Provenance</a><a href="#writing">Writing</a><a href="#contact">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero">
+    <div class="wrap">
+      <div class="title">
+        <div class="kicker mono"><span>Catalogue of works</span><span>Vol. VI</span><span>MMXX–MMXXVI</span></div>
+        <h1 id="name"></h1>
+        <p class="tag" id="tagline"></p>
+        <ul class="roles" id="roles"></ul>
+        <div class="links">
+          <a class="btn solid" href="#works">View the works</a>
+          <a class="btn" href="#contact">Correspondence</a>
+        </div>
+      </div>
+      <figure class="plate" data-src="img/art/nike.jpg" data-focus="0.5,0.3" data-zoom="1.05" data-levels="0.04,0.97,0.55,1.05">
+        <div class="surface"></div>
+        <figcaption><span class="pl">PL. I</span><i>Winged Victory of Samothrace</i><span>Parian marble, c. 190 BC. Louvre, Paris.</span></figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="part" id="about">
+    <div class="wrap">
+      <div class="parthead reveal"><span class="num">I.</span><h2>The Maker</h2><p>Notes on the hand behind the objects in this catalogue.</p></div>
+      <div class="about">
+        <figure class="plate reveal" data-src="img/art/venus.jpg" data-focus="0.5,0.25" data-levels="0.02,0.99,1.1,1.1">
+          <div class="surface"></div>
+          <figcaption><span class="pl">PL. II</span><i>Aphrodite of Milos</i><span>Marble, c. 150–125 BC. Louvre, Paris.</span></figcaption>
+        </figure>
+        <div class="reveal">
+          <p class="lede" id="about-p"></p>
+          <dl id="about-points"></dl>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="part" id="works">
+    <div class="wrap">
+      <div class="parthead reveal"><span class="num">II.</span><h2>Selected Works</h2><p>Nine objects, each catalogued with its medium and where it can be seen. Hover a plate to see it in colour.</p></div>
+      <figure class="plate banner reveal" data-src="img/art/laocoon.jpg" data-focus="0.5,0.22" data-levels="0.02,0.99,1,1.15">
+        <div class="surface"></div>
+        <figcaption><span class="pl">PL. III</span><i>Laocoön and His Sons</i><span>Marble, 1st century BC. Museo Pio-Clementino, Vatican.</span></figcaption>
+      </figure>
+      <div class="cat" id="cat"></div>
+    </div>
+  </section>
+
+  <section class="part" id="provenance">
+    <div class="wrap">
+      <div class="parthead reveal"><span class="num">III.</span><h2>Provenance</h2><p>Where the work was made, in order of acquisition.</p></div>
+      <div class="split">
+        <div class="reveal"><ol class="prov" id="prov"></ol></div>
+        <figure class="plate reveal" data-src="img/art/apollo.jpg" data-focus="0.5,0.25" data-levels="0.02,0.99,1.05,1.15">
+          <div class="surface"></div>
+          <figcaption><span class="pl">PL. IV</span><i>Apollo Belvedere</i><span>Marble, Roman copy, c. AD 120–140. Vatican Museums.</span></figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <section class="part" id="papers">
+    <div class="wrap">
+      <div class="parthead reveal"><span class="num">IV.</span><h2>Papers &amp; Patents</h2><p>The published record.</p></div>
+      <div class="split rev">
+        <figure class="plate reveal" data-src="img/art/discobolus.jpg" data-focus="0.5,0.4" data-levels="0.02,0.99,1.05,1.15">
+          <div class="surface"></div>
+          <figcaption><span class="pl">PL. V</span><i>Discobolus</i><span>Marble, Roman copy after Myron. Palazzo Massimo, Rome.</span></figcaption>
+        </figure>
+        <div class="pubs reveal" id="pubs"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="part" id="writing">
+    <div class="wrap">
+      <div class="parthead reveal"><span class="num">V.</span><h2>Essays</h2><p>Recent writing, newest first.</p></div>
+      <div class="essays reveal" id="essays"></div>
+    </div>
+  </section>
+
+  <section class="part" id="now">
+    <div class="wrap">
+      <div class="parthead reveal"><span class="num">VI.</span><h2>In the Studio</h2><p>Work in progress and current preoccupations.</p></div>
+      <div class="now reveal">
+        <ol id="focus"></ol>
+        <div><p class="mono" style="margin:0 0 14px">Preoccupations</p><div class="tags" id="interests"></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="part contact" id="contact">
+    <div class="wrap">
+      <h2 class="reveal">Enquiries <em>welcome.</em></h2>
+      <p class="reveal">For collaborations, questions about the works, or a conversation about agents and the people who build with them.</p>
+      <ul class="reveal" id="contacts"></ul>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p><span class="mono">Colophon</span><br>Set in Bodoni Moda and Newsreader. Every plate is dithered by hand in your browser with Atkinson error diffusion.</p>
+    <p id="credits"><span class="mono">Photographic credits</span><br></p>
+  </div>
+</footer>
+
+<script src="content.js"></script>
+<script src="dither.js"></script>
+<script src="credits.js"></script>
+<script>
+(() => {
+  const S = window.SITE, $ = (s) => document.querySelector(s), h = (t, c, html) => { const e = document.createElement(t); if (c) e.className = c; if (html != null) e.innerHTML = html; return e; };
+  const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const roman = (n) => ['I','II','III','IV','V','VI','VII','VIII','IX','X'][n - 1] || n;
+
+  const [first, ...rest] = S.name.split(' ');
+  $('#name').innerHTML = `${esc(first)}<em>${esc(rest.join(' '))}</em>`;
+  $('#tagline').textContent = S.tagline;
+  S.roles.forEach((r) => $('#roles').append(h('li', '', esc(r))));
+  $('#about-p').textContent = S.about.paragraph;
+  S.about.points.forEach((p, i) => $('#about-points').append(h('div', '', `<dt>${String(i + 1).padStart(2, '0')}</dt><dd><b>${esc(p.title)}</b><span>${esc(p.detail)}</span></dd>`)));
+
+  S.projects.forEach((p, i) => {
+    const e = h('article', 'entry reveal');
+    const links = Object.entries(p.links).map(([k, u]) => `<a href="${esc(u)}" target="_blank" rel="noopener">${k === 'live' ? 'Visit' : 'Source'}</a>`).join('');
+    e.innerHTML = `<div class="thumb"><img src="${esc(p.image)}" alt="${esc(p.name)} screenshot" loading="lazy"><canvas aria-hidden="true"></canvas></div>
+      <div class="no mono"><span>Cat. ${String(i + 1).padStart(2, '0')}</span><span>${esc(p.tech[0])}</span></div>
+      <h3>${esc(p.name)}</h3><p>${esc(p.tagline)}</p><span class="medium">${p.tech.map(esc).join(', ')}</span><div class="lk">${links}</div>`;
+    $('#cat').append(e);
+  });
+
+  S.experience.forEach((x) => $('#prov').append(h('li', '', `<span class="when">${esc(x.period)}</span><div><h3>${esc(x.title)}, <i>${esc(x.company)}</i></h3><p>${esc(x.description)}</p><ul>${x.highlights.map((t) => `<li>${esc(t)}</li>`).join('')}</ul></div>`)));
+  $('#prov').append(h('li', '', `<span class="when">${esc(S.education.period)}</span><div><h3>${esc(S.education.degree)}, <i>${esc(S.education.school)}</i></h3><p>GPA ${esc(S.education.gpa)}</p></div>`));
+
+  S.publications.forEach((p) => $('#pubs').append(Object.assign(h('a', 'pub', `<span class="k">${p.kind === 'paper' ? 'Paper' : 'Patent'}</span><div><h3>${esc(p.title)}</h3><p>${esc(p.description)}</p><span class="mono meta">${esc(p.number)} · ${esc(p.year)}</span></div>`), { href: p.url, target: '_blank', rel: 'noopener' })));
+
+  const fmt = (d) => new Date(d + 'T12:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  S.writing.forEach((w) => $('#essays').append(Object.assign(h('a', 'essay', `<h3>${esc(w.title)}</h3><span class="mono d">${fmt(w.date)}</span><p>${esc(w.subtitle)}</p>`), { href: w.url })));
+  $('#essays').append(Object.assign(h('a', 'essay', `<h3><i>More on Substack</i></h3><span class="mono d">→</span><p>Older essays and notes.</p>`), { href: S.thoughts.url, target: '_blank', rel: 'noopener' }));
+
+  S.now.focus.forEach((f) => $('#focus').append(h('li', '', esc(f))));
+  S.now.interests.forEach((t) => $('#interests').append(h('span', '', esc(t))));
+  S.contact.forEach((c) => $('#contacts').append(h('li', '', `<a href="${esc(c.href)}" ${c.href.startsWith('http') ? 'target="_blank" rel="noopener"' : ''}><span class="mono">${esc(c.label)}</span><span>${esc(c.display)}</span><span class="mono">→</span></a>`)));
+
+  // ---------- dithered plates ----------
+  const D = window.Dither, INK = '#16140F', PAPER = '#F2EEE5';
+  const cellFor = () => (innerWidth < 600 ? 2 : 2);
+
+  async function plate(fig) {
+    const surf = fig.querySelector('.surface'), src = fig.dataset.src;
+    const focus = (fig.dataset.focus || '0.5,0.5').split(',').map(Number), zoom = +(fig.dataset.zoom || 1);
+    const [lo, hi, gamma, contrast] = (fig.dataset.levels || '0.02,0.99,1,1').split(',').map(Number);
+    let img; try { img = await D.loadImage(src); } catch { surf.style.background = 'var(--paper-2)'; return; }
+    const canvas = surf.querySelector('canvas') || surf.appendChild(document.createElement('canvas'));
+    const draw = (cell) => {
+      const r = surf.getBoundingClientRect(), w = Math.max(16, Math.round(r.width / cell)), hgt = Math.max(16, Math.round(r.height / cell));
+      canvas.width = w; canvas.height = hgt;
+      let L = D.levels(D.luminance(D.sample(img, w, hgt, { focus, zoom })), { lo, hi, gamma, contrast });
+      L = D.sharpen(L, w, hgt, cell > 3 ? 0.2 : 0.7);
+      D.paint(canvas.getContext('2d'), D.diffuse(L, w, hgt, { kernel: 'atkinson', serpentine: true }), w, hgt, INK, PAPER);
+    };
+    fig._develop = () => {
+      if (D.reduced()) return draw(cellFor());
+      const steps = [14, 10, 7, 5, 4, 3, cellFor()]; let k = 0;
+      const tick = () => { draw(steps[k]); if (++k < steps.length) setTimeout(tick, 110); };
+      tick();
+    };
+    fig._draw = () => draw(cellFor());
+    fig._ready = true;
+    if (fig._visible) fig._develop(); else draw(16);
+
+    // loupe: the original photograph under glass
+    const loupe = surf.appendChild(h('div', 'loupe'));
+    loupe.style.backgroundImage = `url("${src}")`;
+    const move = (e) => {
+      const r = surf.getBoundingClientRect(), x = e.clientX - r.left, y = e.clientY - r.top;
+      const iw = img.naturalWidth, ih = img.naturalHeight, s = Math.max(r.width / iw, r.height / ih) * zoom, dw = iw * s, dh = ih * s;
+      const ox = (r.width - dw) * focus[0], oy = (r.height - dh) * focus[1], M = 2.2;
+      loupe.style.left = x + 'px'; loupe.style.top = y + 'px';
+      loupe.style.backgroundSize = `${dw * M}px ${dh * M}px`;
+      loupe.style.backgroundPosition = `${-((x - ox) * M - 95)}px ${-((y - oy) * M - 95)}px`;
+    };
+    if (matchMedia('(hover:hover)').matches) {
+      surf.addEventListener('pointerenter', (e) => { surf.classList.add('on'); move(e); });
+      surf.addEventListener('pointermove', move);
+      surf.addEventListener('pointerleave', () => surf.classList.remove('on'));
+    }
+  }
+
+  async function thumb(entry) {
+    const im = entry.querySelector('img'), c = entry.querySelector('canvas');
+    let img; try { img = await D.loadImage(im.src); } catch { return; }
+    const r = c.getBoundingClientRect(), cell = 2, w = Math.round(r.width / cell), hh = Math.round(r.height / cell);
+    c.width = w; c.height = hh;
+    const L = D.levels(D.luminance(D.sample(img, w, hh, { focus: [0.5, 0] })), { lo: 0.01, hi: 0.995, gamma: 0.95, contrast: 1.05 });
+    D.paint(c.getContext('2d'), D.diffuse(L, w, hh, { kernel: 'atkinson' }), w, hh, INK, PAPER);
+  }
+
+  const plates = [...document.querySelectorAll('figure.plate')];
+  const io = new IntersectionObserver((es) => es.forEach((e) => {
+    if (!e.isIntersecting) return;
+    const t = e.target; io.unobserve(t);
+    if (t.matches('figure.plate')) { t._visible = true; if (t._ready) t._develop(); }
+    else if (t.matches('.entry')) thumb(t);
+    if (t.classList.contains('reveal')) t.classList.add('in');
+  }), { rootMargin: '0px 0px -8% 0px' });
+  document.querySelectorAll('.reveal, figure.plate, .entry').forEach((el) => io.observe(el));
+  plates.forEach(plate);
+
+  let rt; addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(() => { plates.forEach((p) => p._ready && p._draw()); document.querySelectorAll('.entry').forEach(thumb); }, 200); });
+
+  window.renderCredits && window.renderCredits($('#credits'), ['nike', 'venus', 'laocoon', 'apollo', 'discobolus']);
+})();
+</script>
+</body>
+</html>

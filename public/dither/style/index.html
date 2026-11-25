@@ -1,0 +1,425 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Dither Choices</title>
+<meta name="description" content="Side-by-side dither styles for the living hero, built around the swirling-line look of the ruins study.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300..500;1,6..72,300..500&family=IBM+Plex+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+  :root { --paper: #f1ece0; --card: #f8f5ee; --ink: #1d1b17; --muted: #6f675b; --rule: #d9d0bf; --accent: #7a4a2c; color-scheme: light; }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) { --paper: #15130f; --card: #1d1a15; --ink: #ede6d8; --muted: #a39a8a; --rule: #3a342b; --accent: #e0a07c; color-scheme: dark; }
+  }
+  :root[data-theme="dark"] { --paper: #15130f; --card: #1d1a15; --ink: #ede6d8; --muted: #a39a8a; --rule: #3a342b; --accent: #e0a07c; color-scheme: dark; }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body { margin: 0; background: var(--paper); color: var(--ink); font: 400 18px/1.5 "Newsreader", Georgia, serif; padding: 0 max(16px, env(safe-area-inset-right)) 0 max(16px, env(safe-area-inset-left)); }
+  .wrap { max-width: 1240px; margin: 0 auto; }
+  .mono { font: 400 11px/1.45 "IBM Plex Mono", ui-monospace, monospace; letter-spacing: .09em; text-transform: uppercase; color: var(--muted); }
+  header { padding: clamp(36px, 6vw, 72px) 0 18px; }
+  h1 { font-weight: 300; font-size: clamp(38px, 5.6vw, 72px); line-height: 1; letter-spacing: -.02em; margin: 12px 0 16px; }
+  h1 em { font-style: italic; }
+  .lede { max-width: 680px; color: var(--muted); margin: 0; }
+  .bar { position: sticky; top: 0; z-index: 3; background: var(--paper); display: flex; flex-wrap: wrap; gap: 10px 26px; align-items: center; padding: 14px 0; border-bottom: 1px solid var(--rule); margin-top: 22px; }
+  .seg { display: flex; flex-wrap: wrap; gap: 4px; align-items: center; }
+  .seg .mono { margin-right: 6px; }
+  button { font: inherit; font-size: 16px; color: var(--muted); background: none; border: 1px solid transparent; padding: 4px 10px; cursor: pointer; border-radius: 0; }
+  button[aria-pressed="true"] { color: var(--ink); border-color: var(--ink); }
+  button:hover { color: var(--ink); }
+  button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 34px 28px; padding: 28px 0 56px; }
+  figure { margin: 0; }
+  .tile { position: relative; display: block; width: 100%; aspect-ratio: 16 / 10; background: var(--card); border: 1px solid var(--rule); cursor: zoom-in; padding: 0; overflow: hidden; }
+  .tile canvas { position: absolute; inset: 0; width: 100%; height: 100%; image-rendering: pixelated; image-rendering: crisp-edges; }
+  .tile .num { position: absolute; left: 10px; top: 10px; background: var(--card); color: var(--ink); padding: 3px 7px; }
+  figcaption { display: grid; grid-template-columns: 1fr auto; gap: 2px 16px; padding-top: 12px; }
+  figcaption h2 { margin: 0; font-weight: 400; font-size: 26px; line-height: 1.15; }
+  figcaption p { grid-column: 1 / -1; margin: 2px 0 0; color: var(--muted); font-size: 17px; }
+  #full { position: fixed; inset: 0; z-index: 9; background: #000; display: none; }
+  #full.on { display: block; }
+  #full canvas { position: absolute; left: 0; top: 0; image-rendering: pixelated; image-rendering: crisp-edges; }
+  #full .cap { position: absolute; left: max(18px, env(safe-area-inset-left)); bottom: max(18px, env(safe-area-inset-bottom)); background: var(--card); color: var(--ink); padding: 8px 12px; }
+  #full .x { position: absolute; right: max(14px, env(safe-area-inset-right)); top: max(14px, env(safe-area-inset-top)); background: var(--card); color: var(--ink); border: 0; padding: 8px 12px; }
+  footer { border-top: 1px solid var(--rule); padding: 22px 0 max(40px, env(safe-area-inset-bottom)); }
+  footer p { margin: 0 0 6px; max-width: 820px; }
+  @media (max-width: 760px) { .grid { grid-template-columns: minmax(0, 1fr); } body { font-size: 17px; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="mono">Living hero &middot; step one &middot; fine weave, five colours</div>
+    <h1>Fine weave, <em>five colours</em></h1>
+    <p class="lede">Keeping the lines and swirls of the weave while adding colour. The trick in each tile is that any one spot only ever mixes two or three inks, so the weave stays strong, while the scene as a whole uses about five. Pixels start at Fine; Finest is one screen pixel per dot. Click any tile to see it full screen.</p>
+  </header>
+
+  <div class="bar" role="toolbar" aria-label="Preview options">
+    <div class="seg" id="scenes"><span class="mono">Scene</span></div>
+    <div class="seg" id="draw"><span class="mono">Source</span><button data-v="redrawn" aria-pressed="true">Redrawn</button><button data-v="photo" aria-pressed="false">As painted</button></div>
+    <div class="seg" id="size"><span class="mono">Pixel</span><button data-v="1" aria-pressed="false">Finest</button><button data-v="2" aria-pressed="true">Fine</button><button data-v="3" aria-pressed="false">Medium</button></div>
+    <div class="seg" id="motion"><span class="mono">Motion</span><button data-v="on" aria-pressed="true">On</button><button data-v="off" aria-pressed="false">Off</button></div>
+  </div>
+
+  <main class="grid" id="grid"></main>
+
+  <footer>
+    <p class="mono">Motion here is a stand-in: a little wind and water so you can see how each style behaves when things move. The real scenes will be redrawn from scratch around whichever style you pick.</p>
+    <p class="mono">Source images: Thomas Cole, Claude Monet, Jean-Honoré Fragonard, the Laocoön group and Vincent van Gogh, all public domain.</p>
+  </footer>
+</div>
+
+<div id="full" role="dialog" aria-modal="true" aria-label="Full screen preview"><canvas></canvas><div class="cap mono"></div><button class="x mono" aria-label="Close full screen preview">Close &times;</button></div>
+
+<script src="../dither.js"></script>
+<script>
+(function () {
+  'use strict';
+  const D = window.Dither, BN = D.BN, $ = (s) => document.querySelector(s);
+  const clamp = (v, a = 0, b = 1) => (v < a ? a : v > b ? b : v);
+  const lum = (c) => 0.3 * c[0] + 0.59 * c[1] + 0.11 * c[2];
+  // the same hue at a chosen lightness, with its colourfulness scaled by sat
+  const tone = (c, target, sat = 1) => { const l = lum(c); return [0, 1, 2].map((q) => clamp(Math.round(target + (c[q] - l) * sat), 0, 255)); };
+  // error diffusion of one value to n evenly spaced levels (Stucki, serpentine)
+  // three levels where the middle one can differ from pixel to pixel
+  function diffuse3(L, w, h, M) {
+    const K = KER.stucki, e = Float32Array.from(L), out = new Uint8Array(w * h);
+    for (let y = 0; y < h; y++) {
+      const rtl = y & 1;
+      for (let k = 0; k < w; k++) {
+        const x = rtl ? w - 1 - k : k, i = y * w + x, v = e[i], m = M[i], b = v < m / 2 ? 0 : v < (m + 1) / 2 ? 1 : 2;
+        out[i] = b; const er = v - (b === 0 ? 0 : b === 1 ? m : 1);
+        for (const [dx0, dy, f] of K) { const xx = x + (rtl ? -dx0 : dx0), yy = y + dy; if (xx >= 0 && xx < w && yy < h) e[yy * w + xx] += er * f; }
+      }
+    }
+    return out;
+  }
+  function diffuseN(L, w, h, n) {
+    const K = KER.stucki, e = Float32Array.from(L), out = new Uint8Array(w * h), s = n - 1;
+    for (let y = 0; y < h; y++) {
+      const rtl = y & 1;
+      for (let k = 0; k < w; k++) {
+        const x = rtl ? w - 1 - k : k, i = y * w + x, v = e[i], b = v <= 0 ? 0 : v >= 1 ? s : Math.round(v * s);
+        out[i] = b; const er = v - b / s;
+        for (const [dx0, dy, f] of K) { const xx = x + (rtl ? -dx0 : dx0), yy = y + dy; if (xx >= 0 && xx < w && yy < h) e[yy * w + xx] += er * f; }
+      }
+    }
+    return out;
+  }
+
+  // Scenes are just sources for now; each has its own ink and paper.
+  const SCENES = [
+    { id: 'ruins', name: 'Ruins', src: '../img/art/desolation.jpg', focus: [0.25, 0.45], zoom: 1.12, ink: '#2b2a24', paper: '#ece6d6', water: [0.66, 1], levels: { lo: 0.01, hi: 0.995, gamma: 0.62, contrast: 1.08 } },
+    { id: 'harbour', name: 'Harbour', src: '../img/art/sunrise.jpg', focus: [0.5, 0.55], zoom: 1, ink: '#1f2b33', paper: '#efe8da', water: [0.5, 1], levels: { lo: 0.01, hi: 0.995, gamma: 1.1, contrast: 0.95 } },
+    { id: 'garden', name: 'Garden', src: '../img/art/swing.jpg', focus: [0.5, 0.55], zoom: 1, ink: '#22261d', paper: '#f1e6dc', levels: { lo: 0.01, hi: 0.995, gamma: 0.7, contrast: 1.05 } },
+    { id: 'marble', name: 'Marble', src: '../img/art/laocoon.jpg', focus: [0.5, 0.1], zoom: 1.05, ink: '#2a2420', paper: '#efe9dd', levels: { lo: 0.03, hi: 0.999, gamma: 2.1, contrast: 1.0 } },
+    { id: 'night', name: 'Night', src: '../img/art/starry.jpg', focus: [0.5, 0.5], zoom: 1, ink: '#141c33', paper: '#ede7d2', levels: { lo: 0.01, hi: 0.99, gamma: 0.9, contrast: 1.15 } },
+  ];
+
+  // ---------- dithers ----------
+  const KER = {
+    atkinson: [[1, 0, 1 / 8], [2, 0, 1 / 8], [-1, 1, 1 / 8], [0, 1, 1 / 8], [1, 1, 1 / 8], [0, 2, 1 / 8]],
+    floyd: [[1, 0, 7 / 16], [-1, 1, 3 / 16], [0, 1, 5 / 16], [1, 1, 1 / 16]],
+    stucki: [[1, 0, 8 / 42], [2, 0, 4 / 42], [-2, 1, 2 / 42], [-1, 1, 4 / 42], [0, 1, 8 / 42], [1, 1, 4 / 42], [2, 1, 2 / 42], [-2, 2, 1 / 42], [-1, 2, 2 / 42], [0, 2, 4 / 42], [1, 2, 2 / 42], [2, 2, 1 / 42]],
+  };
+  // error diffusion to an arbitrary palette (works for 2 colours or more)
+  const luts = new WeakMap();
+  function nearest(P) {
+    let L = luts.get(P); if (L) return L;
+    const T = new Int16Array(32768).fill(-1);
+    L = (r, g, b) => {
+      const R = r < 0 ? 0 : r > 255 ? 255 : r, G = g < 0 ? 0 : g > 255 ? 255 : g, B = b < 0 ? 0 : b > 255 ? 255 : b, key = ((R >> 3) << 10) | ((G >> 3) << 5) | (B >> 3);
+      let v = T[key]; if (v >= 0) return v;
+      let bd = 1e9; for (let p = 0; p < P.length; p++) { const dr = R - P[p][0], dg = G - P[p][1], db = B - P[p][2], dd = dr * dr * 0.3 + dg * dg * 0.59 + db * db * 0.11; if (dd < bd) { bd = dd; v = p; } }
+      return (T[key] = v);
+    };
+    luts.set(P, L); return L;
+  }
+  function diffuseRGB(rgb, w, h, P, kernel, serp) {
+    const K = KER[kernel], e = Float32Array.from(rgb), out = new Uint8Array(w * h), near = nearest(P);
+    for (let y = 0; y < h; y++) {
+      const rtl = serp && (y & 1);
+      for (let k = 0; k < w; k++) {
+        const x = rtl ? w - 1 - k : k, i = y * w + x, j = i * 3, r = e[j], g = e[j + 1], b = e[j + 2];
+        const bi = near(r | 0, g | 0, b | 0);
+        out[i] = bi; const er = r - P[bi][0], eg = g - P[bi][1], eb = b - P[bi][2];
+        for (const [dx0, dy, f] of K) { const dx = rtl ? -dx0 : dx0, xx = x + dx, yy = y + dy; if (xx >= 0 && xx < w && yy < h) { const q = (yy * w + xx) * 3; e[q] += er * f; e[q + 1] += eg * f; e[q + 2] += eb * f; } }
+      }
+    }
+    return out;
+  }
+  // Riemersma: diffuse along a Hilbert curve, which leaves swirling maze-like strokes
+  const hilbertCache = new Map();
+  function hilbert(w, h) {
+    const key = w + 'x' + h; if (hilbertCache.has(key)) return hilbertCache.get(key);
+    let n = 1; while (n < Math.max(w, h)) n <<= 1;
+    const pts = [];
+    for (let d = 0; d < n * n; d++) {
+      let x = 0, y = 0, t = d;
+      for (let s = 1; s < n; s <<= 1) { const rx = 1 & (t >> 1), ry = 1 & (t ^ rx); if (ry === 0) { if (rx === 1) { x = s - 1 - x; y = s - 1 - y; } const tmp = x; x = y; y = tmp; } x += s * rx; y += s * ry; t >>= 2; }
+      if (x < w && y < h) pts.push(y * w + x);
+    }
+    const a = Int32Array.from(pts); hilbertCache.set(key, a); return a;
+  }
+  function riemersma(rgb, w, h, P) {
+    const path = hilbert(w, h), Q = 16, R = 16, wts = Array.from({ length: Q }, (_, i) => Math.pow(R, -i / (Q - 1))), hist = [];
+    const out = new Uint8Array(w * h);
+    for (const i of path) {
+      let er = 0, eg = 0, eb = 0; for (let q = 0; q < hist.length; q++) { const f = wts[hist.length - 1 - q] / 8; er += hist[q][0] * f; eg += hist[q][1] * f; eb += hist[q][2] * f; }
+      const j = i * 3, r = rgb[j] + er, g = rgb[j + 1] + eg, b = rgb[j + 2] + eb;
+      let bi = 0, bd = 1e9; for (let p = 0; p < P.length; p++) { const dr = r - P[p][0], dg = g - P[p][1], db = b - P[p][2], dd = dr * dr * 0.3 + dg * dg * 0.59 + db * db * 0.11; if (dd < bd) { bd = dd; bi = p; } }
+      out[i] = bi; hist.push([r - P[bi][0], g - P[bi][1], b - P[bi][2]]); if (hist.length > Q) hist.shift();
+    }
+    return out;
+  }
+  // contour lines: stroke the picture's own tone contours, thicker where it is darker
+  function contours(L, w, h, t) {
+    const B = blur(blur(L, w, h, 2), w, h, 1), out = new Uint8Array(w * h), bands = 13;
+    for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
+      const i = y * w + x, f = (B[i] * bands + 0.06 * Math.sin(x * 0.07 + y * 0.05 + t * 0.4)) % 1, dark = 1 - B[i];
+      out[i] = (f < 0.1 + 0.42 * dark * dark || B[i] < 0.06) ? 0 : 1;
+    }
+    return out;
+  }
+  function blur(A, W, H, r) {
+    const T = new Float32Array(A.length), O = new Float32Array(A.length);
+    for (let y = 0; y < H; y++) { let s = 0, n = 0; for (let x = -r; x < W; x++) { if (x + r < W) { s += A[y * W + x + r]; n++; } if (x - r - 1 >= 0) { s -= A[y * W + x - r - 1]; n--; } if (x >= 0) T[y * W + x] = s / n; } }
+    for (let x = 0; x < W; x++) { let s = 0, n = 0; for (let y = -r; y < H; y++) { if (y + r < H) { s += T[(y + r) * W + x]; n++; } if (y - r - 1 >= 0) { s -= T[(y - r - 1) * W + x]; n--; } if (y >= 0) O[y * W + x] = s / n; } }
+    return O;
+  }
+
+  const VARIANTS = [
+    { id: 'fine3', name: 'Three inks', note: 'The one you liked, for reference: ink, paper and one colour for the whole scene.', run: (c) => c.diffuseC('stucki', true, 3) },
+    { id: 'tone5', name: 'Five inks, by tone', note: 'Five colours from the scene laid out from dark to light. Every tone sits between two neighbouring inks, so the weave shows everywhere.', run: (c) => c.byTone(5) },
+    { id: 'area5', name: 'Five inks, by area', note: 'Still three inks at any one spot, like the three-ink version, but the middle ink changes from area to area between three colours of the scene.', run: (c) => c.layered({ field: 'area', mids: [0.5] }) },
+    { id: 'inkarea', name: 'Coloured inks, by area', note: 'The two-ink weave, untouched, but the ink takes one of four deep colours depending on where it is. Paper stays paper.', run: (c) => c.layered({ field: 'area', mids: [], tint: 1 }) },
+    { id: 'tone4', name: 'Four inks, by tone', note: 'One fewer colour than five by tone. Bigger patches of weave between each pair of inks, a little calmer.', run: (c) => c.byTone(4) },
+    { id: 'drift', name: 'Drifting middle', note: 'For comparison: three inks at any spot, but the middle ink drifts smoothly with the scene, so there are many colours overall.', run: (c) => c.layered({ field: 'smooth', mids: [0.5], sat: 1.9 }) },
+  ];
+  const OLD = [
+    { id: 'worms', name: 'Worms', note: 'Atkinson diffusion in two inks. The ruins study, as it was: short wriggling strokes, crisp highlights.', mono: true, run: (c) => c.diffuseL('atkinson', true) },
+    { id: 'eddies', name: 'Long eddies', note: 'Floyd–Steinberg in two inks. Longer, looser lines that curl into eddies in the mid-tones.', mono: true, run: (c) => c.diffuseL('floyd', true) },
+    { id: 'fine', name: 'Fine weave', note: 'Stucki in two inks. Smaller, denser swirls; calmer and more like an engraving.', mono: true, run: (c) => c.diffuseL('stucki', true) },
+    { id: 'hilbert', name: 'Maze', note: 'Diffused along a space-filling curve. The strokes turn corners and fold into each other like a maze.', mono: true, run: (c) => c.riemersma() },
+    { id: 'contour', name: 'Contour lines', note: 'Not a classic dither: lines follow the picture’s own tone contours, thicker where it is darker. Closest to drawn swirls.', mono: true, run: (c) => c.contours() },
+    { id: 'colour', name: 'Worms in colour', note: 'The Worms dither with four inks taken from the scene instead of two. Keeps a hint of each painting’s colour.', mono: false, run: (c) => c.diffuseC('atkinson', true) },
+  ];
+
+  const palCache = {};
+  // ---------- "redrawn": strip out the photographic detail first ----------
+  function kuwahara(rgb, w, h, r) {
+    const out = new Float32Array(rgb.length);
+    for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
+      let best = 1e9, br = 0, bg = 0, bb = 0;
+      for (const [sx, sy] of [[-1, -1], [1, -1], [-1, 1], [1, 1]]) {
+        let n = 0, mr = 0, mg = 0, mb = 0, v = 0;
+        for (let dy = 0; dy <= r; dy++) for (let dx = 0; dx <= r; dx++) {
+          const xx = clamp(x + dx * sx, 0, w - 1), yy = clamp(y + dy * sy, 0, h - 1), j = (yy * w + xx) * 3, l = 0.3 * rgb[j] + 0.59 * rgb[j + 1] + 0.11 * rgb[j + 2];
+          mr += rgb[j]; mg += rgb[j + 1]; mb += rgb[j + 2]; v += l * l; n++;
+        }
+        mr /= n; mg /= n; mb /= n; const ml = 0.3 * mr + 0.59 * mg + 0.11 * mb, va = v / n - ml * ml;
+        if (va < best) { best = va; br = mr; bg = mg; bb = mb; }
+      }
+      const j = (y * w + x) * 3; out[j] = br; out[j + 1] = bg; out[j + 2] = bb;
+    }
+    return out;
+  }
+
+  // ---------- state ----------
+  const st = { scene: 'ruins', draw: 'redrawn', cell: 2, motion: !D.reduced(), full: null };
+  try { const s = JSON.parse(localStorage.getItem('dither-choices-colour') || '{}'); Object.assign(st, s); } catch (e) {}
+  const save = () => { try { localStorage.setItem('dither-choices-colour', JSON.stringify({ scene: st.scene, draw: st.draw, cell: st.cell, motion: st.motion })); } catch (e) {} };
+
+  // build the toolbar
+  SCENES.forEach((s) => { const b = document.createElement('button'); b.dataset.v = s.id; b.textContent = s.name; $('#scenes').append(b); });
+  const sync = () => {
+    document.querySelectorAll('#scenes button').forEach((b) => b.setAttribute('aria-pressed', b.dataset.v === st.scene));
+    document.querySelectorAll('#draw button').forEach((b) => b.setAttribute('aria-pressed', b.dataset.v === st.draw));
+    document.querySelectorAll('#size button').forEach((b) => b.setAttribute('aria-pressed', +b.dataset.v === st.cell));
+    document.querySelectorAll('#motion button').forEach((b) => b.setAttribute('aria-pressed', (b.dataset.v === 'on') === st.motion));
+  };
+  $('#scenes').addEventListener('click', (e) => { const b = e.target.closest('button'); if (!b) return; st.scene = b.dataset.v; save(); sync(); rebuild(); });
+  $('#draw').addEventListener('click', (e) => { const b = e.target.closest('button'); if (!b) return; st.draw = b.dataset.v; save(); sync(); rebuild(); });
+  $('#size').addEventListener('click', (e) => { const b = e.target.closest('button'); if (!b) return; st.cell = +b.dataset.v; save(); sync(); rebuild(); });
+  $('#motion').addEventListener('click', (e) => { const b = e.target.closest('button'); if (!b) return; st.motion = b.dataset.v === 'on'; save(); sync(); });
+
+  // tiles
+  const tiles = VARIANTS.map((v, i) => {
+    const f = document.createElement('figure');
+    f.innerHTML = `<button class="tile" aria-label="Show ${v.name} full screen"><canvas></canvas><span class="num mono">${i + 1}</span></button><figcaption><h2>${v.name}</h2><p>${v.note}</p></figcaption>`;
+    $('#grid').append(f);
+    const c = f.querySelector('canvas');
+    f.querySelector('.tile').addEventListener('click', () => openFull(v));
+    return { v, el: f.querySelector('.tile'), c, ctx: c.getContext('2d'), src: null, visible: true };
+  });
+  const io = new IntersectionObserver((es) => es.forEach((e) => { const t = tiles.find((t) => t.el === e.target); if (t) t.visible = e.isIntersecting; }), { rootMargin: '100px' });
+  tiles.forEach((t) => io.observe(t.el));
+
+  // a source prepared for one canvas size
+  async function prepare(sceneId, w, h) {
+    const S = SCENES.find((s) => s.id === sceneId), img = await D.loadImage(S.src);
+    const m = 4, id = D.sample(img, w + 2 * m, h + 2 * m, { focus: S.focus, zoom: S.zoom });
+    let rgb = new Float32Array((w + 2 * m) * (h + 2 * m) * 3);
+    for (let i = 0, n = rgb.length / 3; i < n; i++) { rgb[i * 3] = id.data[i * 4]; rgb[i * 3 + 1] = id.data[i * 4 + 1]; rgb[i * 3 + 2] = id.data[i * 4 + 2]; }
+    if (st.draw === 'redrawn') { rgb = kuwahara(rgb, w + 2 * m, h + 2 * m, 2); rgb = kuwahara(rgb, w + 2 * m, h + 2 * m, 1); }
+    // four inks for the colour variant: k-means of the scene, darkest swapped for the ink, lightest for the paper
+    // palettes of several sizes from the scene; the darkest becomes the ink and the lightest the paper
+    const vivid = new ImageData(new Uint8ClampedArray(id.data), id.width, id.height), vd = vivid.data;
+    for (let i = 0; i < vd.length; i += 4) { const l = 0.3 * vd[i] + 0.59 * vd[i + 1] + 0.11 * vd[i + 2]; for (let q = 0; q < 3; q++) vd[i + q] = l + (vd[i + q] - l) * 1.18; }
+    const pals = {};
+    for (const K of [3, 4, 5, 8, 12, 16]) {
+      const p = (palCache[S.id + K] ||= D.extract(vivid, K, 10).sort((a, b) => (a[0] + a[1] + a[2]) - (b[0] + b[1] + b[2])));
+      // push the inks apart from the scene's average colour, so every area of the scene falls
+      // between two inks and keeps the weave instead of landing exactly on one flat ink
+      const mean = [0, 1, 2].map((q) => p.reduce((t, c) => t + c[q], 0) / K), x = 1.32 + K * 0.012;
+      pals[K] = p.map((c) => c.map((v, q) => clamp(Math.round(mean[q] + (v - mean[q]) * x), 0, 255)));
+      pals[K][0] = D.hex(S.ink); pals[K][K - 1] = D.hex(S.paper);
+    }
+    const pal = pals[4];
+    // tone mapping for the two-ink variants
+    // a soft, swirly grain so flat areas break into eddies instead of a regular weave
+    let G = new Float32Array(w * h); for (let i = 0; i < G.length; i++) G[i] = Math.random() * 2 - 1;
+    G = blur(blur(G, w, h, 3), w, h, 2); let mx = 0; for (const v of G) mx = Math.max(mx, Math.abs(v)); for (let i = 0; i < G.length; i++) G[i] /= mx || 1;
+    // the scene's local colour, blurred heavily, used to colour inks by area
+    const PWm = w + 2 * m, LC = new Float32Array(w * h * 3), br = Math.max(3, Math.round(w / 36));
+    for (let q = 0; q < 3; q++) {
+      let A = new Float32Array(w * h);
+      for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) A[y * w + x] = rgb[((y + m) * PWm + x + m) * 3 + q];
+      A = blur(blur(A, w, h, br), w, h, br);
+      for (let i = 0; i < w * h; i++) LC[i * 3 + q] = A[i];
+    }
+    // pick n colours from the scene whose hues are as different from each other as possible
+    const chroma = (c) => { const l = lum(c); return [c[0] - l, c[1] - l, c[2] - l]; };
+    const pickHues = (n, cand) => {
+      const out = [cand.reduce((a, b) => (Math.hypot(...chroma(b)) > Math.hypot(...chroma(a)) ? b : a))];
+      while (out.length < n) { let best = null, bd = -1; for (const c of cand) { const d = Math.min(...out.map((o) => { const a = chroma(c), b = chroma(o); return Math.hypot(a[0] - b[0], a[1] - b[1], a[2] - b[2]); })); if (d > bd) { bd = d; best = c; } } out.push(best); }
+      return out;
+    };
+    const area = {};
+    // mids come from the whole palette, deep inks only from its darker half (a darkened yellow just turns brown)
+    const li0 = lum(D.hex(S.ink)), lp0 = lum(D.hex(S.paper));
+    for (const [key, n, cand] of [['mid', 3, pals[12].slice(1, 11)], ['deep', 4, pals[12].slice(1, 7)]]) {
+      const H = pickHues(n, cand), idx = new Uint8Array(w * h), wt = new Float32Array(n);
+      for (let i = 0; i < w * h; i++) {
+        // soft choice: near a border between two areas the colours interleave as dots instead of a hard edge
+        const a = chroma([LC[i * 3], LC[i * 3 + 1], LC[i * 3 + 2]]); let tot = 0;
+        for (let k = 0; k < n; k++) { const b = chroma(H[k]), d = Math.hypot(a[0] - b[0], a[1] - b[1], a[2] - b[2]); wt[k] = Math.exp(-d / 7); tot += wt[k]; }
+        let r = Math.random() * tot, k = 0; while (k < n - 1 && (r -= wt[k]) > 0) k++; idx[i] = k;
+      }
+      // each middle ink keeps roughly its own lightness, so yellows stay light and blues stay deep
+      const lev = H.map((c) => clamp((lum(c) - li0) / (lp0 - li0), 0.32, 0.7));
+      area[key] = { H, idx, lev };
+    }
+    return { S, w, h, m, PW: w + 2 * m, rgb, pal, pals, G, LC, area, ink: D.hex(S.ink), paper: D.hex(S.paper) };
+  }
+
+  function frame(src, ctx, v, t) {
+    const { w, h, m, PW, rgb, S } = src, cur = new Float32Array(w * h * 3);
+    const wy = S.water ? Math.round(h * S.water[0]) : h + 1;
+    for (let y = 0; y < h; y++) {
+      const depth = y >= wy ? (y - wy) / (h - wy) : 0;
+      for (let x = 0; x < w; x++) {
+        let dx = 0, dy = 0;
+        if (t !== null) {
+          dx = 0.45 * Math.sin(t * 0.6 - x * 0.05 + y * 0.03) * (1 - y / h) * 0.8;
+          if (y >= wy) dx += (0.4 + 0.9 * depth) * (0.65 * Math.sin(y * 0.8 + t * 1.2) + 0.35 * Math.sin(y * 0.3 - t * 0.8 + x * 0.04));
+          dy = 0.2 * Math.sin(x * 0.07 + t * 0.5);
+        }
+        const sx = clamp(x + m - dx, 0, PW - 1.001), sy = clamp(y + m - dy, 0, h + 2 * m - 1.001), xi = sx | 0, yi = sy | 0, fx = sx - xi, fy = sy - yi;
+        const o = (y * w + x) * 3, a = (yi * PW + xi) * 3, b = a + 3, c = a + PW * 3, d = c + 3;
+        for (let k = 0; k < 3; k++) cur[o + k] = (rgb[a + k] * (1 - fx) + rgb[b + k] * fx) * (1 - fy) + (rgb[c + k] * (1 - fx) + rgb[d + k] * fx) * fy;
+      }
+    }
+    const ink = src.ink, paper = src.paper;
+    const api = {
+      L(noGrain) { let L = new Float32Array(w * h); for (let i = 0; i < w * h; i++) { const r = cur[i * 3] / 255, g = cur[i * 3 + 1] / 255, b = cur[i * 3 + 2] / 255; L[i] = Math.sqrt(0.2126 * r * r + 0.7152 * g * g + 0.0722 * b * b); } L = D.levels(L, S.levels); if (!noGrain) for (let i = 0; i < L.length; i++) L[i] = clamp(L[i] + src.G[i] * 0.09); return L; },
+      diffuseL(kernel, serp) { let L = this.L(); if (st.draw !== 'redrawn') L = D.sharpen(L, w, h, 0.6); const rgb2 = new Float32Array(w * h * 3); for (let i = 0; i < w * h; i++) rgb2[i * 3] = rgb2[i * 3 + 1] = rgb2[i * 3 + 2] = L[i] * 255; return two(diffuseRGB(rgb2, w, h, [[0, 0, 0], [255, 255, 255]], kernel, serp)); },
+      riemersma() { const L = this.L(), rgb2 = new Float32Array(w * h * 3); for (let i = 0; i < w * h; i++) rgb2[i * 3] = rgb2[i * 3 + 1] = rgb2[i * 3 + 2] = L[i] * 255; return two(riemersma(rgb2, w, h, [[0, 0, 0], [255, 255, 255]])); },
+      contours() { return two(contours(this.L(true), w, h, t || 0)); },
+      // n inks from the scene, re-lit so they sit evenly from ink to paper; diffusion runs on lightness only
+      byTone(n) {
+        const L = this.L(), b = diffuseN(L, w, h, n), li = lum(ink), lp = lum(paper);
+        const P = src.pals[n].map((c, k) => (k === 0 ? ink : k === n - 1 ? paper : tone(c, li + (lp - li) * k / (n - 1), 1.25)));
+        const id = ctx.createImageData(w, h);
+        for (let i = 0; i < w * h; i++) { const p = P[b[i]]; id.data[i * 4] = p[0]; id.data[i * 4 + 1] = p[1]; id.data[i * 4 + 2] = p[2]; id.data[i * 4 + 3] = 255; }
+        return id;
+      },
+      // ink, paper and middle inks whose colour depends on where they are
+      layered({ field, mids = [0.5], tint = 0, sat = 1.2 }) {
+        const A = src.area[tint ? 'deep' : 'mid'], lv = mids.length + 2, L = this.L(), li = lum(ink), lp = lum(paper), id = ctx.createImageData(w, h), cache = {};
+        let M = null;
+        if (field === 'area' && lv === 3) { M = new Float32Array(w * h); for (let i = 0; i < w * h; i++) M[i] = A.lev[A.idx[i]]; }
+        const b = M ? diffuse3(L, w, h, M) : diffuseN(L, w, h, lv);
+        const col = (i, k) => {
+          if (k === lv - 1) return paper;
+          const target = k === 0 ? li + (lp - li) * 0.14 : li + (lp - li) * (M ? M[i] : k / (lv - 1));
+          if (k === 0 && !tint) return ink;
+          if (field === 'area') { const key = A.idx[i] * 8 + k; return (cache[key] ||= tone(A.H[A.idx[i]], target, k === 0 ? 1.1 : sat)); }
+          return tone([src.LC[i * 3], src.LC[i * 3 + 1], src.LC[i * 3 + 2]], target, k === 0 ? sat * 0.6 : sat);
+        };
+        for (let i = 0; i < w * h; i++) { const p = col(i, b[i]); id.data[i * 4] = p[0]; id.data[i * 4 + 1] = p[1]; id.data[i * 4 + 2] = p[2]; id.data[i * 4 + 3] = 255; }
+        return id;
+      },
+      diffuseC(kernel, serp, K = 4) {
+        // stretch the colours toward the four inks before diffusing
+        // keep the scene's own tones; only stretch contrast a touch and add the swirly grain
+        const c2 = new Float32Array(w * h * 3), g = S.cgain || 1.08;
+        for (let i = 0; i < w * h; i++) { const n = src.G[i] * 26; for (let q = 0; q < 3; q++) c2[i * 3 + q] = clamp((cur[i * 3 + q] - 128) * g + 128 + n + (S.clift || 0), 0, 255); }
+        const P = src.pals[K], idx = diffuseRGB(c2, w, h, P, kernel, serp), id = ctx.createImageData(w, h);
+        for (let i = 0; i < w * h; i++) { const p = P[idx[i]]; id.data[i * 4] = p[0]; id.data[i * 4 + 1] = p[1]; id.data[i * 4 + 2] = p[2]; id.data[i * 4 + 3] = 255; }
+        return id;
+      },
+    };
+    function two(bits) { const id = ctx.createImageData(w, h); for (let i = 0; i < w * h; i++) { const p = bits[i] ? paper : ink; id.data[i * 4] = p[0]; id.data[i * 4 + 1] = p[1]; id.data[i * 4 + 2] = p[2]; id.data[i * 4 + 3] = 255; } return id; }
+    ctx.putImageData(v.run(api), 0, 0);
+  }
+
+  let gen = 0;
+  async function rebuild() {
+    const g = ++gen;
+    for (const t of tiles) {
+      const r = t.el.getBoundingClientRect(), w = Math.max(8, Math.round(r.width / st.cell)), h = Math.max(8, Math.round(r.height / st.cell));
+      t.c.width = w; t.c.height = h;
+      const src = await prepare(st.scene, w, h); if (g !== gen) return;
+      t.src = src; frame(src, t.ctx, t.v, st.motion ? performance.now() / 1000 : null);
+    }
+    if (st.full) await buildFull();
+  }
+
+  // full screen
+  const full = $('#full'), fc = full.querySelector('canvas'), fctx = fc.getContext('2d');
+  let fsrc = null;
+  async function buildFull() {
+    const w = Math.ceil(innerWidth / st.cell), h = Math.ceil(innerHeight / st.cell);
+    fc.width = w; fc.height = h; fc.style.width = w * st.cell + 'px'; fc.style.height = h * st.cell + 'px';
+    fsrc = await prepare(st.scene, w, h); frame(fsrc, fctx, st.full, st.motion ? performance.now() / 1000 : null);
+  }
+  async function openFull(v) {
+    st.full = v; full.querySelector('.cap').textContent = `${VARIANTS.indexOf(v) + 1} · ${v.name} · ${SCENES.find((s) => s.id === st.scene).name}`;
+    full.classList.add('on'); full.querySelector('.x').focus(); await buildFull();
+  }
+  function closeFull() { st.full = null; fsrc = null; full.classList.remove('on'); }
+  full.querySelector('.x').addEventListener('click', closeFull);
+  full.addEventListener('click', (e) => { if (e.target === fc) closeFull(); });
+  addEventListener('keydown', (e) => { if (e.key === 'Escape' && st.full) closeFull(); });
+
+  // animate at a gentle pace; only what is on screen
+  let last = 0, k = 0;
+  function loop(now) {
+    requestAnimationFrame(loop);
+    if (!st.motion || document.hidden || now - last < 1000 / 12) return;
+    last = now; const t = now / 1000;
+    if (st.full && fsrc) { frame(fsrc, fctx, st.full, t); return; }
+    // round-robin so the page stays light
+    const vis = tiles.filter((x) => x.visible && x.src); if (!vis.length) return;
+    for (let n = 0; n < 2; n++) { const x = vis[k++ % vis.length]; frame(x.src, x.ctx, x.v, t); }
+  }
+  let rt; addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(rebuild, 250); });
+
+  sync(); rebuild().then(() => requestAnimationFrame(loop));
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,297 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Sahil Mahendrakar</title>
+<meta name="description" content="Sahil Mahendrakar. A homepage set in a sculpture gallery after hours, lit by a lamp you carry.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Italiana&family=Spectral:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Spline+Sans+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --night:#0A0B0D; --night-2:#121418; --bone:#EDE3CF; --bone-2:#B9AF9C; --bone-3:#7C7568; --rule:#2A2B2E; --flame:#E9B866; --flame-2:#F6D9A0;
+  --display:'Italiana', 'Didot', Georgia, serif; --serif:'Spectral', Georgia, serif; --mono:'Spline Sans Mono', ui-monospace, Menlo, monospace;
+  --gutter:clamp(16px,4vw,56px); --lx:50vw; --ly:40vh;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{background:var(--night);-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--night);color:var(--bone);font-family:var(--serif);font-weight:300;font-size:18px;line-height:1.65;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(420px 420px at var(--lx) var(--ly),rgba(233,184,102,.09),transparent 70%)}
+a{color:inherit}
+::selection{background:var(--flame);color:var(--night)}
+.mono{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--bone-3)}
+
+.gallery{position:relative;z-index:1;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+.niche{position:sticky;top:0;height:100svh;order:2;overflow:hidden}
+.niche canvas{position:absolute;inset:0;width:100%;height:100%;display:block;image-rendering:pixelated}
+.niche .label{position:absolute;left:16px;bottom:16px;z-index:2;max-width:340px;padding:10px 14px;background:rgba(10,11,13,.82);font-size:13.5px;line-height:1.4;color:var(--bone-2);transition:opacity .5s}
+.niche .label i{display:block;font-family:var(--display);font-style:normal;font-size:22px;color:var(--bone);line-height:1.1;margin-bottom:2px}
+.niche .hint{position:absolute;right:22px;top:22px;z-index:2}
+.rooms{order:1;padding-inline:var(--gutter);min-width:0}
+@media (max-width:900px){
+  .gallery{display:block}
+  .niche{position:fixed;inset:0;height:100lvh;z-index:0;opacity:.3}
+  .niche .label,.niche .hint{display:none}
+  .rooms{position:relative;z-index:2}
+}
+
+header.top{position:sticky;top:0;z-index:5;display:flex;justify-content:space-between;align-items:center;padding:18px 0;background:linear-gradient(var(--night) 55%,transparent)}
+header.top a{text-decoration:none}
+header.top .mark{font-family:var(--display);font-size:22px}
+header.top nav{display:flex;gap:clamp(12px,2vw,24px)}
+header.top nav a:hover{color:var(--flame)}
+@media (max-width:640px){header.top nav a:nth-child(n+3){display:none}}
+
+.room{min-height:100svh;padding-block:clamp(80px,14vh,160px);display:flex;flex-direction:column;justify-content:center;max-width:640px}
+.room h2{font-family:var(--display);font-weight:400;font-size:clamp(42px,5vw,72px);line-height:1;margin:10px 0 26px;letter-spacing:.01em}
+.room .num{color:var(--flame)}
+
+.hero h1{font-family:var(--display);font-weight:400;font-size:clamp(52px,6.8vw,116px);line-height:.9;margin:18px 0 26px;letter-spacing:.005em}
+.hero .tag{font-style:italic;font-size:clamp(20px,1.9vw,24px);margin:0 0 10px;color:var(--bone)}
+.hero .roles{color:var(--bone-2);margin:0 0 34px}
+.btns{display:flex;flex-wrap:wrap;gap:12px}
+.btn{display:inline-flex;align-items:center;gap:10px;padding:12px 18px;border:1px solid var(--bone-3);text-decoration:none;font-family:var(--mono);font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;transition:border-color .2s,color .2s,background .2s}
+.btn:hover{border-color:var(--flame);color:var(--flame)}
+.btn.solid{background:var(--bone);color:var(--night);border-color:var(--bone)}
+.btn.solid:hover{background:var(--flame);border-color:var(--flame);color:var(--night)}
+
+.lede{font-size:clamp(21px,2vw,25px);line-height:1.55;margin:0 0 30px;font-weight:300}
+.pts{list-style:none;margin:0;padding:0;border-top:1px solid var(--rule)}
+.pts li{padding:16px 0;border-bottom:1px solid var(--rule)}
+.pts b{font-family:var(--display);font-weight:400;font-size:24px;display:block;line-height:1.15}
+.pts span{color:var(--bone-2)}
+
+.works{display:grid;gap:0;border-top:1px solid var(--rule)}
+.work{display:grid;grid-template-columns:132px 1fr;gap:20px;padding:20px 0;border-bottom:1px solid var(--rule);align-items:start}
+.work .th{position:relative;aspect-ratio:16/10;background:var(--night-2);overflow:hidden;outline:1px solid var(--rule)}
+.work .th canvas,.work .th img{position:absolute;inset:0;width:100%;height:100%;display:block}
+.work .th img{object-fit:cover;object-position:top;opacity:0;transition:opacity .45s}
+.work .th canvas{image-rendering:pixelated}
+.work:hover .th img,.work:focus-within .th img{opacity:1}
+.work h3{font-family:var(--display);font-weight:400;font-size:28px;line-height:1;margin:0 0 6px}
+.work p{margin:0 0 6px;color:var(--bone-2);font-size:16px;line-height:1.5}
+.work .tech{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;color:var(--bone-3);text-transform:uppercase}
+.work .lk{display:flex;gap:16px;margin-top:8px;font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase}
+.work .lk a{text-decoration:none;color:var(--flame)}
+.work .lk a:hover{color:var(--flame-2);text-decoration:underline}
+@media (max-width:520px){.work{grid-template-columns:1fr;gap:12px}.work .th{max-width:280px}}
+
+.annals{list-style:none;margin:0;padding:0;border-top:1px solid var(--rule)}
+.annals > li{display:grid;grid-template-columns:130px 1fr;gap:18px;padding:18px 0;border-bottom:1px solid var(--rule)}
+.annals .when{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--bone-3);padding-top:7px}
+.annals h3{font-family:var(--display);font-weight:400;font-size:23px;line-height:1.15;margin:0}
+.annals p{margin:4px 0 0;color:var(--bone-2);font-size:16px}
+.annals ul{margin:6px 0 0;padding-left:18px;color:var(--bone-2);font-size:15.5px}
+@media (max-width:520px){.annals > li{grid-template-columns:1fr;gap:2px}}
+
+.pubs a{display:block;padding:18px 0;border-top:1px solid var(--rule);text-decoration:none}
+.pubs a:last-child{border-bottom:1px solid var(--rule)}
+.pubs a:hover h3{color:var(--flame)}
+.pubs h3{font-family:var(--display);font-weight:400;font-size:23px;line-height:1.2;margin:4px 0}
+.pubs p{margin:0;color:var(--bone-2);font-size:15.5px}
+
+.essays a{display:grid;grid-template-columns:1fr auto;gap:2px 16px;padding:16px 0;border-top:1px solid var(--rule);text-decoration:none}
+.essays a:hover h3{color:var(--flame)}
+.essays h3{font-family:var(--display);font-weight:400;font-size:22px;line-height:1.2;margin:0}
+.essays p{grid-column:1/-1;margin:0;color:var(--bone-2);font-size:15px}
+.focus{list-style:none;margin:36px 0 18px;padding:0}
+.focus li{padding:10px 0 10px 24px;border-top:1px solid var(--rule);position:relative;color:var(--bone)}
+.focus li::before{content:'';position:absolute;left:2px;top:21px;width:6px;height:6px;border-radius:50%;background:var(--flame);box-shadow:0 0 10px var(--flame)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chips span{border:1px solid var(--rule);padding:5px 12px;font-size:15px;font-style:italic;color:var(--bone-2)}
+
+.contact ul{list-style:none;margin:0;padding:0;border-top:1px solid var(--rule)}
+.contact li a{display:flex;justify-content:space-between;gap:16px;padding:16px 0;border-bottom:1px solid var(--rule);text-decoration:none}
+.contact li a:hover span:last-child{color:var(--flame)}
+.contact li span:last-child{font-family:var(--display);font-size:21px;overflow-wrap:anywhere;text-align:right}
+.credits{margin-top:40px;font-size:13px;color:var(--bone-3)}
+.credits .mono{display:none}
+
+.reveal{opacity:0;transform:translateY(12px);transition:opacity 1s,transform 1s cubic-bezier(.2,.7,.2,1)}
+.reveal.in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}
+</style>
+</head>
+<body>
+<div class="gallery">
+  <aside class="niche" aria-hidden="true">
+    <canvas id="niche"></canvas>
+    <span class="hint mono">Move to carry the lamp</span>
+    <div class="label" id="label"><i></i><span></span></div>
+  </aside>
+
+  <div class="rooms">
+    <header class="top"><a class="mark" href="#top">S. Mahendrakar</a><nav class="mono"><a href="#about">About</a><a href="#works">Works</a><a href="#annals">Annals</a><a href="#writing">Writing</a><a href="#contact">Contact</a></nav></header>
+
+    <section class="room hero" id="top" data-statue="venusdark">
+      <span class="mono">After hours · Gallery of antiquities</span>
+      <h1 id="name"></h1>
+      <p class="tag" id="tagline"></p>
+      <p class="roles" id="roles"></p>
+      <div class="btns"><a class="btn solid" href="#works">Enter the gallery</a><a class="btn" href="#contact">Write to me</a></div>
+    </section>
+
+    <section class="room" id="about" data-statue="nike">
+      <span class="mono"><span class="num">I</span> · The keeper</span>
+      <h2 class="reveal">About</h2>
+      <p class="lede reveal" id="about-p"></p>
+      <ul class="pts reveal" id="about-points"></ul>
+    </section>
+
+    <section class="room" id="works" data-statue="laocoon">
+      <span class="mono"><span class="num">II</span> · The collection</span>
+      <h2 class="reveal">Works</h2>
+      <div class="works" id="works-list"></div>
+    </section>
+
+    <section class="room" id="annals" data-statue="apollo">
+      <span class="mono"><span class="num">III</span> · Acquisitions</span>
+      <h2 class="reveal">Annals</h2>
+      <ol class="annals reveal" id="annals-list"></ol>
+    </section>
+
+    <section class="room" id="papers" data-statue="discobolus">
+      <span class="mono"><span class="num">IV</span> · The archive</span>
+      <h2 class="reveal">Papers &amp; patents</h2>
+      <div class="pubs reveal" id="pubs"></div>
+    </section>
+
+    <section class="room" id="writing" data-statue="venus">
+      <span class="mono"><span class="num">V</span> · The reading room</span>
+      <h2 class="reveal">Writing &amp; now</h2>
+      <div class="essays reveal" id="essays"></div>
+      <ul class="focus reveal" id="focus"></ul>
+      <div class="chips reveal" id="interests"></div>
+    </section>
+
+    <section class="room contact" id="contact" data-statue="venusdark">
+      <span class="mono"><span class="num">VI</span> · Before you go</span>
+      <h2 class="reveal">Leave a light on</h2>
+      <ul class="reveal" id="contacts"></ul>
+      <p class="credits" id="credits"></p>
+    </section>
+  </div>
+</div>
+
+<script src="content.js"></script>
+<script src="dither.js"></script>
+<script src="credits.js"></script>
+<script>
+(() => {
+  const S = window.SITE, $ = (s) => document.querySelector(s), h = (t, c, html) => { const e = document.createElement(t); if (c) e.className = c; if (html != null) e.innerHTML = html; return e; };
+  const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  $('#name').innerHTML = S.name.split(' ').map(esc).join('<br>');
+  $('#tagline').textContent = S.tagline;
+  $('#roles').textContent = S.roles.join(' · ');
+  $('#about-p').textContent = S.about.paragraph;
+  S.about.points.forEach((p) => $('#about-points').append(h('li', '', `<b>${esc(p.title)}</b><span>${esc(p.detail)}</span>`)));
+  S.projects.forEach((p) => {
+    const links = Object.entries(p.links).map(([k, u]) => `<a href="${esc(u)}" target="_blank" rel="noopener">${k === 'live' ? 'Visit' : 'Source'}</a>`).join('');
+    $('#works-list').append(h('article', 'work reveal', `<div class="th"><canvas aria-hidden="true"></canvas><img src="${esc(p.image)}" alt="${esc(p.name)} screenshot" loading="lazy"></div><div><h3>${esc(p.name)}</h3><p>${esc(p.tagline)}</p><span class="tech">${p.tech.slice(0, 4).map(esc).join(' · ')}</span><div class="lk">${links}</div></div>`));
+  });
+  S.experience.forEach((x) => $('#annals-list').append(h('li', '', `<span class="when">${esc(x.period)}</span><div><h3>${esc(x.title)}, ${esc(x.company)}</h3><p>${esc(x.description)}</p><ul>${x.highlights.map((t) => `<li>${esc(t)}</li>`).join('')}</ul></div>`)));
+  $('#annals-list').append(h('li', '', `<span class="when">${esc(S.education.period)}</span><div><h3>${esc(S.education.degree)}, ${esc(S.education.school)}</h3><p>GPA ${esc(S.education.gpa)}</p></div>`));
+  S.publications.forEach((p) => $('#pubs').append(Object.assign(h('a', '', `<span class="mono">${p.kind} · ${esc(p.number)} · ${esc(p.year)}</span><h3>${esc(p.title)}</h3><p>${esc(p.description)}</p>`), { href: p.url, target: '_blank', rel: 'noopener' })));
+  const fmt = (d) => new Date(d + 'T12:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  S.writing.slice(0, 5).forEach((w) => $('#essays').append(Object.assign(h('a', '', `<h3>${esc(w.title)}</h3><span class="mono">${fmt(w.date)}</span><p>${esc(w.subtitle)}</p>`), { href: w.url })));
+  $('#essays').append(Object.assign(h('a', '', `<h3>All writing on Substack</h3><span class="mono">→</span>`), { href: S.thoughts.url, target: '_blank', rel: 'noopener' }));
+  S.now.focus.forEach((f) => $('#focus').append(h('li', '', esc(f))));
+  S.now.interests.forEach((t) => $('#interests').append(h('span', '', esc(t))));
+  S.contact.forEach((c) => $('#contacts').append(h('li', '', `<a href="${esc(c.href)}" ${c.href.startsWith('http') ? 'target="_blank" rel="noopener"' : ''}><span class="mono">${esc(c.label)}</span><span>${esc(c.display)}</span></a>`)));
+  window.renderCredits && window.renderCredits($('#credits'), ['venus-dark', 'nike', 'laocoon', 'apollo', 'discobolus', 'venus']);
+
+  // ---------- the lamp ----------
+  const D = window.Dither, cv = $('#niche'), ctx = cv.getContext('2d'), niche = $('.niche');
+  const STATUES = {
+    venusdark: { src: 'img/art/venus-dark.jpg', focus: [.5, .3], label: ['Aphrodite of Milos', 'Marble, c. 150–125 BC. Louvre, Paris.'] },
+    venus: { src: 'img/art/venus.jpg', focus: [.5, .25], label: ['Aphrodite of Milos', 'Marble, c. 150–125 BC. Louvre, Paris.'] },
+    nike: { src: 'img/art/nike.jpg', focus: [.5, .3], label: ['Winged Victory of Samothrace', 'Parian marble, c. 190 BC. Louvre, Paris.'] },
+    laocoon: { src: 'img/art/laocoon.jpg', focus: [.5, .4], label: ['Laocoön and His Sons', 'Marble, 1st century BC. Vatican Museums.'] },
+    apollo: { src: 'img/art/apollo.jpg', focus: [.5, .25], label: ['Apollo Belvedere', 'Marble, c. AD 120–140. Vatican Museums.'] },
+    discobolus: { src: 'img/art/discobolus.jpg', focus: [.5, .4], label: ['Discobolus', 'Marble, Roman copy after Myron. Palazzo Massimo, Rome.'] },
+  };
+  // four tones: night, cool shadow, warm marble, lamp-white
+  const TONES = ['#0A0B0D', '#262B36', '#8E7F69', '#E6D3B1', '#FFF4DE'];
+  const CELL = 3; let W = 0, H = 0, base = {}, cur = 'venusdark', next = null, mix = 0, mixStart = 0;
+  let lamp = { x: .55, y: .35, tx: .55, ty: .35 }, lastMove = 0, out;
+
+  async function load(key) {
+    if (base[key]) return base[key];
+    const S2 = STATUES[key], img = await D.loadImage(S2.src).catch(() => null); if (!img) return null;
+    const L = D.sharpen(D.levels(D.luminance(D.sample(img, W, H, { focus: S2.focus, bg: '#000' })), { lo: .07, hi: .995, gamma: 1.15, contrast: 1.15 }), W, H, .5);
+    return (base[key] = L);
+  }
+  function size() {
+    const r = cv.getBoundingClientRect(); W = Math.max(16, Math.round(r.width / CELL)); H = Math.max(16, Math.round(r.height / CELL));
+    cv.width = W; cv.height = H; out = ctx.createImageData(W, H); base = {};
+  }
+  const T = TONES.map(D.hex), BN = D.BN;
+  function render(now) {
+    const A = base[cur], B = next && base[next]; if (!A) return;
+    const lx = lamp.x * W, ly = lamp.y * H, rad = Math.min(W, H) * .42, inv = 1 / (rad * rad), flick = 1 + Math.sin(now / 130) * .015 + Math.sin(now / 47) * .01;
+    const o = out.data, k = T.length - 1;
+    for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+      const i = y * W + x, b = BN[(y & 63) * 64 + (x & 63)];
+      const l = B && b < mix ? B[i] : A[i];
+      const dx = x - lx, dy = (y - ly) * 1.1, light = Math.exp(-(dx * dx + dy * dy) * inv) * flick;
+      // ambient keeps the form legible; the lamp lifts it toward warm white
+      let v = l * (0.28 + light * 1.05) + light * .04;
+      v = Math.min(.9999, Math.max(0, v)) * k;
+      const lo = v | 0, c = T[Math.min(k, lo + ((v - lo) > b ? 1 : 0))], j = i * 4;
+      o[j] = c[0]; o[j + 1] = c[1]; o[j + 2] = c[2]; o[j + 3] = 255;
+    }
+    ctx.putImageData(out, 0, 0);
+  }
+
+  const rooms = [...document.querySelectorAll('[data-statue]')];
+  function roomAt() { const y = innerHeight * .5; let r = rooms[0]; for (const s of rooms) if (s.getBoundingClientRect().top < y) r = s; return r.dataset.statue; }
+  async function setStatue(key) {
+    if (key === cur && !next) return; if (key === next) return;
+    await load(key); if (next) { cur = next; } next = key; mix = 0; mixStart = performance.now();
+    const L = STATUES[key].label; $('#label i').textContent = L[0]; $('#label span').textContent = L[1];
+  }
+
+  function onMove(e) {
+    const r = niche.getBoundingClientRect(); lastMove = performance.now();
+    document.documentElement.style.setProperty('--lx', e.clientX + 'px'); document.documentElement.style.setProperty('--ly', e.clientY + 'px');
+    // the lamp follows the pointer anywhere on the page, mapped into the niche
+    lamp.tx = Math.min(1.05, Math.max(-.05, (e.clientX - r.left) / r.width)); lamp.ty = Math.min(1.05, Math.max(-.05, (e.clientY - r.top) / r.height));
+    if (e.clientX < r.left) { lamp.tx = .15 + (e.clientX / r.left) * .3; }
+  }
+  addEventListener('pointermove', onMove, { passive: true });
+
+  function loop(now) {
+    if (now - lastMove > 3500) { const t = now / 6000; lamp.tx = .5 + Math.sin(t) * .28; lamp.ty = .38 + Math.sin(t * 1.7) * .22; }
+    lamp.x += (lamp.tx - lamp.x) * .08; lamp.y += (lamp.ty - lamp.y) * .08;
+    if (next) { mix = Math.min(1, (now - mixStart) / 900); if (mix >= 1) { cur = next; next = null; } }
+    render(now);
+    requestAnimationFrame(loop);
+  }
+
+  async function init() {
+    size(); await load('venusdark'); await Promise.all(Object.keys(STATUES).map(load));
+    const L = STATUES[cur].label; $('#label i').textContent = L[0]; $('#label span').textContent = L[1];
+    if (D.reduced()) { render(0); addEventListener('scroll', () => { const k = roomAt(); if (k !== cur) { cur = k; render(0); } }, { passive: true }); return; }
+    requestAnimationFrame(loop);
+    addEventListener('scroll', () => setStatue(roomAt()), { passive: true });
+  }
+  init();
+
+  // project thumbnails glow faintly until hovered
+  const io = new IntersectionObserver((es) => es.forEach((e) => {
+    if (!e.isIntersecting) return; io.unobserve(e.target); e.target.classList.add('in');
+    const c = e.target.querySelector('.th canvas'); if (!c) return;
+    D.loadImage(e.target.querySelector('img').src).then((img) => {
+      const r = c.getBoundingClientRect(), w = Math.round(r.width / 2), hh = Math.round(r.height / 2); c.width = w; c.height = hh;
+      const L = D.levels(D.luminance(D.sample(img, w, hh, { focus: [.5, 0] })));
+      const id = D.ramp(L, w, hh, ['#0A0B0D', '#262B36', '#8E7F69', '#E6D3B1'], { matrix: 'bayer4' }); c.getContext('2d').putImageData(id, 0, 0);
+    }).catch(() => {});
+  }), { rootMargin: '0px 0px -6% 0px' });
+  document.querySelectorAll('.reveal').forEach((el) => io.observe(el));
+  let rt; addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(async () => { size(); await Promise.all(Object.keys(STATUES).map(load)); }, 250); });
+})();
+</script>
+</body>
+</html>
