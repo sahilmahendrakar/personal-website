@@ -51,15 +51,15 @@
 <body>
 <div class="wrap">
   <header>
-    <div class="mono">Living hero &middot; step one &middot; pick the dither</div>
-    <h1>Six ways to <em>dither</em></h1>
-    <p class="lede">Each tile is the same scene through a different dither, all leaning toward the wormy, swirling lines of the ruins study. "Redrawn" simplifies the picture first so it reads as a stylized scene, not the painting itself. Leave motion on: some styles shimmer as the scene moves, and that shimmer is part of the choice. Click any tile to see it full screen.</p>
+    <div class="mono">Living hero &middot; step one &middot; fine weave, in colour</div>
+    <h1>Fine weave, <em>in colour</em></h1>
+    <p class="lede">The Fine weave dither, now with colour. Each tile uses a palette of a different size taken from the scene, from three inks up to sixteen, with the darkest always the ink and the lightest always the paper. Pixels start at Fine; Finest is one screen pixel per dot. Click any tile to see it full screen.</p>
   </header>
 
   <div class="bar" role="toolbar" aria-label="Preview options">
     <div class="seg" id="scenes"><span class="mono">Scene</span></div>
     <div class="seg" id="draw"><span class="mono">Source</span><button data-v="redrawn" aria-pressed="true">Redrawn</button><button data-v="photo" aria-pressed="false">As painted</button></div>
-    <div class="seg" id="size"><span class="mono">Pixel</span><button data-v="2" aria-pressed="false">Fine</button><button data-v="3" aria-pressed="true">Medium</button><button data-v="4" aria-pressed="false">Coarse</button></div>
+    <div class="seg" id="size"><span class="mono">Pixel</span><button data-v="1" aria-pressed="false">Finest</button><button data-v="2" aria-pressed="true">Fine</button><button data-v="3" aria-pressed="false">Medium</button></div>
     <div class="seg" id="motion"><span class="mono">Motion</span><button data-v="on" aria-pressed="true">On</button><button data-v="off" aria-pressed="false">Off</button></div>
   </div>
 
@@ -96,14 +96,25 @@
     stucki: [[1, 0, 8 / 42], [2, 0, 4 / 42], [-2, 1, 2 / 42], [-1, 1, 4 / 42], [0, 1, 8 / 42], [1, 1, 4 / 42], [2, 1, 2 / 42], [-2, 2, 1 / 42], [-1, 2, 2 / 42], [0, 2, 4 / 42], [1, 2, 2 / 42], [2, 2, 1 / 42]],
   };
   // error diffusion to an arbitrary palette (works for 2 colours or more)
+  const luts = new WeakMap();
+  function nearest(P) {
+    let L = luts.get(P); if (L) return L;
+    const T = new Int16Array(32768).fill(-1);
+    L = (r, g, b) => {
+      const R = r < 0 ? 0 : r > 255 ? 255 : r, G = g < 0 ? 0 : g > 255 ? 255 : g, B = b < 0 ? 0 : b > 255 ? 255 : b, key = ((R >> 3) << 10) | ((G >> 3) << 5) | (B >> 3);
+      let v = T[key]; if (v >= 0) return v;
+      let bd = 1e9; for (let p = 0; p < P.length; p++) { const dr = R - P[p][0], dg = G - P[p][1], db = B - P[p][2], dd = dr * dr * 0.3 + dg * dg * 0.59 + db * db * 0.11; if (dd < bd) { bd = dd; v = p; } }
+      return (T[key] = v);
+    };
+    luts.set(P, L); return L;
+  }
   function diffuseRGB(rgb, w, h, P, kernel, serp) {
-    const K = KER[kernel], e = Float32Array.from(rgb), out = new Uint8Array(w * h);
+    const K = KER[kernel], e = Float32Array.from(rgb), out = new Uint8Array(w * h), near = nearest(P);
     for (let y = 0; y < h; y++) {
       const rtl = serp && (y & 1);
       for (let k = 0; k < w; k++) {
         const x = rtl ? w - 1 - k : k, i = y * w + x, j = i * 3, r = e[j], g = e[j + 1], b = e[j + 2];
-        let bi = 0, bd = 1e9;
-        for (let p = 0; p < P.length; p++) { const dr = r - P[p][0], dg = g - P[p][1], db = b - P[p][2], dd = dr * dr * 0.3 + dg * dg * 0.59 + db * db * 0.11; if (dd < bd) { bd = dd; bi = p; } }
+        const bi = near(r | 0, g | 0, b | 0);
         out[i] = bi; const er = r - P[bi][0], eg = g - P[bi][1], eb = b - P[bi][2];
         for (const [dx0, dy, f] of K) { const dx = rtl ? -dx0 : dx0, xx = x + dx, yy = y + dy; if (xx >= 0 && xx < w && yy < h) { const q = (yy * w + xx) * 3; e[q] += er * f; e[q + 1] += eg * f; e[q + 2] += eb * f; } }
       }
@@ -151,6 +162,14 @@
   }
 
   const VARIANTS = [
+    { id: 'fine2', name: 'Fine weave, two inks', note: 'The one you picked, for reference: Stucki diffusion in ink and paper.', run: (c) => c.diffuseL('stucki', true) },
+    { id: 'fine3', name: 'Three inks', note: 'Ink, paper and one colour from the scene. Almost a duotone, quiet and graphic.', run: (c) => c.diffuseC('stucki', true, 3) },
+    { id: 'fine5', name: 'Five inks', note: 'A small palette pulled from the scene. Colour shows up as a tint inside the weave.', run: (c) => c.diffuseC('stucki', true, 5) },
+    { id: 'fine8', name: 'Eight inks', note: 'Enough colours that each area of the scene gets its own hue, while the weave still shows everywhere.', run: (c) => c.diffuseC('stucki', true, 8) },
+    { id: 'fine12', name: 'Twelve inks', note: 'Richer and more painterly. The swirls get softer because neighbouring colours are closer.', run: (c) => c.diffuseC('stucki', true, 12) },
+    { id: 'fine16', name: 'Sixteen inks', note: 'The fullest version. Reads almost like the painting up close, with the weave as texture.', run: (c) => c.diffuseC('stucki', true, 16) },
+  ];
+  const OLD = [
     { id: 'worms', name: 'Worms', note: 'Atkinson diffusion in two inks. The ruins study, as it was: short wriggling strokes, crisp highlights.', mono: true, run: (c) => c.diffuseL('atkinson', true) },
     { id: 'eddies', name: 'Long eddies', note: 'Floyd–Steinberg in two inks. Longer, looser lines that curl into eddies in the mid-tones.', mono: true, run: (c) => c.diffuseL('floyd', true) },
     { id: 'fine', name: 'Fine weave', note: 'Stucki in two inks. Smaller, denser swirls; calmer and more like an engraving.', mono: true, run: (c) => c.diffuseL('stucki', true) },
@@ -159,6 +178,7 @@
     { id: 'colour', name: 'Worms in colour', note: 'The Worms dither with four inks taken from the scene instead of two. Keeps a hint of each painting’s colour.', mono: false, run: (c) => c.diffuseC('atkinson', true) },
   ];
 
+  const palCache = {};
   // ---------- "redrawn": strip out the photographic detail first ----------
   function kuwahara(rgb, w, h, r) {
     const out = new Float32Array(rgb.length);
@@ -179,9 +199,9 @@
   }
 
   // ---------- state ----------
-  const st = { scene: 'ruins', draw: 'redrawn', cell: 3, motion: !D.reduced(), full: null };
-  try { const s = JSON.parse(localStorage.getItem('dither-choices') || '{}'); Object.assign(st, s); } catch (e) {}
-  const save = () => { try { localStorage.setItem('dither-choices', JSON.stringify({ scene: st.scene, draw: st.draw, cell: st.cell, motion: st.motion })); } catch (e) {} };
+  const st = { scene: 'ruins', draw: 'redrawn', cell: 2, motion: !D.reduced(), full: null };
+  try { const s = JSON.parse(localStorage.getItem('dither-choices-colour') || '{}'); Object.assign(st, s); } catch (e) {}
+  const save = () => { try { localStorage.setItem('dither-choices-colour', JSON.stringify({ scene: st.scene, draw: st.draw, cell: st.cell, motion: st.motion })); } catch (e) {} };
 
   // build the toolbar
   SCENES.forEach((s) => { const b = document.createElement('button'); b.dataset.v = s.id; b.textContent = s.name; $('#scenes').append(b); });
@@ -216,13 +236,24 @@
     for (let i = 0, n = rgb.length / 3; i < n; i++) { rgb[i * 3] = id.data[i * 4]; rgb[i * 3 + 1] = id.data[i * 4 + 1]; rgb[i * 3 + 2] = id.data[i * 4 + 2]; }
     if (st.draw === 'redrawn') { rgb = kuwahara(rgb, w + 2 * m, h + 2 * m, 2); rgb = kuwahara(rgb, w + 2 * m, h + 2 * m, 1); }
     // four inks for the colour variant: k-means of the scene, darkest swapped for the ink, lightest for the paper
-    const pal = D.extract(id, 4, 8).sort((a, b) => (a[0] + a[1] + a[2]) - (b[0] + b[1] + b[2]));
-    pal[0] = D.hex(S.ink); pal[3] = D.hex(S.paper);
+    // palettes of several sizes from the scene; the darkest becomes the ink and the lightest the paper
+    const vivid = new ImageData(new Uint8ClampedArray(id.data), id.width, id.height), vd = vivid.data;
+    for (let i = 0; i < vd.length; i += 4) { const l = 0.3 * vd[i] + 0.59 * vd[i + 1] + 0.11 * vd[i + 2]; for (let q = 0; q < 3; q++) vd[i + q] = l + (vd[i + q] - l) * 1.18; }
+    const pals = {};
+    for (const K of [3, 4, 5, 8, 12, 16]) {
+      const p = (palCache[S.id + K] ||= D.extract(vivid, K, 10).sort((a, b) => (a[0] + a[1] + a[2]) - (b[0] + b[1] + b[2])));
+      // push the inks apart from the scene's average colour, so every area of the scene falls
+      // between two inks and keeps the weave instead of landing exactly on one flat ink
+      const mean = [0, 1, 2].map((q) => p.reduce((t, c) => t + c[q], 0) / K), x = 1.32 + K * 0.012;
+      pals[K] = p.map((c) => c.map((v, q) => clamp(Math.round(mean[q] + (v - mean[q]) * x), 0, 255)));
+      pals[K][0] = D.hex(S.ink); pals[K][K - 1] = D.hex(S.paper);
+    }
+    const pal = pals[4];
     // tone mapping for the two-ink variants
     // a soft, swirly grain so flat areas break into eddies instead of a regular weave
     let G = new Float32Array(w * h); for (let i = 0; i < G.length; i++) G[i] = Math.random() * 2 - 1;
     G = blur(blur(G, w, h, 3), w, h, 2); let mx = 0; for (const v of G) mx = Math.max(mx, Math.abs(v)); for (let i = 0; i < G.length; i++) G[i] /= mx || 1;
-    return { S, w, h, m, PW: w + 2 * m, rgb, pal, G, ink: D.hex(S.ink), paper: D.hex(S.paper) };
+    return { S, w, h, m, PW: w + 2 * m, rgb, pal, pals, G, ink: D.hex(S.ink), paper: D.hex(S.paper) };
   }
 
   function frame(src, ctx, v, t) {
@@ -248,12 +279,13 @@
       diffuseL(kernel, serp) { let L = this.L(); if (st.draw !== 'redrawn') L = D.sharpen(L, w, h, 0.6); const rgb2 = new Float32Array(w * h * 3); for (let i = 0; i < w * h; i++) rgb2[i * 3] = rgb2[i * 3 + 1] = rgb2[i * 3 + 2] = L[i] * 255; return two(diffuseRGB(rgb2, w, h, [[0, 0, 0], [255, 255, 255]], kernel, serp)); },
       riemersma() { const L = this.L(), rgb2 = new Float32Array(w * h * 3); for (let i = 0; i < w * h; i++) rgb2[i * 3] = rgb2[i * 3 + 1] = rgb2[i * 3 + 2] = L[i] * 255; return two(riemersma(rgb2, w, h, [[0, 0, 0], [255, 255, 255]])); },
       contours() { return two(contours(this.L(true), w, h, t || 0)); },
-      diffuseC(kernel, serp) {
+      diffuseC(kernel, serp, K = 4) {
         // stretch the colours toward the four inks before diffusing
-        const L = this.L(), c2 = new Float32Array(w * h * 3);
-        for (let i = 0; i < w * h; i++) { const l0 = (0.3 * cur[i * 3] + 0.59 * cur[i * 3 + 1] + 0.11 * cur[i * 3 + 2]) / 255 || 0.001, k = L[i] / l0; for (let q = 0; q < 3; q++) c2[i * 3 + q] = clamp(cur[i * 3 + q] * k, 0, 255); }
-        const idx = diffuseRGB(c2, w, h, src.pal, kernel, serp), id = ctx.createImageData(w, h);
-        for (let i = 0; i < w * h; i++) { const p = src.pal[idx[i]]; id.data[i * 4] = p[0]; id.data[i * 4 + 1] = p[1]; id.data[i * 4 + 2] = p[2]; id.data[i * 4 + 3] = 255; }
+        // keep the scene's own tones; only stretch contrast a touch and add the swirly grain
+        const c2 = new Float32Array(w * h * 3), g = S.cgain || 1.08;
+        for (let i = 0; i < w * h; i++) { const n = src.G[i] * 26; for (let q = 0; q < 3; q++) c2[i * 3 + q] = clamp((cur[i * 3 + q] - 128) * g + 128 + n + (S.clift || 0), 0, 255); }
+        const P = src.pals[K], idx = diffuseRGB(c2, w, h, P, kernel, serp), id = ctx.createImageData(w, h);
+        for (let i = 0; i < w * h; i++) { const p = P[idx[i]]; id.data[i * 4] = p[0]; id.data[i * 4 + 1] = p[1]; id.data[i * 4 + 2] = p[2]; id.data[i * 4 + 3] = 255; }
         return id;
       },
     };
