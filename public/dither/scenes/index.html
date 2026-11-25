@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Sahil Mahendrakar</title>
+<meta name="description" content="Sahil Mahendrakar. A living, dithered scene that changes on every visit.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Karla:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root { --ink: #1d2136; --paper: #f5eedd; --accent: #c0507a; --display: "Cormorant", "Cormorant Garamond", Georgia, serif; --sans: "Karla", system-ui, sans-serif; color-scheme: light; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--paper); color: var(--ink); }
+  body { font: 400 17px/1.6 var(--sans); -webkit-font-smoothing: antialiased; }
+  a { color: inherit; }
+  .hero { position: relative; height: 100svh; min-height: 520px; overflow: hidden; }
+  .hero canvas { position: absolute; inset: 0; width: 100%; height: 100%; image-rendering: pixelated; display: block; }
+  .title { position: absolute; left: clamp(20px, 6vw, 96px); top: clamp(56px, 13vh, 140px); right: 20px; pointer-events: none; }
+  .title h1 { font: 500 clamp(56px, 10.5vw, 176px)/0.86 var(--display); letter-spacing: -0.025em; margin: 0; color: var(--ink); }
+  .title h1 i { font-weight: 400; }
+  .title p { margin: clamp(14px, 2.4vh, 26px) 0 0; font: italic 500 clamp(20px, 2.1vw, 30px)/1.3 var(--display); }
+  .title p span + span::before { content: "\00a0\00b7\00a0"; }
+  main { max-width: 680px; margin: 0 auto; padding: clamp(64px, 12vh, 120px) 20px clamp(64px, 10vh, 110px); }
+  main p { font: 400 clamp(21px, 2.1vw, 25px)/1.45 var(--display); margin: 0 0 30px; }
+  .links { display: flex; flex-wrap: wrap; gap: 8px 22px; font-size: 15px; letter-spacing: .02em; }
+  .links a { text-decoration: none; border-bottom: 1px solid currentColor; padding-bottom: 1px; }
+  .links a:hover { color: var(--accent); }
+  @media (max-width: 640px) { .title { top: 64px; } .title p span { display: block; } .title p span + span::before { content: none; } }
+</style>
+</head>
+<body>
+<section class="hero">
+  <canvas id="scene" aria-hidden="true"></canvas>
+  <div class="title">
+    <h1>Sahil<br><i>Mahendrakar</i></h1>
+    <p id="roles"></p>
+  </div>
+</section>
+<main>
+  <p id="about"></p>
+  <nav class="links" id="links"></nav>
+</main>
+<script src="../content.js"></script>
+<script src="engine.js"></script>
+<script src="ruins.js"></script>
+<script>
+  const S = window.SITE;
+  document.getElementById('roles').innerHTML = S.roles.map((r) => `<span>${r}</span>`).join('');
+  document.getElementById('about').textContent = S.about.paragraph;
+  document.getElementById('links').innerHTML = S.contact.map((c) => `<a href="${c.href}"${c.href.startsWith('http') ? ' target="_blank" rel="noopener"' : ''}>${c.label}</a>`).join('');
+  // one scene is picked at random on every visit
+  const names = Object.keys(window.SCENES), want = new URLSearchParams(location.search).get('scene');
+  const pick = names.includes(want) ? want : names[(Math.random() * names.length) | 0], sc = window.SCENES[pick];
+  document.documentElement.style.setProperty('--ink', sc.ink);
+  document.documentElement.style.setProperty('--paper', sc.paper);
+  window.live = LivingScene(document.getElementById('scene'), sc, { cell: 2 });
+</script>
+</body>
+</html>
