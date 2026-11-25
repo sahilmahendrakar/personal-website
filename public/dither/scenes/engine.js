@@ -119,7 +119,8 @@
   window.LivingScene = function (canvas, scene, opts = {}) {
     const ctx = canvas.getContext('2d');
     const cellOf = () => (opts.cell || 2);
-    let water = null, hasFront = false, fadeN = null, clearF = null; let W, H, back, front, frontA, colour, G, L, Lused, out, errOut, e, dirty, rowDirty, mid, vine, ivy, inkC, paperC, R, state, ready = false;
+    let water = null, hasFront = false, fadeN = null, clearF = null, flowM = null, fxA = null, fyA = null, flowPh = null, bob = null, gW = null, gS = null, gP = null, rM = null, nX = null, nY = null, dyn = null, dynC = null, dynA = null, dynV = null, db = null;
+    const light = { x: 0, y: 0 }, lq = { x: 0, y: 0 }; let W, H, back, front, frontA, colour, G, L, Lused, out, errOut, e, dirty, rowDirty, mid, vine, ivy, inkC, paperC, R, state, ready = false;
     const pointer = { x: -1e4, y: -1e4, vx: 0, vy: 0, t: 0 };
     let scrollP = 0, t0 = performance.now(), lastVine = -1, lastTint = 0, frameNo = 0;
     const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -136,12 +137,21 @@
       const P = { W, H, R, back: cb.getContext('2d'), front: cf.getContext('2d'), colour: cc.getContext('2d'), noise: (scale, oct) => noiseField(W, H, R, scale, oct), portrait: H > W * 1.05 };
       P.image = (o) => {
         const im = scene._img, iw = im.naturalWidth, ih = im.naturalHeight, f = o.focus || [0.5, 0.5], z = o.zoom || 1;
-        const sc = Math.max(W / iw, H / ih) * z, dw = iw * sc, dh = ih * sc;
-        const ox = clamp(W / 2 - f[0] * dw, W - dw, 0), oy = clamp(H / 2 - f[1] * dh, H - dh, 0);
-        for (const c of [P.back, P.colour]) { c.save(); if (o.mirror) { c.translate(W, 0); c.scale(-1, 1); } c.drawImage(im, ox, oy, dw, dh); c.restore(); }
-        P.layer = (name) => { // another image aligned to the painting (a mask), read back as 0..1
+        let sc, dw, dh, ox, oy;
+        if (o.fit === 'height') { sc = H / ih * z; dw = iw * sc; dh = ih * sc; ox = (o.at ?? 0.5) * W - dw / 2; oy = (H - dh) * f[1]; }
+        else { sc = Math.max(W / iw, H / ih) * z; dw = iw * sc; dh = ih * sc; ox = clamp(W / 2 - f[0] * dw, W - dw, 0); oy = clamp(H / 2 - f[1] * dh, H - dh, 0); }
+        let src = im;
+        if (o.feather) { // fade the picture's edges into whatever the scene painted underneath
+          const c = document.createElement('canvas'), w = Math.ceil(dw), h = Math.ceil(dh), [fl, fr, ft, fb] = o.feather; c.width = w; c.height = h;
+          const x = c.getContext('2d'); x.drawImage(im, 0, 0, w, h); x.globalCompositeOperation = 'destination-in';
+          const ramp = (g, a, b) => { g.addColorStop(0, 'rgba(0,0,0,0)'); g.addColorStop(Math.max(0.001, a), '#000'); g.addColorStop(Math.min(0.999, 1 - b), '#000'); g.addColorStop(1, 'rgba(0,0,0,0)'); return g; };
+          x.fillStyle = ramp(x.createLinearGradient(0, 0, w, 0), fl, fr); x.fillRect(0, 0, w, h);
+          x.fillStyle = ramp(x.createLinearGradient(0, 0, 0, h), ft, fb); x.fillRect(0, 0, w, h); src = c;
+        }
+        for (const c of [P.back, P.colour]) { c.save(); if (o.mirror) { c.translate(W, 0); c.scale(-1, 1); } c.drawImage(src, ox, oy, dw, dh); c.restore(); }
+        P.layer = (name, ch = 0) => { // another image aligned to the painting (a mask), one channel read back as 0..1
           const c = layerCanvas(), x = c.getContext('2d'); if (o.mirror) { x.translate(W, 0); x.scale(-1, 1); } x.drawImage(scene._imgs[name], ox, oy, dw, dh);
-          const d = x.getImageData(0, 0, W, H).data, a = new Float32Array(W * H); for (let i = 0; i < W * H; i++) a[i] = d[i * 4] / 255; return a;
+          const d = x.getImageData(0, 0, W, H).data, a = new Float32Array(W * H); for (let i = 0; i < W * H; i++) a[i] = d[i * 4 + ch] / 255; return a;
         };
         // image coordinates (0..1) to dither dots
         return (u, v) => [o.mirror ? W - (ox + u * dw) : ox + u * dw, oy + v * dh, sc];
@@ -166,7 +176,7 @@
       if (flow) { const sm = lic(flow, back, W, H, scene.smear ?? 4); for (let i = 0; i < W * H; i++) back[i] = back[i] * 0.35 + sm[i] * 0.65; }
       if (state.texture) state.texture(back, front);
       // the colour layer is blurred heavily: the middle ink drifts, it never outlines shapes
-      const cd = P.colour.getImageData(0, 0, W, H).data, br = Math.max(3, Math.round(Math.min(W, H) / 30));
+      const cd = P.colour.getImageData(0, 0, W, H).data, br = Math.max(3, Math.round(Math.min(W, H) / (scene.colourBlur || 30)));
       colour = new Float32Array(W * H * 3);
       for (let q = 0; q < 3; q++) { let A = new Float32Array(W * H); for (let i = 0; i < W * H; i++) A[i] = cd[i * 4 + q]; A = blur(blur(A, W, H, br), W, H, br); for (let i = 0; i < W * H; i++) colour[i * 3 + q] = A[i]; }
       // a soft swirly grain so flat areas break into eddies instead of a regular weave
@@ -182,8 +192,37 @@
       water = null;
       if (state.water) {
         water = typeof state.water === 'function' ? Float32Array.from({ length: W * H }, (_, i) => state.water(i % W, (i / W) | 0)) : state.water;
-        const wi = []; wTop = H; wBot = 0; for (let i = 0; i < W * H; i++) if (water[i] > 0.5) { wi.push(i); const y = (i / W) | 0; if (y < wTop) wTop = y; if (y > wBot) wBot = y; }
-        waterIdx = Int32Array.from(wi);
+        wTop = H; wBot = 0; for (let i = 0; i < W * H; i++) if (water[i] > 0.5) { const y = (i / W) | 0; if (y < wTop) wTop = y; if (y > wBot) wBot = y; }
+      }
+      // everything else that moves on its own: a sky whose strokes slide, boats that bob, glows that breathe,
+      // a statue relit by a moving light, and a small drawn layer (a swing). Only these dots are recomposed.
+      flowM = state.flow || null; bob = state.bob || null; rM = state.relight || null; dyn = state.dyn || null; gW = null;
+      if (flowM) { const F = flowField(back, W, H, R); fxA = F.fx; fyA = F.fy; flowPh = noiseField(W, H, R, Math.max(16, W / 20), 2); }
+      if (rM) {
+        const sb = blur(blur(back, W, H, 2), W, H, 2); nX = new Float32Array(W * H); nY = new Float32Array(W * H);
+        for (let y = 1; y < H - 1; y++) for (let x = 1; x < W - 1; x++) { const i = y * W + x; nX[i] = (sb[i + 1] - sb[i - 1]) * 6; nY[i] = (sb[i + W] - sb[i - W]) * 6; }
+      }
+      if (state.glows) {
+        gW = new Float32Array(W * H); gS = new Float32Array(W * H); gP = new Float32Array(W * H);
+        for (const g of state.glows) {
+          const r = g.r, ph = R() * 6.28;
+          for (let y = Math.max(0, (g.y - r) | 0); y < Math.min(H, g.y + r + 1); y++) for (let x = Math.max(0, (g.x - r) | 0); x < Math.min(W, g.x + r + 1); x++) {
+            const d = Math.hypot(x - g.x, y - g.y) / r; if (d >= 1) continue; const i = y * W + x, w = g.amp * (1 - d) * (1 - d);
+            if (Math.abs(w) > Math.abs(gW[i])) { gW[i] = w; gS[i] = g.speed || 1; gP[i] = ph; }
+          }
+        }
+      }
+      if (dyn) {
+        const [a, b, c, d] = dyn.box; db = [Math.max(0, a | 0), Math.max(0, b | 0), Math.min(W, Math.ceil(c)), Math.min(H, Math.ceil(d))];
+        dynC = document.createElement('canvas'); dynC.width = Math.max(1, db[2] - db[0]); dynC.height = Math.max(1, db[3] - db[1]);
+        dynA = new Float32Array(dynC.width * dynC.height); dynV = new Float32Array(dynC.width * dynC.height);
+      }
+      {
+        const on = new Uint8Array(W * H);
+        for (let i = 0; i < W * H; i++) if ((water && water[i] > 0.5) || (flowM && flowM[i] > 0.5) || (bob && bob[i] > 0.5) || (gW && gW[i] !== 0) || (rM && rM[i] > 0)) on[i] = 1;
+        if (dyn) for (let y = db[1]; y < db[3]; y++) for (let x = db[0]; x < db[2]; x++) on[y * W + x] = 1;
+        const wi = []; for (let i = 0; i < W * H; i++) if (on[i]) wi.push(i);
+        waterIdx = wi.length ? Int32Array.from(wi) : null;
       }
       // a soft wash of paper behind the name, with a ragged edge, so the title reads cleanly
       clearF = null;
@@ -197,6 +236,8 @@
             const v = clamp(1 - dd + cn[i] * 0.35); clearF[i] = Math.max(clearF[i], v * v * (3 - 2 * v));
           }
         }
+        // some subjects (a lit statue) keep their light even near the name
+        if (state.keepClear) for (let i = 0; i < W * H; i++) clearF[i] *= 1 - state.keepClear[i];
       }
       needFull = true;
       if (state.birds) state.birds.forEach((b) => { const a = R() * 6.28; Object.assign(b, { x: (b.hx + Math.cos(a) * b.rx) * W, y: (b.hy + Math.sin(a * 1.3) * b.ry) * H, vx: 0, vy: 0, ph: R() * 6.28, a }); });
@@ -220,6 +261,8 @@
           if (kk) { r += (gk[0] - r) * kk; g += (gk[1] - g) * kk; b += (gk[2] - b) * kk; }
         }
         let s = sat;
+        // under the name the middle ink fades toward the wash, so washed-out shapes don't leave coloured ghosts
+        if (clearF && clearF[i] > 0) { const c = (scene.clearTo ?? 0.93) > 0.5 ? paperC : inkC, k = clearF[i] * 0.7; r += (c[0] - r) * k; g += (c[1] - g) * k; b += (c[2] - b) * k; }
         if (vd && leaf) { const k = clamp(vd[i] * (scene.leafMix ?? 2.2)); r += (leaf[0] - r) * k; g += (leaf[1] - g) * k; b += (leaf[2] - b) * k; s *= 1 - (scene.leafDesat ?? 0) * k; }
         const l = 0.3 * r + 0.59 * g + 0.11 * b;
         mid[i * 3] = target + (r - l) * s; mid[i * 3 + 1] = target + (g - l) * s; mid[i * 3 + 2] = target + (b - l) * s;
@@ -253,6 +296,16 @@
         const sx = x - wd, xi = clamp(Math.floor(sx), 0, W - 2), f = clamp(sx - xi), ja = y * W + xi;
         if (water[ja] > 0.5 && water[ja + 1] > 0.5) v = back[ja] * (1 - f) + back[ja + 1] * f;
       }
+      if (flowM && amp && flowM[i] > 0.5) {
+        // the sky's strokes slide a little way along themselves and back, each patch in its own time
+        const s = (scene.flowAmp ?? 2) * (W / 1440 + 0.4) * Math.sin(t * (scene.flowSpeed ?? 0.6) + flowPh[i] * 7), sx = clamp(x + fxA[i] * s, 0, W - 1.001), sy = clamp(y + fyA[i] * s, 0, H - 1.001);
+        const xi = sx | 0, yi = sy | 0, fx = sx - xi, fy = sy - yi, j = yi * W + xi;
+        v = (back[j] * (1 - fx) + back[j + 1] * fx) * (1 - fy) + (back[j + W] * (1 - fx) + back[j + W + 1] * fx) * fy;
+      }
+      if (bob && amp && bob[i] > 0.5) { const sy = clamp(y - 0.9 * Math.sin(t * 1.25 + x * 0.012), 0, H - 1.001), yi = sy | 0, f = sy - yi; v = back[yi * W + x] * (1 - f) + back[(yi + 1) * W + x] * f; }
+      if (gW && gW[i] !== 0) v += gW[i] * (amp ? 0.5 + 0.5 * Math.sin(t * gS[i] + gP[i]) : 0.5);
+      if (rM && rM[i] > 0) v += rM[i] * (nX[i] * lq.x + nY[i] * lq.y);
+      if (dyn && x >= db[0] && x < db[2] && y >= db[1] && y < db[3]) { const j = (y - db[1]) * dynC.width + (x - db[0]), a = dynA[j]; if (a > 0.004) v = v * (1 - a) + dynV[j] * a; }
       if (hasFront && (frontA[i] > 0.001 || amp)) {
         let dx = 0;
         if (amp) {
@@ -267,13 +320,18 @@
       if (ivy) { const d = vine.dens[i]; if (d > 0.06) { const k = Math.min(1, d * 1.5); v = v * (1 - k) + ((scene.ivyTone ?? 0.2) + 0.3 * Math.max(0, d - 0.7)) * k; } else if (vine.stem[i]) v = 0.1; }
       // the painting dissolves into the paper along a ragged edge at the bottom, rising as you scroll
       const fe = (y / H) - edge + fadeN[i] * 0.07; if (fe > 0) v += Math.min(1.1, fe * 9);
-      if (clearF && clearF[i] > 0 && v < 0.93) v += (0.93 - v) * clearF[i] * (scene.clearStrength ?? 0.82);
+      if (clearF && clearF[i] > 0) { const to = scene.clearTo ?? 0.93; if (to > 0.5 ? v < to : v > to) v += (to - v) * clearF[i] * (scene.clearStrength ?? 0.82); }
       return clamp(v + G[i] * (scene.grain ?? 0.08), -0.2, 1.2);
     }
     function compose(t) {
       const amp = reduced ? 0 : (scene.sway ?? 0.55), step = Math.floor(t * 7) / 7;
       const edge = (scene.fadeAt ?? 0.92) - Math.max(0, scrollP - 0.05) * 0.5;
       if (edge !== lastEdge) needFull = true;
+      if (dyn) {
+        const x = dynC.getContext('2d'); x.setTransform(1, 0, 0, 1, 0, 0); x.clearRect(0, 0, dynC.width, dynC.height); x.translate(-db[0], -db[1]);
+        dyn.draw(x, reduced ? 0 : t, { W, H, pointer, scrollP });
+        const d = x.getImageData(0, 0, dynC.width, dynC.height).data; for (let j = 0; j < dynA.length; j++) { dynA[j] = d[j * 4 + 3] / 255; dynV[j] = d[j * 4] / 255; }
+      }
       if (needFull || hasFront) {
         for (let y = 0, i = 0; y < H; y++) for (let x = 0; x < W; x++, i++) L[i] = px(x, y, i, t, edge, amp, step);
         needFull = false; lastEdge = edge; composed = 'all';
@@ -361,9 +419,10 @@
         b.x += b.vx * dt; b.y += b.vy * dt; b.ph += dt * (3 + sp * 0.25);
       }
     }
-    function drawBirds() {
+    function drawOverlay(t, dt) {
       const o = overlay(); o.clearRect(0, 0, W, H); o.fillStyle = scene.ink;
-      for (const b of state.birds) {
+      if (state.draw) { o.save(); state.draw(o, t, dt, { W, H, pointer, scrollP, R, reduced }); o.restore(); o.fillStyle = scene.ink; }
+      for (const b of state.birds || []) {
         const ph = Math.floor(b.ph) % 4, f = BIRD[[0, 1, 2, 1][(ph + 4) % 4]], bx = Math.round(b.x), by = Math.round(b.y), z = Math.max(1, Math.round(W / 900));
         for (const [ox, oy] of f) o.fillRect(bx + ox * z, by + oy * z, z, z);
       }
@@ -381,14 +440,21 @@
         if (target > lastVine + 0.004) { lastVine = Math.max(lastVine, target); renderIvy(lastVine); needFull = true; if (t - lastTint > 1.5) { tintMid(); lastTint = t; } }
       }
       if (state.birds) stepBirds(dt, t);
-      if (frameNo === 1 || needFull || frameNo % 3 === 0) { compose(t); dither(frameNo === 1); paintOut(frameNo === 1); }
-      if (state.birds) drawBirds();
+      if (rM) {
+        // the light drifts slowly on its own and leans toward the cursor
+        const on = pointer.x > -1e3, tx = on ? clamp((pointer.x / W - 0.5) * 2, -1, 1) : Math.cos(t * 0.05), ty = on ? clamp((pointer.y / H - 0.4) * 2, -1, 1) : Math.sin(t * 0.035) * 0.5;
+        light.x += (tx * (scene.lightAmp ?? 0.6) - light.x) * 0.03; light.y += (ty * (scene.lightAmp ?? 0.6) - light.y) * 0.03;
+        // the light moves in small steps, so the statue re-weaves only when it has really moved
+        lq.x = Math.round(light.x * 14) / 14; lq.y = Math.round(light.y * 14) / 14;
+      }
+      if (frameNo === 1 || needFull || frameNo % (scene.every || 3) === 0) { compose(t); dither(frameNo === 1); paintOut(frameNo === 1); }
+      if (state.birds || state.draw) drawOverlay(t, dt);
     }
     async function start() {
       if (scene.src && !scene._img) scene._img = await loadImage(scene.src);
       if (scene.images && !scene._imgs) { scene._imgs = {}; for (const [k, u] of Object.entries(scene.images)) scene._imgs[k] = await loadImage(u); }
       build();
-      if (reduced) { if (ivy) { lastVine = 0.75; renderIvy(lastVine); tintMid(); } compose(0); dither(true); paintOut(true); if (state.birds) drawBirds(); return; }
+      if (reduced) { if (ivy) { lastVine = 0.75; renderIvy(lastVine); tintMid(); } compose(0); dither(true); paintOut(true); if (state.birds || state.draw) drawOverlay(0, 0); return; }
       raf = requestAnimationFrame(tick);
     }
     addEventListener('pointermove', (ev) => {
