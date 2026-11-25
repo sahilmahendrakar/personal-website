@@ -17,10 +17,19 @@
   .hero { position: relative; height: 100svh; min-height: 520px; overflow: hidden; }
   .hero canvas { position: absolute; inset: 0; width: 100%; height: 100%; image-rendering: pixelated; display: block; }
   .title { position: absolute; left: clamp(20px, 6vw, 96px); top: clamp(56px, 13vh, 140px); right: 20px; pointer-events: none; }
+  /* a soft halo of paper behind the letters, on top of the wash the scene paints under them */
+  .title { --halo: color-mix(in srgb, var(--paper) 78%, transparent); text-shadow: 0 0 2px var(--halo), 0 0 14px var(--halo), 0 0 34px var(--halo); }
   .title h1 { font: 500 clamp(56px, 10.5vw, 176px)/0.86 var(--display); letter-spacing: -0.025em; margin: 0; color: var(--ink); }
   .title h1 i { font-weight: 400; }
   .title p { margin: clamp(14px, 2.4vh, 26px) 0 0; font: italic 500 clamp(20px, 2.1vw, 30px)/1.3 var(--display); }
   .title p span + span::before { content: "\00a0\00b7\00a0"; }
+  .icons { display: flex; gap: 2px; margin: clamp(12px, 2vh, 20px) 0 0 -9px; pointer-events: auto; width: max-content; }
+  .icons a { position: relative; display: grid; place-items: center; width: 40px; height: 40px; color: var(--ink); transition: color .3s ease-out; }
+  .icons svg { width: 21px; height: 21px; fill: currentColor; filter: drop-shadow(0 0 6px var(--halo)) drop-shadow(0 0 12px var(--halo)); transition: transform .3s ease-out; }
+  .icons a:hover svg, .icons a:focus-visible svg { transform: translateY(-2px) scale(1.1); }
+  .icons a[data-hover]:hover, .icons a[data-hover]:focus-visible { color: var(--hover); }
+  .icons a span { position: absolute; bottom: 100%; left: 50%; transform: translate(-50%, 4px); white-space: nowrap; padding: 3px 10px; border-radius: 99px; background: var(--ink); color: var(--paper); font: 500 11px/1.4 var(--sans); letter-spacing: .04em; text-shadow: none; opacity: 0; pointer-events: none; transition: opacity .2s, transform .2s; }
+  .icons a:hover span, .icons a:focus-visible span { opacity: 1; transform: translate(-50%, 0); }
   main { max-width: 680px; margin: 0 auto; padding: clamp(28px, 5vh, 56px) 20px clamp(64px, 10vh, 110px); }
   main p { font: 400 clamp(21px, 2.1vw, 25px)/1.45 var(--display); margin: 0 0 30px; }
   .links { display: flex; flex-wrap: wrap; gap: 8px 22px; font-size: 15px; letter-spacing: .02em; }
@@ -35,6 +44,7 @@
   <div class="title">
     <h1>Sahil<br><i>Mahendrakar</i></h1>
     <p id="roles"></p>
+    <nav class="icons" id="icons" aria-label="Elsewhere"></nav>
   </div>
 </section>
 <main>
@@ -49,13 +59,35 @@
   const S = window.SITE;
   document.getElementById('roles').innerHTML = S.roles.map((r) => `<span>${r}</span>`).join('');
   document.getElementById('about').textContent = S.about.paragraph;
-  document.getElementById('links').innerHTML = S.contact.map((c) => `<a href="${c.href}"${c.href.startsWith('http') ? ' target="_blank" rel="noopener"' : ''}>${c.label}</a>`).join('');
+  // the icons from the original site, in the same order
+  const ICONS = [
+    ['GitHub', 'https://github.com/sahilmahendrakar', '', 'M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12'],
+    ['LinkedIn', 'https://www.linkedin.com/in/sahil-mahendrakar/', '#0A66C2', 'M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.225 0z'],
+    ['X', 'https://x.com/sahilmdkr', '', 'M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z'],
+    ['Substack', 'https://sahilmahendrakar.substack.com', '#FF6719', 'M22.539 8.242H1.46V5.406h21.08v2.836zM1.46 10.812V24L12 18.11 22.54 24V10.812H1.46zM22.54 0H1.46v2.836h21.08V0z'],
+    ['Writings', '/writings', '', 'M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z'],
+  ];
+  document.getElementById('icons').innerHTML = ICONS.map(([l, h, c, d]) => `<a href="${h}" aria-label="${l}"${h.startsWith('http') ? ' target="_blank" rel="noopener noreferrer"' : ''}${c ? ` data-hover style="--hover:${c}"` : ''}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="${d}"/></svg><span role="tooltip">${l}</span></a>`).join('');
+  // the icons above cover the profiles, so only email is spelled out down here
+  document.getElementById('links').innerHTML = S.contact.filter((c) => c.label === 'Email').map((c) => `<a href="${c.href}"${c.href.startsWith('http') ? ' target="_blank" rel="noopener"' : ''}>${c.label}</a>`).join('');
   // one scene is picked at random on every visit
   const names = Object.keys(window.SCENES), want = new URLSearchParams(location.search).get('scene');
   const pick = names.includes(want) ? want : names[(Math.random() * names.length) | 0], sc = window.SCENES[pick];
   document.documentElement.style.setProperty('--ink', sc.ink);
   document.documentElement.style.setProperty('--paper', sc.paper);
-  window.live = LivingScene(document.getElementById('scene'), sc, { cell: 1 });
+  // the scene clears a soft patch of paper behind each line of the name, the roles and the icons
+  const hero = document.querySelector('.hero');
+  function clearRects() {
+    const hb = hero.getBoundingClientRect(), out = [], rg = document.createRange();
+    for (const el of document.querySelectorAll('.title h1, .title p, .icons')) {
+      rg.selectNodeContents(el);
+      const rs = el.classList.contains('icons') ? [el.getBoundingClientRect()] : rg.getClientRects();
+      for (const r of rs) if (r.width > 2) out.push([(r.left - hb.left) / hb.width, (r.top - hb.top) / hb.height, (r.right - hb.left) / hb.width, (r.bottom - hb.top) / hb.height]);
+    }
+    return out;
+  }
+  const start = () => { window.live = LivingScene(document.getElementById('scene'), sc, { cell: 1, clear: clearRects }); };
+  document.fonts && document.fonts.ready ? document.fonts.ready.then(start) : start();
 </script>
 </body>
 </html>

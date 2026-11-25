@@ -119,7 +119,7 @@
   window.LivingScene = function (canvas, scene, opts = {}) {
     const ctx = canvas.getContext('2d');
     const cellOf = () => (opts.cell || 2);
-    let water = null, hasFront = false, fadeN = null; let W, H, back, front, frontA, colour, G, L, Lused, out, errOut, e, dirty, rowDirty, mid, vine, ivy, inkC, paperC, R, state, ready = false;
+    let water = null, hasFront = false, fadeN = null, clearF = null; let W, H, back, front, frontA, colour, G, L, Lused, out, errOut, e, dirty, rowDirty, mid, vine, ivy, inkC, paperC, R, state, ready = false;
     const pointer = { x: -1e4, y: -1e4, vx: 0, vy: 0, t: 0 };
     let scrollP = 0, t0 = performance.now(), lastVine = -1, lastTint = 0, frameNo = 0;
     const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -139,6 +139,10 @@
         const sc = Math.max(W / iw, H / ih) * z, dw = iw * sc, dh = ih * sc;
         const ox = clamp(W / 2 - f[0] * dw, W - dw, 0), oy = clamp(H / 2 - f[1] * dh, H - dh, 0);
         for (const c of [P.back, P.colour]) { c.save(); if (o.mirror) { c.translate(W, 0); c.scale(-1, 1); } c.drawImage(im, ox, oy, dw, dh); c.restore(); }
+        P.layer = (name) => { // another image aligned to the painting (a mask), read back as 0..1
+          const c = layerCanvas(), x = c.getContext('2d'); if (o.mirror) { x.translate(W, 0); x.scale(-1, 1); } x.drawImage(scene._imgs[name], ox, oy, dw, dh);
+          const d = x.getImageData(0, 0, W, H).data, a = new Float32Array(W * H); for (let i = 0; i < W * H; i++) a[i] = d[i * 4] / 255; return a;
+        };
         // image coordinates (0..1) to dither dots
         return (u, v) => [o.mirror ? W - (ox + u * dw) : ox + u * dw, oy + v * dh, sc];
       };
@@ -155,6 +159,8 @@
       if (scene.brush) { back = kuwahara(back, W, H, 2); back = kuwahara(back, W, H, 1); }
       // unsharp mask: bring the painting's fine detail forward before dithering
       if (scene.sharpen) { const bl = blur(back, W, H, Math.max(1, Math.round(W / 700))); for (let i = 0; i < W * H; i++) back[i] = clamp(back[i] + (back[i] - bl[i]) * scene.sharpen, -0.1, 1.1); }
+      // clarity: a wider, gentler unsharp pass that lifts the forms of stone and foliage
+      if (scene.clarity) { const r = Math.max(2, Math.round(W / 160)), bl = blur(blur(back, W, H, r), W, H, r); for (let i = 0; i < W * H; i++) back[i] = clamp(back[i] + (back[i] - bl[i]) * scene.clarity, -0.1, 1.1); }
       const flow = scene.src && scene.flow ? flowField(back, W, H, R) : null;
       // brush: smear the tone a little along the strokes, like paint dragged by a brush
       if (flow) { const sm = lic(flow, back, W, H, scene.smear ?? 4); for (let i = 0; i < W * H; i++) back[i] = back[i] * 0.35 + sm[i] * 0.65; }
@@ -174,9 +180,26 @@
       vine = { dens: new Float32Array(W * H), stem: new Uint8Array(W * H) };
       ivy = state.ivy ? growIvy(state.ivy, W, H, R) : null;
       water = null;
-      if (state.water) { water = new Float32Array(W * H); const wi = []; for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) { const v = state.water(x, y); water[y * W + x] = v; if (v > 0.01) wi.push(y * W + x); } waterIdx = Int32Array.from(wi); }
+      if (state.water) {
+        water = typeof state.water === 'function' ? Float32Array.from({ length: W * H }, (_, i) => state.water(i % W, (i / W) | 0)) : state.water;
+        const wi = []; wTop = H; wBot = 0; for (let i = 0; i < W * H; i++) if (water[i] > 0.5) { wi.push(i); const y = (i / W) | 0; if (y < wTop) wTop = y; if (y > wBot) wBot = y; }
+        waterIdx = Int32Array.from(wi);
+      }
+      // a soft wash of paper behind the name, with a ragged edge, so the title reads cleanly
+      clearF = null;
+      const rects = opts.clear ? opts.clear() : null;
+      if (rects && rects.length) {
+        clearF = new Float32Array(W * H); const fe = Math.max(8, H * 0.11), cn = noiseField(W, H, R, Math.max(10, W / 30), 2);
+        for (const [a, b, c, d] of rects) {
+          const x0 = a * W, y0 = b * H, x1 = c * W, y1 = d * H;
+          for (let y = Math.max(0, (y0 - fe * 1.6) | 0); y < Math.min(H, y1 + fe * 1.6); y++) for (let x = Math.max(0, (x0 - fe * 1.6) | 0); x < Math.min(W, x1 + fe * 1.6); x++) {
+            const dx = Math.max(x0 - x, 0, x - x1), dy = Math.max(y0 - y, 0, y - y1), dd = Math.hypot(dx, dy * 1.4) / fe, i = y * W + x;
+            const v = clamp(1 - dd + cn[i] * 0.35); clearF[i] = Math.max(clearF[i], v * v * (3 - 2 * v));
+          }
+        }
+      }
       needFull = true;
-      if (state.birds) state.birds.forEach((b) => Object.assign(b, { x: b.hx * W, y: b.hy * H, vx: 0, vy: 0, ph: R() * 6.28, a: R() * 6.28 }));
+      if (state.birds) state.birds.forEach((b) => { const a = R() * 6.28; Object.assign(b, { x: (b.hx + Math.cos(a) * b.rx) * W, y: (b.hy + Math.sin(a * 1.3) * b.ry) * H, vx: 0, vy: 0, ph: R() * 6.28, a }); });
       fadeN = noiseField(W, H, R, Math.max(12, W / 14), 3);
       lastVine = -1; tintMid(); ready = true;
     }
@@ -196,9 +219,10 @@
           r += (gs[0] - r) * ks + (gl[0] - r) * kl; g += (gs[1] - g) * ks + (gl[1] - g) * kl; b += (gs[2] - b) * ks + (gl[2] - b) * kl;
           if (kk) { r += (gk[0] - r) * kk; g += (gk[1] - g) * kk; b += (gk[2] - b) * kk; }
         }
-        if (vd && leaf) { const k = clamp(vd[i] * 2.2); r += (leaf[0] - r) * k; g += (leaf[1] - g) * k; b += (leaf[2] - b) * k; }
+        let s = sat;
+        if (vd && leaf) { const k = clamp(vd[i] * (scene.leafMix ?? 2.2)); r += (leaf[0] - r) * k; g += (leaf[1] - g) * k; b += (leaf[2] - b) * k; s *= 1 - (scene.leafDesat ?? 0) * k; }
         const l = 0.3 * r + 0.59 * g + 0.11 * b;
-        mid[i * 3] = target + (r - l) * sat; mid[i * 3 + 1] = target + (g - l) * sat; mid[i * 3 + 2] = target + (b - l) * sat;
+        mid[i * 3] = target + (r - l) * s; mid[i * 3 + 1] = target + (g - l) * s; mid[i * 3 + 2] = target + (b - l) * s;
       }
     }
     function renderIvy(p) {
@@ -219,13 +243,15 @@
       }
     }
 
-    let lastEdge = null, needFull = true, waterIdx = null, composed = 'none';
+    let lastEdge = null, needFull = true, waterIdx = null, composed = 'none', wTop = 0, wBot = 1;
     function px(x, y, i, t, edge, amp, step) {
       let v = back[i];
-      if (water && water[i] > 0.01 && amp) {
-        const k = 720 / W, yy = y * k, wd = water[i] * (0.55 * Math.sin(yy * 0.9 + t * 1.3) + 0.35 * Math.sin(yy * 0.33 - t * 0.9 + x * k * 0.05)) * (0.6 + 0.8 * (y / H)) / k;
-        const sx = x - wd, xi = Math.floor(sx), f = sx - xi, a = back[y * W + clamp(xi, 0, W - 1)], b = back[y * W + clamp(xi + 1, 0, W - 1)];
-        v = a * (1 - f) + b * f;
+      if (water && water[i] > 0.5 && amp) {
+        // thin horizontal bands of reflection slide past each other, wider and slower toward the viewer
+        const k = 720 / W, yy = y * k, depth = clamp((y - wTop) / Math.max(1, wBot - wTop));
+        const wd = (0.25 + 1.1 * depth) * (0.6 * Math.sin(yy * (1.6 - 0.9 * depth) + t * 1.1) + 0.4 * Math.sin(yy * 0.47 - t * 0.7 + x * k * 0.03)) / k;
+        const sx = x - wd, xi = clamp(Math.floor(sx), 0, W - 2), f = clamp(sx - xi), ja = y * W + xi;
+        if (water[ja] > 0.5 && water[ja + 1] > 0.5) v = back[ja] * (1 - f) + back[ja + 1] * f;
       }
       if (hasFront && (frontA[i] > 0.001 || amp)) {
         let dx = 0;
@@ -241,6 +267,7 @@
       if (ivy) { const d = vine.dens[i]; if (d > 0.06) { const k = Math.min(1, d * 1.5); v = v * (1 - k) + ((scene.ivyTone ?? 0.2) + 0.3 * Math.max(0, d - 0.7)) * k; } else if (vine.stem[i]) v = 0.1; }
       // the painting dissolves into the paper along a ragged edge at the bottom, rising as you scroll
       const fe = (y / H) - edge + fadeN[i] * 0.07; if (fe > 0) v += Math.min(1.1, fe * 9);
+      if (clearF && clearF[i] > 0 && v < 0.93) v += (0.93 - v) * clearF[i] * (scene.clearStrength ?? 0.82);
       return clamp(v + G[i] * (scene.grain ?? 0.08), -0.2, 1.2);
     }
     function compose(t) {
@@ -313,7 +340,11 @@
       return octx;
     }
     // swallows: a few ink marks that wheel slowly, keep away from the cursor, and leave when you scroll
-    const BIRD = [[[-2, 0], [-1, -1], [0, 0], [1, -1], [2, 0]], [[-2, -1], [-1, 0], [0, 0], [1, 0], [2, -1]], [[-2, 1], [-1, 0], [0, 0], [1, 0], [2, 1]]];
+    const BIRD = [
+      [[-4, -2], [-3, -2], [-2, -1], [-1, 0], [0, 0], [1, 0], [2, -1], [3, -2], [4, -2], [0, 1], [-1, -1], [1, -1]],
+      [[-4, 0], [-3, -1], [-2, -1], [-1, 0], [0, 0], [1, 0], [2, -1], [3, -1], [4, 0], [0, 1]],
+      [[-4, 2], [-3, 1], [-2, 1], [-1, 0], [0, 0], [1, 0], [2, 1], [3, 1], [4, 2], [0, 1], [0, -1]],
+    ];
     function stepBirds(dt, t) {
       const leave = scrollP > 0.12;
       for (const b of state.birds) {
@@ -326,14 +357,14 @@
           if (d < rr) { ax += dx / (d || 1) * 90 * (1 - d / rr); ay += dy / (d || 1) * 90 * (1 - d / rr); }
         }
         b.vx = (b.vx + ax * dt) * 0.97; b.vy = (b.vy + ay * dt) * 0.97;
-        const sp = Math.hypot(b.vx, b.vy), mx = (leave ? 60 : 16) * W / 720; if (sp > mx) { b.vx *= mx / sp; b.vy *= mx / sp; }
+        const sp = Math.hypot(b.vx, b.vy), mx = (leave ? 60 : 24) * W / 720; if (sp > mx) { b.vx *= mx / sp; b.vy *= mx / sp; }
         b.x += b.vx * dt; b.y += b.vy * dt; b.ph += dt * (3 + sp * 0.25);
       }
     }
     function drawBirds() {
       const o = overlay(); o.clearRect(0, 0, W, H); o.fillStyle = scene.ink;
       for (const b of state.birds) {
-        const f = BIRD[(Math.floor(b.ph) % 3 + 3) % 3], bx = Math.round(b.x), by = Math.round(b.y), z = Math.max(1, Math.round(W / 800));
+        const ph = Math.floor(b.ph) % 4, f = BIRD[[0, 1, 2, 1][(ph + 4) % 4]], bx = Math.round(b.x), by = Math.round(b.y), z = Math.max(1, Math.round(W / 900));
         for (const [ox, oy] of f) o.fillRect(bx + ox * z, by + oy * z, z, z);
       }
     }
@@ -355,6 +386,7 @@
     }
     async function start() {
       if (scene.src && !scene._img) scene._img = await loadImage(scene.src);
+      if (scene.images && !scene._imgs) { scene._imgs = {}; for (const [k, u] of Object.entries(scene.images)) scene._imgs[k] = await loadImage(u); }
       build();
       if (reduced) { if (ivy) { lastVine = 0.75; renderIvy(lastVine); tintMid(); } compose(0); dither(true); paintOut(true); if (state.birds) drawBirds(); return; }
       raf = requestAnimationFrame(tick);
