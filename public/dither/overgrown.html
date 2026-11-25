@@ -1,0 +1,396 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Sahil Mahendrakar</title>
+<meta name="description" content="Sahil Mahendrakar. A homepage of dithered Greek ruins that ivy slowly reclaims as you read.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Marcellus+SC&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#ECE6D6; --paper-2:#E2DAC6; --stone:#2B2A24; --stone-2:#57534A; --stone-3:#8B857A; --rule:#CFC6B1;
+  --moss:#2E4128; --leaf:#5C7343; --leaf-2:#93A66E; --terra:#9A4A2E;
+  --display:'Marcellus', 'Trajan Pro', Georgia, serif; --sc:'Marcellus SC', 'Marcellus', Georgia, serif; --serif:'EB Garamond', Garamond, Georgia, serif;
+  --gutter:clamp(16px,4vw,56px); --maxw:1200px;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html{background:var(--paper);-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--stone);font-family:var(--serif);font-size:19px;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit}
+::selection{background:var(--moss);color:var(--paper)}
+.wrap{max-width:var(--maxw);margin:0 auto;padding-inline:var(--gutter);position:relative;z-index:2}
+.sc{font-family:var(--sc);letter-spacing:.14em;font-size:13px;color:var(--stone-3)}
+canvas.ivy{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;image-rendering:pixelated;z-index:3}
+
+/* meander rule */
+.meander{height:14px;background:
+  linear-gradient(var(--stone),var(--stone)) 0 0/100% 2px no-repeat,
+  linear-gradient(var(--stone),var(--stone)) 0 100%/100% 2px no-repeat,
+  url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='14' viewBox='0 0 28 14'%3E%3Cpath d='M0 11h10V5H6v2' fill='none' stroke='%232B2A24' stroke-width='1.6'/%3E%3Cpath d='M14 11h10V5h-4v2' fill='none' stroke='%232B2A24' stroke-width='1.6'/%3E%3Cpath d='M10 11h4V3h-8' fill='none' stroke='%232B2A24' stroke-width='1.6'/%3E%3Cpath d='M24 11h4V3h-8' fill='none' stroke='%232B2A24' stroke-width='1.6'/%3E%3C/svg%3E") 0 0/28px 14px repeat-x;opacity:.85}
+
+/* hero */
+.hero{position:relative;min-height:100svh;display:grid;grid-template-rows:auto 1fr;overflow:hidden}
+.hero .scene{position:absolute;inset:0;z-index:0}
+.hero .scene canvas{width:100%;height:100%;display:block;image-rendering:pixelated}
+.hero header{position:relative;z-index:4;display:flex;justify-content:space-between;align-items:center;padding:20px var(--gutter)}
+.hero header nav{display:flex;gap:clamp(12px,2.4vw,28px);background:var(--paper);padding:8px 16px;border:1px solid var(--stone)}
+.hero header nav a{text-decoration:none;font-family:var(--sc);letter-spacing:.12em;font-size:13px}
+.hero header nav a:hover{color:var(--terra)}
+.hero header .mark{background:var(--paper);border:1px solid var(--stone);padding:6px 12px;font-family:var(--display);font-size:18px;text-decoration:none}
+@media (max-width:640px){.hero header nav a:nth-child(n+3){display:none}}
+.tablet{position:relative;z-index:4;align-self:end;margin:0 var(--gutter) clamp(32px,7vh,72px);max-width:720px;background:var(--paper);border:1px solid var(--stone);padding:clamp(22px,3.4vw,40px) clamp(22px,3.4vw,44px) clamp(20px,3vw,32px);box-shadow:8px 8px 0 var(--stone)}
+.tablet h1{font-family:var(--display);font-weight:400;font-size:clamp(38px,5.8vw,82px);line-height:.92;letter-spacing:.01em;margin:10px 0 16px;text-transform:uppercase}
+.tablet .tag{font-style:italic;font-size:clamp(19px,1.8vw,22px);margin:0 0 6px}
+.tablet .roles{margin:0 0 20px;color:var(--stone-2);font-size:16.5px}
+.tablet .meander{margin-bottom:16px}
+.btns{display:flex;flex-wrap:wrap;gap:10px}
+.btn{display:inline-block;padding:10px 16px;border:1px solid var(--stone);text-decoration:none;font-family:var(--sc);letter-spacing:.12em;font-size:13px;transition:background .2s,color .2s}
+.btn:hover,.btn.solid{background:var(--stone);color:var(--paper)}
+.btn.solid:hover{background:var(--moss);border-color:var(--moss)}
+.hero .caption{position:absolute;z-index:4;right:var(--gutter);bottom:18px;background:var(--paper);border:1px solid var(--stone);padding:6px 10px;font-size:13px;font-style:italic;max-width:300px}
+@media (max-width:700px){.hero .caption{display:none}}
+
+/* parts */
+section.part{position:relative;padding-block:clamp(72px,10vw,140px)}
+.head{display:grid;grid-template-columns:auto 1fr;gap:6px 24px;align-items:end;margin-bottom:clamp(32px,5vw,56px)}
+.head .num{font-family:var(--display);font-size:clamp(56px,8vw,110px);line-height:.8;color:var(--terra);grid-row:span 2}
+.head h2{font-family:var(--display);font-weight:400;font-size:clamp(32px,4.4vw,56px);line-height:1;margin:0;text-transform:uppercase;letter-spacing:.02em}
+.head p{margin:0;color:var(--stone-2);font-style:italic}
+
+.about{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:clamp(28px,5vw,72px)}
+@media (max-width:860px){.about{grid-template-columns:1fr}}
+.about .lede{font-size:clamp(22px,2.2vw,27px);line-height:1.45;margin:0}
+.about .lede::first-letter{font-family:var(--display);float:left;font-size:3.6em;line-height:.85;padding:.04em .1em 0 0;color:var(--terra)}
+.stele{border:1px solid var(--stone);background:var(--paper-2);padding:6px}
+.stele > div{border:1px solid var(--stone);padding:18px 22px}
+.stele h3{font-family:var(--sc);font-weight:400;letter-spacing:.14em;font-size:13px;margin:0 0 6px;color:var(--stone-3)}
+.stele ul{list-style:none;margin:0;padding:0}
+.stele li{padding:12px 0;border-top:1px solid var(--rule)}
+.stele li:first-child{border-top:0}
+.stele b{font-family:var(--display);font-weight:400;font-size:21px;display:block;line-height:1.2}
+.stele span{color:var(--stone-2);font-size:16.5px}
+
+.ruins{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(22px,3vw,40px)}
+@media (max-width:960px){.ruins{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:600px){.ruins{grid-template-columns:1fr}}
+.stone{position:relative;display:flex;flex-direction:column;background:var(--paper);border:1px solid var(--stone);min-width:0}
+.stone .pic{position:relative;aspect-ratio:16/10;border-bottom:1px solid var(--stone);overflow:hidden;background:var(--paper-2)}
+.stone .pic img,.stone .pic canvas.d{position:absolute;inset:0;width:100%;height:100%;display:block}
+.stone .pic img{object-fit:cover;object-position:top}
+.stone .pic canvas.d{image-rendering:pixelated;transition:opacity .5s}
+.stone:hover .pic canvas.d,.stone:focus-within .pic canvas.d{opacity:0}
+.stone .body{padding:16px 18px 18px;display:flex;flex-direction:column;gap:8px;flex:1}
+.stone h3{font-family:var(--display);font-weight:400;font-size:25px;line-height:1.05;margin:0;text-transform:uppercase;letter-spacing:.03em}
+.stone p{margin:0;font-size:16.5px;line-height:1.45;color:var(--stone-2)}
+.stone .tech{font-size:14px;font-style:italic;color:var(--stone-3)}
+.stone .lk{display:flex;gap:16px;margin-top:auto;padding-top:6px}
+.stone .lk a{font-family:var(--sc);letter-spacing:.12em;font-size:12.5px;text-decoration:none;border-bottom:1px solid var(--stone-3)}
+.stone .lk a:hover{color:var(--moss);border-color:var(--moss)}
+.stone canvas.ivy{inset:-14px;width:calc(100% + 28px);height:calc(100% + 28px)}
+
+.vista{position:relative;margin:0 0 clamp(36px,5vw,64px);border:1px solid var(--stone)}
+.vista .scene{aspect-ratio:21/8}
+.vista .scene canvas{width:100%;height:100%;display:block;image-rendering:pixelated}
+.vista figcaption{position:absolute;left:12px;bottom:12px;z-index:4;background:var(--paper);border:1px solid var(--stone);padding:4px 10px;font-size:13px;font-style:italic}
+@media (max-width:640px){.vista .scene{aspect-ratio:4/3}}
+
+.annals{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 clamp(24px,4vw,56px)}
+@media (max-width:820px){.annals{grid-template-columns:1fr}}
+.annals > li{padding:22px 0;border-top:1px solid var(--stone)}
+.annals .when{font-family:var(--sc);letter-spacing:.12em;font-size:12.5px;color:var(--terra)}
+.annals h3{font-family:var(--display);font-weight:400;font-size:24px;line-height:1.15;margin:4px 0}
+.annals p{margin:0;color:var(--stone-2);font-size:16.5px}
+.annals ul{margin:8px 0 0;padding-left:18px;color:var(--stone-2);font-size:16px}
+
+.inscr{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(18px,3vw,32px)}
+@media (max-width:760px){.inscr{grid-template-columns:1fr}}
+.inscr a{display:block;border:1px solid var(--stone);padding:20px 22px;text-decoration:none;background:var(--paper);transition:background .2s}
+.inscr a:hover{background:var(--paper-2)}
+.inscr .k{font-family:var(--sc);letter-spacing:.14em;font-size:12px;color:var(--terra)}
+.inscr h3{font-family:var(--display);font-weight:400;font-size:21px;line-height:1.25;margin:6px 0}
+.inscr p{margin:0;color:var(--stone-2);font-size:15.5px}
+
+.scrolls{display:grid;gap:0;border-bottom:1px solid var(--stone)}
+.scrolls a{display:grid;grid-template-columns:120px 1fr;gap:20px;padding:18px 0;border-top:1px solid var(--stone);text-decoration:none}
+.scrolls .d{font-family:var(--sc);letter-spacing:.1em;font-size:12.5px;color:var(--stone-3);padding-top:6px}
+.scrolls h3{font-family:var(--display);font-weight:400;font-size:23px;line-height:1.2;margin:0}
+.scrolls a:hover h3{color:var(--moss)}
+.scrolls p{margin:2px 0 0;color:var(--stone-2);font-size:16px;font-style:italic}
+@media (max-width:560px){.scrolls a{grid-template-columns:1fr;gap:2px}}
+
+.garden{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(28px,5vw,72px)}
+@media (max-width:760px){.garden{grid-template-columns:1fr}}
+.garden ul{list-style:none;margin:0;padding:0}
+.garden li{padding:12px 0 12px 30px;border-top:1px solid var(--rule);position:relative}
+.garden li::before{content:'';position:absolute;left:4px;top:20px;width:12px;height:12px;background:var(--leaf);clip-path:polygon(50% 0,100% 40%,80% 100%,50% 80%,20% 100%,0 40%)}
+.garden .chips{display:flex;flex-wrap:wrap;gap:8px}
+.garden .chips span{border:1px solid var(--stone);padding:5px 12px;font-style:italic;font-size:16.5px;background:var(--paper)}
+
+.contact{text-align:center}
+.contact h2{font-family:var(--display);font-weight:400;font-size:clamp(44px,7vw,92px);line-height:.95;margin:0 0 14px;text-transform:uppercase}
+.contact .lead{font-style:italic;color:var(--stone-2);margin:0 auto 32px;max-width:46ch}
+.contact ul{list-style:none;margin:0 auto;padding:0;max-width:760px;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.contact a{display:block;border:1px solid var(--stone);padding:14px 16px;text-decoration:none;background:var(--paper);text-align:left}
+.contact a:hover{background:var(--stone);color:var(--paper)}
+.contact a span{display:block}
+.contact a span:first-child{font-family:var(--sc);letter-spacing:.14em;font-size:12px;opacity:.7}
+.contact a span:last-child{font-family:var(--display);font-size:17px;overflow-wrap:anywhere}
+
+footer{position:relative;z-index:2;padding:28px var(--gutter) 40px;font-size:14px;color:var(--stone-2);max-width:var(--maxw);margin:0 auto}
+footer .meander{margin-bottom:18px}
+footer p{margin:0 0 8px}
+footer .mono{font-family:var(--sc);letter-spacing:.12em;font-size:12px}
+
+.reveal{opacity:0;transform:translateY(12px);transition:opacity .9s,transform .9s cubic-bezier(.2,.7,.2,1)}
+.reveal.in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}
+</style>
+</head>
+<body>
+<section class="hero" id="top">
+  <div class="scene" data-src="img/art/desolation.jpg" data-focus="0.4,0.5" data-cell="2"></div>
+  <canvas class="ivy" data-seeds="hero" data-auto="1"></canvas>
+  <header>
+    <a class="mark" href="#top">S·M</a>
+    <nav><a href="#about">About</a><a href="#works">Works</a><a href="#annals">Annals</a><a href="#writing">Writing</a><a href="#contact">Contact</a></nav>
+  </header>
+  <div class="tablet">
+    <span class="sc">Here stand the works of</span>
+    <h1 id="name"></h1>
+    <div class="meander"></div>
+    <p class="tag" id="tagline"></p>
+    <p class="roles" id="roles"></p>
+    <div class="btns"><a class="btn solid" href="#works">Walk the ruins</a><a class="btn" href="#contact">Leave a note</a></div>
+  </div>
+  <span class="caption">After Thomas Cole, <i>The Course of Empire: Desolation</i>, 1836.</span>
+</section>
+
+<section class="part" id="about">
+  <canvas class="ivy" data-seeds="sides"></canvas>
+  <div class="wrap">
+    <div class="head reveal"><span class="num">I</span><span class="sc">The builder</span><h2>About</h2></div>
+    <div class="about">
+      <p class="lede reveal" id="about-p"></p>
+      <div class="stele reveal"><div><h3>Inscribed</h3><ul id="about-points"></ul></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="part" id="works">
+  <canvas class="ivy" data-seeds="corners"></canvas>
+  <div class="wrap">
+    <div class="head reveal"><span class="num">II</span><span class="sc">What still stands</span><h2>Works</h2></div>
+    <div class="ruins" id="ruins"></div>
+  </div>
+</section>
+
+<section class="part" id="annals">
+  <canvas class="ivy" data-seeds="sides"></canvas>
+  <div class="wrap">
+    <div class="head reveal"><span class="num">III</span><span class="sc">A record of years</span><h2>Annals</h2></div>
+    <figure class="vista reveal">
+      <div class="scene" data-src="img/art/parthenon.jpg" data-focus="0.5,0.5" data-zoom="1.06" data-cell="2" data-levels="0.01,0.99,0.95,1.3"></div>
+      <canvas class="ivy" data-seeds="bottom"></canvas>
+      <figcaption>After Frederic Edwin Church, <i>The Parthenon</i>, 1871.</figcaption>
+    </figure>
+    <ol class="annals" id="annals-list"></ol>
+  </div>
+</section>
+
+<section class="part" id="papers">
+  <canvas class="ivy" data-seeds="corners"></canvas>
+  <div class="wrap">
+    <div class="head reveal"><span class="num">IV</span><span class="sc">Cut into stone</span><h2>Papers &amp; Patents</h2></div>
+    <figure class="vista reveal">
+      <div class="scene" data-src="img/art/paestum.jpg" data-focus="0.5,0.3" data-zoom="1.14" data-cell="2"></div>
+      <canvas class="ivy" data-seeds="bottom"></canvas>
+      <figcaption>After Giovanni Battista Piranesi, <i>Paestum</i>, 1778.</figcaption>
+    </figure>
+    <div class="inscr" id="pubs"></div>
+  </div>
+</section>
+
+<section class="part" id="writing">
+  <canvas class="ivy" data-seeds="sides"></canvas>
+  <div class="wrap">
+    <div class="head reveal"><span class="num">V</span><span class="sc">Fragments found</span><h2>Writing</h2></div>
+    <div class="scrolls reveal" id="scrolls"></div>
+  </div>
+</section>
+
+<section class="part" id="now">
+  <canvas class="ivy" data-seeds="corners"></canvas>
+  <div class="wrap">
+    <div class="head reveal"><span class="num">VI</span><span class="sc">What grows now</span><h2>The Garden</h2></div>
+    <div class="garden reveal"><ul id="focus"></ul><div class="chips" id="interests"></div></div>
+  </div>
+</section>
+
+<section class="part contact" id="contact">
+  <canvas class="ivy" data-seeds="bottom-heavy"></canvas>
+  <div class="wrap">
+    <h2 class="reveal">Leave a note</h2>
+    <p class="lead reveal">Among the columns. I read every one.</p>
+    <ul class="reveal" id="contacts"></ul>
+  </div>
+</section>
+
+<footer>
+  <div class="meander"></div>
+  <p>Every image is dithered in your browser, and the ivy is grown fresh on each visit. The longer you stay, the more it takes back.</p>
+  <p id="credits"></p>
+</footer>
+
+<script src="content.js"></script>
+<script src="dither.js"></script>
+<script src="credits.js"></script>
+<script>
+(() => {
+  const S = window.SITE, $ = (s) => document.querySelector(s), h = (t, c, html) => { const e = document.createElement(t); if (c) e.className = c; if (html != null) e.innerHTML = html; return e; };
+  const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  $('#name').innerHTML = S.name.split(' ').map(esc).join('<br>');
+  $('#tagline').textContent = S.tagline;
+  $('#roles').textContent = S.roles.join(' · ');
+  $('#about-p').textContent = S.about.paragraph;
+  S.about.points.forEach((p) => $('#about-points').append(h('li', '', `<b>${esc(p.title)}</b><span>${esc(p.detail)}</span>`)));
+  S.projects.forEach((p) => {
+    const links = Object.entries(p.links).map(([k, u]) => `<a href="${esc(u)}" target="_blank" rel="noopener">${k === 'live' ? 'Visit' : 'Source'}</a>`).join('');
+    $('#ruins').append(h('article', 'stone reveal', `<div class="pic"><img src="${esc(p.image)}" alt="${esc(p.name)} screenshot" loading="lazy"><canvas class="d" aria-hidden="true"></canvas></div><div class="body"><h3>${esc(p.name)}</h3><p>${esc(p.tagline)}</p><span class="tech">${p.tech.map(esc).join(' · ')}</span><div class="lk">${links}</div></div><canvas class="ivy" data-seeds="card"></canvas>`));
+  });
+  S.experience.forEach((x) => $('#annals-list').append(h('li', 'reveal', `<span class="when">${esc(x.period)}</span><h3>${esc(x.title)}, ${esc(x.company)}</h3><p>${esc(x.description)}</p><ul>${x.highlights.map((t) => `<li>${esc(t)}</li>`).join('')}</ul>`)));
+  $('#annals-list').append(h('li', 'reveal', `<span class="when">${esc(S.education.period)}</span><h3>${esc(S.education.degree)}, ${esc(S.education.school)}</h3><p>GPA ${esc(S.education.gpa)}</p>`));
+  S.publications.forEach((p) => $('#pubs').append(Object.assign(h('a', 'reveal', `<span class="k">${p.kind === 'paper' ? 'Paper' : 'Patent'} · ${esc(p.year)}</span><h3>${esc(p.title)}</h3><p>${esc(p.number)}</p>`), { href: p.url, target: '_blank', rel: 'noopener' })));
+  const fmt = (d) => new Date(d + 'T12:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  S.writing.forEach((w) => $('#scrolls').append(Object.assign(h('a', '', `<span class="d">${fmt(w.date)}</span><div><h3>${esc(w.title)}</h3><p>${esc(w.subtitle)}</p></div>`), { href: w.url })));
+  $('#scrolls').append(Object.assign(h('a', '', `<span class="d">Earlier</span><div><h3>More on Substack</h3><p>Older fragments and notes.</p></div>`), { href: S.thoughts.url, target: '_blank', rel: 'noopener' }));
+  S.now.focus.forEach((f) => $('#focus').append(h('li', '', esc(f))));
+  S.now.interests.forEach((t) => $('#interests').append(h('span', '', esc(t))));
+  S.contact.forEach((c) => $('#contacts').append(h('li', '', `<a href="${esc(c.href)}" ${c.href.startsWith('http') ? 'target="_blank" rel="noopener"' : ''}><span>${esc(c.label)}</span><span>${esc(c.display)}</span></a>`)));
+  window.renderCredits && window.renderCredits($('#credits'), ['desolation', 'parthenon', 'paestum']);
+
+  const D = window.Dither, STONE = '#2B2A24', PAPER = '#ECE6D6', CELL = 3;
+  const MOSS = D.hex('#2E4128'), LEAF = D.hex('#5C7343'), LEAF2 = D.hex('#93A66E');
+
+  // ---------- dithered ruins ----------
+  const levelsOf = (el) => { const [lo, hi, gamma, contrast] = (el.dataset.levels || '0.01,0.995,0.75,1.05').split(',').map(Number); return { lo, hi, gamma, contrast }; };
+  async function scene(el) {
+    let img; try { img = await D.loadImage(el.dataset.src); } catch { el.style.background = 'var(--paper-2)'; return; }
+    const focus = (el.dataset.focus || '0.5,0.5').split(',').map(Number), zoom = +(el.dataset.zoom || 1);
+    const c = el.querySelector('canvas') || el.appendChild(document.createElement('canvas'));
+    const cell = +(el.dataset.cell || CELL), r = el.getBoundingClientRect(), w = Math.round(r.width / cell), hh = Math.round(r.height / cell);
+    c.width = w; c.height = hh;
+    const L = D.sharpen(D.levels(D.luminance(D.sample(img, w, hh, { focus, zoom })), levelsOf(el)), w, hh, .6);
+    D.paint(c.getContext('2d'), D.diffuse(L, w, hh, { kernel: 'atkinson', serpentine: true }), w, hh, STONE, PAPER);
+  }
+  async function thumb(card) {
+    const im = card.querySelector('img'), c = card.querySelector('canvas.d'); let img; try { img = await D.loadImage(im.src); } catch { return; }
+    const r = c.getBoundingClientRect(), w = Math.round(r.width / CELL), hh = Math.round(r.height / CELL); c.width = w; c.height = hh;
+    const L = D.levels(D.luminance(D.sample(img, w, hh, { focus: [.5, 0] })), { gamma: .9 });
+    D.paint(c.getContext('2d'), D.ordered(L, w, hh, { matrix: 'bayer4' }), w, hh, STONE, PAPER);
+  }
+
+  // ---------- ivy ----------
+  // A seeded random walk: stems climb with a little curl, branch now and then, and set
+  // alternating leaves. Each piece carries a birth time t in [0,1]; growth reveals it.
+  function rng(seed) { let s = seed >>> 0 || 1; return () => ((s = Math.imul(s ^ (s >>> 15), 2246822507) ^ Math.imul(s ^ (s >>> 13), 3266489909), (s ^= s >>> 16) >>> 0) / 4294967296); }
+  function grow(w, hh, seeds, seed) {
+    const R = rng(seed), segs = [], leaves = [];
+    const walk = (x, y, a, t0, len, depth, hug) => {
+      let t = t0, side = 1, curl = (R() - .5) * .08;
+      for (let i = 0; i < len; i++) {
+        const nx = x + Math.cos(a) * 1.6, ny = y + Math.sin(a) * 1.6;
+        segs.push([x, y, nx, ny, t, depth]); x = nx; y = ny; t += 1 / (len * 1.6 + 40);
+        a += curl + (R() - .5) * .35; curl += (R() - .5) * .02; curl *= .96;
+        // stay climbing: bend back toward the preferred direction
+        a += Math.sin(-Math.PI / 2 - a) * .045 * (depth ? .4 : 1);
+        if (hug != null) { const want = Math.atan2(-1, (hug - x) * .25); a += Math.sin(want - a) * .25; }
+        if (x < -4 || x > w + 4 || y < -4 || y > hh + 4) break;
+        if (i % 4 === 2) { side = -side; const la = a + side * (1.1 + R() * .5), d = 1.8 + R() * 1.2; leaves.push([x + Math.cos(la) * d, y + Math.sin(la) * d, 1.3 + R() * 1.3 * (depth ? .8 : 1), t + .02, la]); }
+        if (depth < 2 && R() < .018) walk(x, y, a + (R() < .5 ? -1 : 1) * (.6 + R() * .6), t, len * (.35 + R() * .3) | 0, depth + 1, hug);
+      }
+    };
+    seeds.forEach(([x, y, a, len, t0, hug]) => walk(x, y, a, t0, len, 0, hug));
+    return { segs, leaves };
+  }
+  function seedsFor(kind, w, hh, R) {
+    const up = -Math.PI / 2, s = [];
+    const add = (x, y, a, len, t0 = R() * .25, hug = null) => s.push([x, y, a, len, t0, hug]);
+    if (kind === 'hero') { for (let i = 0; i < 4; i++) add(R() * w * .08, hh + 2, up + R() * .35, hh * (.35 + R() * .45)); for (let i = 0; i < 4; i++) add(w - R() * w * .08, hh + 2, up - R() * .35, hh * (.35 + R() * .45)); for (let i = 0; i < 4; i++) add(w * (.3 + R() * .5), hh + 2, up + (R() - .5) * .6, hh * (.08 + R() * .14), .3 + R() * .3); }
+    if (kind === 'sides') { for (let i = 0; i < 2; i++) add(-1, hh * (.5 + R() * .5), up + .25 + R() * .2, hh * .3 * (.6 + R())); for (let i = 0; i < 2; i++) add(w + 1, hh * (.5 + R() * .5), up - .25 - R() * .2, hh * .3 * (.6 + R())); }
+    if (kind === 'corners') { add(-1, hh, up + .3, hh * .3); add(w + 1, hh, up - .3, hh * .3); if (R() < .5) add(-1, hh * .4, up + .6, hh * .15); else add(w + 1, hh * .4, up - .6, hh * .15); }
+    if (kind === 'bottom') { for (let i = 0; i < 4; i++) add(w * (i / 3) + (R() - .5) * 10, hh + 2, up + (R() - .5) * .7, hh * (.2 + R() * .35)); }
+    if (kind === 'bottom-heavy') { for (let i = 0; i < 8; i++) add(w * R(), hh + 2, up + (R() - .5) * .9, hh * (.15 + R() * .35)); }
+    if (kind === 'card') { const c = R() < .5, e = c ? 5 : w - 5; add(e, hh - 2, up, hh * (.45 + R() * .35), 0, e); }
+    return s;
+  }
+
+  const BN = D.BN;
+  function renderIvy(iv, p) {
+    const { w, h: hh, data, ctx } = iv, img = ctx.createImageData(w, hh), o = img.data;
+    const dens = iv.dens.fill(0), stem = iv.stem.fill(0);
+    for (const [x0, y0, x1, y1, t, depth] of data.segs) {
+      if (t > p) continue;
+      const n = 2; for (let k = 0; k <= n; k++) { const x = (x0 + (x1 - x0) * k / n) | 0, y = (y0 + (y1 - y0) * k / n) | 0; if (x >= 0 && x < w && y >= 0 && y < hh) stem[y * w + x] = 1; if (!depth && x + 1 < w && y >= 0 && y < hh && x >= 0) stem[y * w + x + 1] = 1; }
+    }
+    for (const [lx, ly, r0, t, a] of data.leaves) {
+      if (t > p) continue;
+      const r = r0 * Math.min(1, (p - t) / .06 + .25), R = Math.ceil(r + 1.5);
+      // a three-lobed ivy leaf: centre lobe plus two shoulders
+      const lobes = [[0, 0, 1], [Math.cos(a + 1.3) * r * .55, Math.sin(a + 1.3) * r * .55, .72], [Math.cos(a - 1.3) * r * .55, Math.sin(a - 1.3) * r * .55, .72], [Math.cos(a) * r * .6, Math.sin(a) * r * .6, .7]];
+      for (let yy = -R - 1; yy <= R + 1; yy++) for (let xx = -R - 1; xx <= R + 1; xx++) {
+        const X = (lx + xx) | 0, Y = (ly + yy) | 0; if (X < 0 || X >= w || Y < 0 || Y >= hh) continue;
+        let v = 0; for (const [ox, oy, s] of lobes) { const d = Math.hypot(xx - ox, yy - oy) / (r * s); if (d < 1) v = Math.max(v, 1 - d * d); }
+        const i = Y * w + X; dens[i] = Math.min(1.4, dens[i] + v);
+      }
+    }
+    for (let y = 0; y < hh; y++) for (let x = 0; x < w; x++) {
+      const i = y * w + x, j = i * 4, d = dens[i], b = BN[(y & 63) * 64 + (x & 63)];
+      let c = null;
+      if (d > .08 && d * 1.6 > b) c = (d > .55 && b < (d - .55) * 1.4) ? LEAF2 : (d < .35 && b > .55 ? MOSS : LEAF);
+      else if (stem[i]) c = MOSS;
+      if (!c) continue; o[j] = c[0]; o[j + 1] = c[1]; o[j + 2] = c[2]; o[j + 3] = 255;
+    }
+    ctx.putImageData(img, 0, 0);
+  }
+
+  const ivies = [];
+  function setupIvy(c, i) {
+    const r = c.getBoundingClientRect(), w = Math.max(10, Math.round(r.width / CELL)), hh = Math.max(10, Math.round(r.height / CELL));
+    c.width = w; c.height = hh;
+    const R = rng(1234 + i * 977 + (Date.now() & 0xffff));
+    const iv = { c, w, h: hh, ctx: c.getContext('2d'), data: grow(w, hh, seedsFor(c.dataset.seeds, w, hh, R), (R() * 1e9) | 0), dens: new Float32Array(w * hh), stem: new Uint8Array(w * hh), p: -1, target: 0, auto: !!c.dataset.auto };
+    ivies.push(iv); return iv;
+  }
+
+  // growth only ever moves forward. It follows reading position, plus slow time.
+  const t0 = performance.now();
+  function frame(now) {
+    const vh = innerHeight, age = (now - t0) / 1000;
+    for (const iv of ivies) {
+      const r = iv.c.getBoundingClientRect();
+      if (r.bottom < -200 || r.top > vh + 200) continue;
+      const read = Math.min(1, Math.max(0, (vh - r.top) / (r.height + vh * .3)));
+      const tgt = Math.min(1, iv.auto ? Math.min(.55, age / 6) + read * .6 : read * .85 + Math.min(.15, age / 200));
+      iv.target = Math.max(iv.target, tgt);
+      const next = iv.p < 0 ? 0 : iv.p + Math.min(.012, iv.target - iv.p);
+      if (next > iv.p + .0015 || iv.p < 0) { iv.p = next; renderIvy(iv, iv.p); }
+    }
+    if (!D.reduced()) requestAnimationFrame(frame);
+  }
+
+  function init() {
+    document.querySelectorAll('.scene').forEach(scene);
+    document.querySelectorAll('canvas.ivy').forEach(setupIvy);
+    if (D.reduced()) ivies.forEach((iv) => renderIvy(iv, .8)); else requestAnimationFrame(frame);
+  }
+  const io = new IntersectionObserver((es) => es.forEach((e) => { if (!e.isIntersecting) return; io.unobserve(e.target); e.target.classList.add('in'); if (e.target.classList.contains('stone')) thumb(e.target); }), { rootMargin: '0px 0px -6% 0px' });
+  document.querySelectorAll('.reveal').forEach((el) => io.observe(el));
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(init); else init();
+  let rt, lw = innerWidth; addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(() => { if (innerWidth === lw) return; lw = innerWidth; ivies.length = 0; init(); }, 250); });
+})();
+</script>
+</body>
+</html>

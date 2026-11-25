@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Dither Studies</title>
+<meta name="description" content="Six art-directed homepage studies for sahilmahendrakar.com, built from public-domain sculpture and painting rendered with dithering.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,500;1,6..96,400&family=Newsreader:ital,opsz,wght@0,6..72,400;1,6..72,400&family=IBM+Plex+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #f3eee3;
+    --card: #faf7f0;
+    --ink: #1d1a16;
+    --muted: #6b6357;
+    --rule: #d6cdbb;
+    --accent: #8a3b1f;
+    --shadow: 0 1px 0 rgba(0,0,0,.04), 0 18px 40px -24px rgba(40,28,10,.35);
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper: #15130f; --card: #1d1a15; --ink: #ede6d8; --muted: #a39a8a;
+      --rule: #3a342b; --accent: #e0a07c;
+      --shadow: 0 1px 0 rgba(255,255,255,.03), 0 18px 40px -24px rgba(0,0,0,.8);
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper: #15130f; --card: #1d1a15; --ink: #ede6d8; --muted: #a39a8a;
+    --rule: #3a342b; --accent: #e0a07c;
+    --shadow: 0 1px 0 rgba(255,255,255,.03), 0 18px 40px -24px rgba(0,0,0,.8);
+    color-scheme: dark;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0; background: var(--paper); color: var(--ink);
+    font: 400 18px/1.55 "Newsreader", Georgia, serif;
+    padding: 0 max(16px, env(safe-area-inset-right)) 0 max(16px, env(safe-area-inset-left));
+  }
+  .wrap { max-width: 1180px; margin: 0 auto; }
+  .mono { font: 400 11.5px/1.4 "IBM Plex Mono", ui-monospace, monospace; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+  header { padding: clamp(48px, 9vw, 112px) 0 clamp(32px, 5vw, 56px); border-bottom: 1px solid var(--rule); }
+  h1 { font: 400 clamp(44px, 7.5vw, 104px)/.95 "Bodoni Moda", Didot, serif; letter-spacing: -.02em; margin: 18px 0 22px; }
+  h1 em { font-style: italic; }
+  .lede { max-width: 640px; font-size: clamp(18px, 2vw, 21px); color: var(--muted); margin: 0; }
+  .lede strong { color: var(--ink); font-weight: 400; font-style: italic; }
+  .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(28px, 4vw, 56px) clamp(24px, 3.4vw, 48px); padding: clamp(36px, 6vw, 72px) 0; }
+  .study { display: flex; flex-direction: column; color: inherit; text-decoration: none; }
+  .frame { position: relative; background: var(--card); padding: 10px; box-shadow: var(--shadow); border: 1px solid var(--rule); }
+  .frame img { display: block; width: 100%; aspect-ratio: 16 / 10; object-fit: cover; object-position: top; background: var(--rule); transition: filter .4s ease; }
+  .study:hover .frame img, .study:focus-visible .frame img { filter: contrast(1.06) saturate(1.08); }
+  .num { position: absolute; top: 18px; left: 18px; background: var(--card); color: var(--ink); padding: 4px 8px; }
+  .placard { display: grid; grid-template-columns: 1fr auto; gap: 4px 16px; padding: 18px 2px 0; }
+  .placard h2 { font: 400 clamp(26px, 2.6vw, 34px)/1.1 "Bodoni Moda", Didot, serif; margin: 0; }
+  .placard .open { align-self: end; white-space: nowrap; }
+  .study:hover .open, .study:focus-visible .open { color: var(--accent); }
+  .placard p { grid-column: 1 / -1; margin: 6px 0 0; }
+  .placard .how { color: var(--muted); font-size: 16px; }
+  .placard .src { grid-column: 1 / -1; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--rule); line-height: 1.6; }
+  .study:focus-visible { outline: 2px solid var(--accent); outline-offset: 6px; }
+  footer { border-top: 1px solid var(--rule); padding: 28px 0 max(48px, env(safe-area-inset-bottom)); display: flex; flex-wrap: wrap; gap: 12px 32px; justify-content: space-between; }
+  footer p { margin: 0; max-width: 720px; }
+  @media (max-width: 760px) {
+    body { font-size: 17px; }
+    .grid { grid-template-columns: minmax(0, 1fr); }
+  }
+  @media (prefers-reduced-motion: reduce) { .frame img { transition: none; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="mono">sahilmahendrakar.com &middot; homepage studies &middot; November 2026</div>
+    <h1>Six studies in <em>dither</em></h1>
+    <p class="lede">Each one is a full homepage with your real projects, writing and links, art-directed around public-domain sculpture and painting. All the dithering runs <strong>live in the browser</strong>, so the images move, grow, dissolve and react to the cursor. Open one, scroll through it, and tell me which to develop.</p>
+  </header>
+
+  <main class="grid">
+    <a class="study" href="marble.html">
+      <div class="frame"><img src="img/thumbs/marble.jpg" alt="Ivory catalogue page with a dithered Winged Victory of Samothrace" loading="lazy"><span class="num mono">I</span></div>
+      <div class="placard">
+        <h2>Marble</h2><span class="open mono">Open &rarr;</span>
+        <p>A museum catalogue of Greek sculpture, set like a printed plate book.</p>
+        <p class="how">Atkinson diffusion. Each plate develops from coarse to fine as it enters view, and a loupe shows the original photograph under the cursor. Project images resolve into color on hover.</p>
+        <div class="src mono">Winged Victory &middot; Venus de Milo &middot; Laoco&ouml;n &middot; Apollo Belvedere &middot; Discobolus</div>
+      </div>
+    </a>
+
+    <a class="study" href="overgrown.html">
+      <div class="frame"><img src="img/thumbs/overgrown.jpg" alt="Dithered painting of ruins with a stone tablet and ivy" loading="lazy"><span class="num mono">II</span></div>
+      <div class="placard">
+        <h2>Overgrown</h2><span class="open mono">Open &rarr;</span>
+        <p>Ancient ruins, with the page itself slowly being taken back by ivy.</p>
+        <p class="how">Blue-noise dithered landscapes. Procedural vines grow from the edges of each section as you scroll, and never ungrow.</p>
+        <div class="src mono">Cole, Desolation &middot; Church, The Parthenon &middot; Piranesi, Paestum</div>
+      </div>
+    </a>
+
+    <a class="study" href="lamplight.html">
+      <div class="frame"><img src="img/thumbs/lamplight.jpg" alt="Dark gallery with a lamp-lit dithered statue in a niche" loading="lazy"><span class="num mono">III</span></div>
+      <div class="placard">
+        <h2>Lamplight</h2><span class="open mono">Open &rarr;</span>
+        <p>A museum after hours. Your cursor is the lamp.</p>
+        <p class="how">Five-tone dithered ramp relit in real time. A different statue stands in the niche for each section and dissolves into the next.</p>
+        <div class="src mono">Venus de Milo &middot; Winged Victory &middot; Laoco&ouml;n &middot; Apollo &middot; Discobolus</div>
+      </div>
+    </a>
+
+    <a class="study" href="salon.html">
+      <div class="frame"><img src="img/thumbs/salon.jpg" alt="Full-bleed dithered Monet painting behind framed text" loading="lazy"><span class="num mono">IV</span></div>
+      <div class="placard">
+        <h2>Salon</h2><span class="open mono">Open &rarr;</span>
+        <p>Impressionism as wallpaper. The painting changes as the day goes on.</p>
+        <p class="how">Palette dithering with colors pulled from each canvas and a faint shimmer. Scrolling moves from sunrise to noon to the lily pond to dusk, and the project frames take on the current palette.</p>
+        <div class="src mono">Monet: Impression, Sunrise &middot; Woman with a Parasol &middot; The Water-Lily Pond</div>
+      </div>
+    </a>
+
+    <a class="study" href="rococo.html">
+      <div class="frame"><img src="img/thumbs/rococo.jpg" alt="Pastel page with Fragonard's Swing dithered inside an oval frame" loading="lazy"><span class="num mono">V</span></div>
+      <div class="placard">
+        <h2>F&ecirc;te Galante</h2><span class="open mono">Open &rarr;</span>
+        <p>Rococo: pastel, playful, a little ridiculous in the best way.</p>
+        <p class="how">Sixteen-colour pastel palette. The swing actually sways inside its oval, and dithered petals drift down the page.</p>
+        <div class="src mono">Fragonard, The Swing &middot; Watteau, Pilgrimage to Cythera</div>
+      </div>
+    </a>
+
+    <a class="study" href="academy.html">
+      <div class="frame"><img src="img/thumbs/academy.jpg" alt="The School of Athens rendered as a line engraving" loading="lazy"><span class="num mono">VI</span></div>
+      <div class="placard">
+        <h2>Academy</h2><span class="open mono">Open &rarr;</span>
+        <p>A famous historical painting as an engraved frontispiece.</p>
+        <p class="how">Line-screen dither, like a banknote engraving. The page opens on Plato and Aristotle and pulls back to the whole fresco as you scroll, with notes on the philosophers.</p>
+        <div class="src mono">Raphael, The School of Athens &middot; David, The Death of Socrates</div>
+      </div>
+    </a>
+  </main>
+
+  <footer>
+    <p class="mono">All source artworks are public domain or CC0, from Wikimedia Commons. Credits are at the foot of each study.</p>
+    <p class="mono">Prototypes are static pages. The one you pick gets rebuilt in the Next.js site.</p>
+  </footer>
+</div>
+</body>
+</html>

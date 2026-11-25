@@ -1,0 +1,286 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Sahil Mahendrakar</title>
+<meta name="description" content="Sahil Mahendrakar. A homepage set as an engraved treatise, opening on Raphael's School of Athens.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --vellum:#EFE6D2; --vellum-2:#E6DAC0; --ink:#2B2117; --ink-2:#5A4C3C; --ink-3:#8D7E69; --rule:#CDBFA3; --rubric:#A63A24;
+  --display:'Cinzel', 'Trajan Pro', Georgia, serif; --serif:'Cormorant Garamond', Garamond, Georgia, serif;
+  --gutter:clamp(16px,4vw,56px); --maxw:1180px;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html{background:var(--vellum);-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--vellum);color:var(--ink);font-family:var(--serif);font-size:20px;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit}
+::selection{background:var(--rubric);color:var(--vellum)}
+.wrap{max-width:var(--maxw);margin:0 auto;padding-inline:var(--gutter)}
+.caps{font-family:var(--display);font-size:12.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-3)}
+.rubric{color:var(--rubric)}
+
+/* the fresco pull-back */
+.fresco{position:relative;height:300svh}
+.fresco .stage{position:sticky;top:0;height:100svh;overflow:hidden;background:var(--vellum)}
+.fresco canvas{position:absolute;inset:0;width:100%;height:100%;display:block;image-rendering:pixelated}
+.fresco .frame{position:absolute;inset:clamp(10px,1.6vw,22px);border:1px solid var(--ink);pointer-events:none;box-shadow:0 0 0 clamp(10px,1.6vw,22px) var(--vellum)}
+.fresco header{position:absolute;top:clamp(10px,1.6vw,22px);left:clamp(10px,1.6vw,22px);right:clamp(10px,1.6vw,22px);z-index:3;display:flex;justify-content:space-between;align-items:center;padding:12px 18px;background:var(--vellum);border-bottom:1px solid var(--ink)}
+.fresco header a{text-decoration:none}
+.fresco header nav{display:flex;gap:clamp(12px,2.4vw,28px)}
+.fresco header nav a:hover{color:var(--rubric)}
+@media (max-width:640px){.fresco header nav a:nth-child(n+3){display:none}}
+.inscription{position:absolute;z-index:3;left:50%;top:clamp(84px,11vh,110px);transform:translateX(-50%);width:min(760px,calc(100% - 2*var(--gutter) - 40px));text-align:center;background:var(--vellum);border:1px solid var(--ink);padding:clamp(18px,2.6vw,30px) clamp(18px,3vw,40px);transition:opacity .5s,transform .5s}
+.inscription h1{font-family:var(--display);font-weight:500;font-size:clamp(34px,5.6vw,76px);line-height:1;letter-spacing:.06em;margin:8px 0 12px}
+.inscription .tag{font-style:italic;font-size:clamp(19px,1.8vw,23px);margin:0}
+.inscription .roles{margin:6px 0 0;color:var(--ink-2);font-size:17px}
+.gloss{position:absolute;z-index:3;max-width:300px;background:var(--vellum);border:1px solid var(--ink);padding:10px 14px;font-size:16px;line-height:1.4;opacity:0;transform:translateY(8px);transition:opacity .5s,transform .5s}
+.gloss.on{opacity:1;transform:none}
+.gloss b{font-family:var(--display);font-weight:500;font-size:12px;letter-spacing:.18em;display:block;color:var(--rubric);margin-bottom:2px}
+.gloss.g1{bottom:clamp(40px,7vh,84px);left:clamp(28px,4vw,56px)}
+.gloss.g2{top:96px;right:clamp(28px,4vw,56px)}
+.gloss.g3{bottom:clamp(40px,7vh,84px);right:clamp(28px,4vw,56px)}
+@media (max-width:700px){.gloss{max-width:220px;font-size:14.5px}.gloss.g2{display:none}}
+.scrollcue{position:absolute;z-index:3;left:50%;bottom:12px;transform:translateX(-50%);background:var(--vellum);padding:0 10px;white-space:nowrap}
+
+/* treatise */
+.book{padding-block:clamp(72px,10vw,140px) 0}
+.chapter{display:grid;grid-template-columns:200px minmax(0,1fr);gap:clamp(20px,4vw,64px);padding-block:clamp(48px,7vw,96px);border-top:1px solid var(--ink)}
+.chapter > .side{position:relative}
+.chapter > .side .n{font-family:var(--display);font-size:clamp(48px,6vw,84px);line-height:.9;color:var(--rubric);display:block}
+.chapter > .side .caps{display:block;margin-top:10px}
+.chapter h2{font-family:var(--display);font-weight:500;font-size:clamp(28px,3.6vw,46px);line-height:1.05;letter-spacing:.04em;margin:0 0 24px}
+@media (max-width:760px){.chapter{grid-template-columns:1fr}.chapter > .side .n{font-size:48px}}
+.drop::first-letter{font-family:var(--display);float:left;font-size:3.5em;line-height:.85;padding:.06em .12em 0 0;color:var(--rubric)}
+.lede{font-size:clamp(22px,2.2vw,27px);line-height:1.5;margin:0 0 28px;max-width:44ch}
+.theses{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+@media (max-width:860px){.theses{grid-template-columns:1fr}}
+.theses li{border-top:2px solid var(--ink);padding-top:12px}
+.theses b{font-family:var(--display);font-weight:500;font-size:15px;letter-spacing:.08em;display:block;line-height:1.3;margin-bottom:4px}
+.theses span{color:var(--ink-2);font-size:18px;line-height:1.45}
+
+.props{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 clamp(24px,4vw,56px)}
+@media (max-width:860px){.props{grid-template-columns:1fr}}
+.prop{display:grid;grid-template-columns:150px 1fr;gap:18px;padding:22px 0;border-top:1px solid var(--rule);min-width:0}
+.prop .fig{position:relative;aspect-ratio:4/3;border:1px solid var(--ink);overflow:hidden;background:var(--vellum-2)}
+.prop .fig img,.prop .fig canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.prop .fig img{object-fit:cover;object-position:top}
+.prop .fig canvas{image-rendering:pixelated;transition:opacity .45s}
+.prop:hover .fig canvas,.prop:focus-within .fig canvas{opacity:0}
+.prop .caps{font-size:11px}
+.prop h3{font-family:var(--display);font-weight:500;font-size:20px;letter-spacing:.06em;line-height:1.15;margin:2px 0 4px}
+.prop p{margin:0;color:var(--ink-2);font-size:17.5px;line-height:1.45}
+.prop .tech{display:block;font-style:italic;color:var(--ink-3);font-size:15.5px;margin-top:4px}
+.prop .lk{display:flex;gap:14px;margin-top:6px}
+.prop .lk a{font-family:var(--display);font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;text-decoration:none;color:var(--rubric)}
+.prop .lk a:hover{text-decoration:underline}
+@media (max-width:520px){.prop{grid-template-columns:1fr}.prop .fig{max-width:260px}}
+
+.vitae{list-style:none;margin:0;padding:0}
+.vitae > li{display:grid;grid-template-columns:170px 1fr;gap:20px;padding:18px 0;border-top:1px solid var(--rule)}
+.vitae .when{font-family:var(--display);font-size:12px;letter-spacing:.14em;color:var(--ink-3);padding-top:7px;text-transform:uppercase}
+.vitae h3{font-weight:600;font-size:24px;line-height:1.2;margin:0}
+.vitae h3 i{font-weight:400}
+.vitae p{margin:2px 0 0;color:var(--ink-2);font-size:18px}
+.vitae ul{margin:4px 0 0;padding-left:20px;color:var(--ink-2);font-size:17.5px}
+@media (max-width:600px){.vitae > li{grid-template-columns:1fr;gap:2px}}
+
+.biblio a{display:grid;grid-template-columns:110px 1fr;gap:18px;padding:16px 0;border-top:1px solid var(--rule);text-decoration:none}
+.biblio a:hover h3{color:var(--rubric)}
+.biblio .k{font-family:var(--display);font-size:11.5px;letter-spacing:.16em;color:var(--rubric);padding-top:6px;text-transform:uppercase}
+.biblio h3{font-weight:600;font-size:22px;line-height:1.25;margin:0}
+.biblio p{margin:2px 0 0;color:var(--ink-2);font-size:17px;font-style:italic}
+@media (max-width:560px){.biblio a{grid-template-columns:1fr;gap:2px}}
+
+.socrates{position:relative;border:1px solid var(--ink);margin-bottom:clamp(28px,4vw,48px)}
+.socrates .sc{aspect-ratio:2.1/1}
+.socrates canvas{width:100%;height:100%;display:block;image-rendering:pixelated}
+.socrates figcaption{position:absolute;left:12px;bottom:12px;background:var(--vellum);border:1px solid var(--ink);padding:4px 10px;font-size:15px;font-style:italic}
+@media (max-width:640px){.socrates .sc{aspect-ratio:4/3}}
+
+.two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(24px,4vw,56px)}
+@media (max-width:760px){.two{grid-template-columns:1fr}}
+.quaest{list-style:none;margin:0;padding:0;counter-reset:q}
+.quaest li{counter-increment:q;padding:12px 0 12px 40px;border-top:1px solid var(--rule);position:relative}
+.quaest li::before{content:counter(q,upper-roman)'.';position:absolute;left:0;top:12px;font-family:var(--display);color:var(--rubric);font-size:15px}
+.terms{display:flex;flex-wrap:wrap;gap:6px 18px}
+.terms span{font-style:italic;font-size:20px;border-bottom:1px solid var(--rule)}
+
+.colophon{text-align:center;padding-block:clamp(48px,7vw,96px) 40px;border-top:1px solid var(--ink)}
+.colophon h2{font-family:var(--display);font-weight:500;font-size:clamp(32px,5vw,64px);letter-spacing:.06em;margin:0 0 10px}
+.colophon p.lead{font-style:italic;color:var(--ink-2);margin:0 auto 30px;max-width:44ch}
+.colophon ul{list-style:none;margin:0 auto;padding:0;display:flex;flex-wrap:wrap;justify-content:center;gap:10px 28px;max-width:860px}
+.colophon ul a{text-decoration:none;font-size:20px;border-bottom:1px solid var(--rule)}
+.colophon ul a:hover{color:var(--rubric);border-color:var(--rubric)}
+.colophon ul a span{font-family:var(--display);font-size:11px;letter-spacing:.18em;color:var(--ink-3);margin-right:8px;text-transform:uppercase}
+.credits{font-size:15px;color:var(--ink-3);margin-top:40px}
+.credits .mono{display:none}
+
+.reveal{opacity:0;transform:translateY(12px);transition:opacity .9s,transform .9s cubic-bezier(.2,.7,.2,1)}
+.reveal.in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}
+</style>
+</head>
+<body>
+<section class="fresco" id="top">
+  <div class="stage">
+    <canvas id="fresco" aria-hidden="true"></canvas>
+    <div class="frame"></div>
+    <header><a class="caps" href="#top" style="color:var(--ink)">Sahil Mahendrakar</a><nav class="caps"><a href="#about">About</a><a href="#works">Works</a><a href="#vita">Vita</a><a href="#writing">Writing</a><a href="#contact">Contact</a></nav></header>
+    <div class="gloss g1" id="g1"><b>Plato &amp; Aristotle</b>One points to the heavens, the other to the earth. The argument at the centre of everything.</div>
+    <div class="gloss g2" id="g2"><b>Euclid</b>Bent over his slate, teaching geometry to anyone who will look.</div>
+    <div class="gloss g3" id="g3"><b>The School of Athens</b>Raphael, 1509–1511. Fresco, Stanza della Segnatura, Vatican.</div>
+    <div class="inscription" id="inscription">
+      <span class="caps">Here begins the treatise of</span>
+      <h1 id="name"></h1>
+      <p class="tag" id="tagline"></p>
+      <p class="roles" id="roles"></p>
+    </div>
+    <span class="caps scrollcue">Scroll to step back</span>
+  </div>
+</section>
+
+<main class="book">
+  <div class="wrap">
+    <section class="chapter" id="about">
+      <div class="side reveal"><span class="n">I</span><span class="caps">De auctore</span></div>
+      <div class="reveal">
+        <h2>Of the author</h2>
+        <p class="lede drop" id="about-p"></p>
+        <ul class="theses" id="about-points"></ul>
+      </div>
+    </section>
+
+    <section class="chapter" id="works">
+      <div class="side reveal"><span class="n">II</span><span class="caps">De operibus</span></div>
+      <div>
+        <h2 class="reveal">Propositions, with figures</h2>
+        <div class="props" id="props"></div>
+      </div>
+    </section>
+
+    <section class="chapter" id="vita">
+      <div class="side reveal"><span class="n">III</span><span class="caps">Vita</span></div>
+      <div class="reveal">
+        <h2>The course of study</h2>
+        <ol class="vitae" id="vitae"></ol>
+      </div>
+    </section>
+
+    <section class="chapter" id="papers">
+      <div class="side reveal"><span class="n">IV</span><span class="caps">Bibliographia</span></div>
+      <div class="reveal">
+        <h2>Papers &amp; patents</h2>
+        <div class="biblio" id="biblio"></div>
+      </div>
+    </section>
+
+    <section class="chapter" id="writing">
+      <div class="side reveal"><span class="n">V</span><span class="caps">Epistulae</span></div>
+      <div class="reveal">
+        <h2>Letters &amp; essays</h2>
+        <div class="biblio" id="essays"></div>
+      </div>
+    </section>
+
+    <section class="chapter" id="now">
+      <div class="side reveal"><span class="n">VI</span><span class="caps">Quaestiones</span></div>
+      <div class="reveal">
+        <h2>Open questions</h2>
+        <div class="two"><ol class="quaest" id="focus"></ol><div class="terms" id="interests"></div></div>
+      </div>
+    </section>
+
+    <section class="colophon" id="contact">
+      <figure class="socrates reveal"><div class="sc" id="socrates"></div><figcaption>After Jacques-Louis David, <i>The Death of Socrates</i>, 1787.</figcaption></figure>
+      <h2 class="reveal">Correspondence</h2>
+      <p class="lead reveal">The conversation is the point. Write, and I will answer.</p>
+      <ul class="reveal" id="contacts"></ul>
+      <p class="credits" id="credits"></p>
+    </section>
+  </div>
+</main>
+
+<script src="content.js"></script>
+<script src="dither.js"></script>
+<script src="credits.js"></script>
+<script>
+(() => {
+  const S = window.SITE, $ = (s) => document.querySelector(s), h = (t, c, html) => { const e = document.createElement(t); if (c) e.className = c; if (html != null) e.innerHTML = html; return e; };
+  const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  $('#name').textContent = S.name;
+  $('#tagline').textContent = S.tagline;
+  $('#roles').textContent = S.roles.join(' · ');
+  $('#about-p').textContent = S.about.paragraph;
+  S.about.points.forEach((p) => $('#about-points').append(h('li', '', `<b>${esc(p.title)}</b><span>${esc(p.detail)}</span>`)));
+  S.projects.forEach((p, i) => {
+    const links = Object.entries(p.links).map(([k, u]) => `<a href="${esc(u)}" target="_blank" rel="noopener">${k === 'live' ? 'Visit' : 'Source'}</a>`).join('');
+    $('#props').append(h('article', 'prop reveal', `<div class="fig"><img src="${esc(p.image)}" alt="${esc(p.name)} screenshot" loading="lazy"><canvas aria-hidden="true"></canvas></div><div><span class="caps">Prop. ${['I','II','III','IV','V','VI','VII','VIII','IX'][i]} · Fig. ${i + 1}</span><h3>${esc(p.name)}</h3><p>${esc(p.tagline)}</p><span class="tech">${p.tech.slice(0, 4).map(esc).join(', ')}</span><div class="lk">${links}</div></div>`));
+  });
+  S.experience.forEach((x) => $('#vitae').append(h('li', '', `<span class="when">${esc(x.period)}</span><div><h3>${esc(x.title)}, <i>${esc(x.company)}</i></h3><p>${esc(x.description)}</p><ul>${x.highlights.map((t) => `<li>${esc(t)}</li>`).join('')}</ul></div>`)));
+  $('#vitae').append(h('li', '', `<span class="when">${esc(S.education.period)}</span><div><h3>${esc(S.education.degree)}, <i>${esc(S.education.school)}</i></h3><p>GPA ${esc(S.education.gpa)}</p></div>`));
+  S.publications.forEach((p) => $('#biblio').append(Object.assign(h('a', '', `<span class="k">${p.kind} · ${esc(p.year)}</span><div><h3>${esc(p.title)}</h3><p>${esc(p.number)}</p></div>`), { href: p.url, target: '_blank', rel: 'noopener' })));
+  const fmt = (d) => new Date(d + 'T12:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  S.writing.forEach((w) => $('#essays').append(Object.assign(h('a', '', `<span class="k">${fmt(w.date)}</span><div><h3>${esc(w.title)}</h3><p>${esc(w.subtitle)}</p></div>`), { href: w.url })));
+  $('#essays').append(Object.assign(h('a', '', `<span class="k">Earlier</span><div><h3>More on Substack</h3><p>The complete correspondence.</p></div>`), { href: S.thoughts.url, target: '_blank', rel: 'noopener' }));
+  S.now.focus.forEach((f) => $('#focus').append(h('li', '', esc(f))));
+  S.now.interests.forEach((t) => $('#interests').append(h('span', '', esc(t))));
+  S.contact.forEach((c) => $('#contacts').append(h('li', '', `<a href="${esc(c.href)}" ${c.href.startsWith('http') ? 'target="_blank" rel="noopener"' : ''}><span>${esc(c.label)}</span>${esc(c.display)}</a>`)));
+  window.renderCredits && window.renderCredits($('#credits'), ['athens', 'socrates']);
+
+  // ---------- engraving dither ----------
+  const D = window.Dither, INK = '#2B2117', VEL = '#EFE6D2';
+  const cv = $('#fresco'), ctx = cv.getContext('2d'), scratch = document.createElement('canvas'), sx = scratch.getContext('2d', { willReadFrequently: true });
+  let img, W, H, CELL, lv = null;
+  const FOCUS = [0.5, 0.56]; // Plato and Aristotle stand under the central arch
+  const ease = (t) => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+
+  function size() {
+    CELL = 1;
+    const r = cv.getBoundingClientRect(); W = Math.round(r.width / CELL); H = Math.round(r.height / CELL);
+    cv.width = W; cv.height = H; scratch.width = W; scratch.height = H;
+  }
+  function draw(p) {
+    if (!img) return;
+    const iw = img.naturalWidth, ih = img.naturalHeight, cover = Math.max(W / iw, H / ih);
+    const z = 1 + (2.1 - 1) * (1 - ease(p)), s = cover * z, dw = iw * s, dh = ih * s;
+    // keep the focus point under the centre of the view, clamped to the image edges
+    const cx = FOCUS[0] + (0.5 - FOCUS[0]) * ease(p), cy = FOCUS[1] + (0.5 - FOCUS[1]) * ease(p);
+    let ox = W / 2 - cx * dw, oy = H / 2 - cy * dh; ox = Math.min(0, Math.max(W - dw, ox)); oy = Math.min(0, Math.max(H - dh, oy));
+    sx.fillStyle = VEL; sx.fillRect(0, 0, W, H); sx.imageSmoothingQuality = 'high'; sx.drawImage(img, ox, oy, dw, dh);
+    let L = D.luminance(sx.getImageData(0, 0, W, H));
+    L = D.levels(L, { lo: .015, hi: .99, gamma: .92, contrast: 1.12 });
+    D.paint(ctx, D.ordered(L, W, H, { matrix: 'lines', bias: -.02 }), W, H, INK, VEL);
+    $('#g1').classList.toggle('on', p > .08 && p < .45);
+    $('#g2').classList.toggle('on', p > .35 && p < .7);
+    $('#g3').classList.toggle('on', p > .7);
+    $('#inscription').style.opacity = p < .12 ? 1 : Math.max(0, 1 - (p - .12) / .15);
+    $('#inscription').style.transform = `translateX(-50%) translateY(${-Math.min(30, Math.max(0, (p - .12) * 200))}px)`;
+  }
+  const fresco = $('.fresco');
+  const progress = () => Math.min(1, Math.max(0, -fresco.getBoundingClientRect().top / (fresco.offsetHeight - innerHeight)));
+  let raf = 0, lastP = -1; const req = () => { if (!raf) raf = requestAnimationFrame(() => { raf = 0; const p = progress(); if (Math.abs(p - lastP) > .001) { lastP = p; draw(p); } }); };
+  D.loadImage('img/art/athens.jpg').then((im) => { img = im; size(); draw(progress()); addEventListener('scroll', req, { passive: true }); }).catch(() => {});
+
+  async function plate(el, src, focus, cell, matrix) {
+    let im; try { im = await D.loadImage(src); } catch { return; }
+    const c = el.querySelector('canvas') || el.appendChild(document.createElement('canvas'));
+    const r = el.getBoundingClientRect(), w = Math.round(r.width / cell), hh = Math.round(r.height / cell); c.width = w; c.height = hh;
+    const L = D.levels(D.luminance(D.sample(im, w, hh, { focus, zoom: src.includes('socrates') ? 1.06 : 1 })), { gamma: .92, contrast: 1.1 });
+    D.paint(c.getContext('2d'), D.ordered(L, w, hh, { matrix }), w, hh, INK, VEL);
+  }
+  const io = new IntersectionObserver((es) => es.forEach((e) => {
+    if (!e.isIntersecting) return; io.unobserve(e.target); e.target.classList.add('in');
+    if (e.target.matches('.prop')) plate(e.target.querySelector('.fig'), e.target.querySelector('img').src, [.5, 0], 2, 'bayer4');
+    if (e.target.matches('.socrates')) plate($('#socrates'), 'img/art/socrates.jpg', [.5, .5], 1, 'lines');
+  }), { rootMargin: '0px 0px -6% 0px' });
+  document.querySelectorAll('.reveal').forEach((el) => io.observe(el));
+  let rt, lw = innerWidth; addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(() => { if (innerWidth === lw) return; lw = innerWidth; size(); draw(progress()); const s = document.querySelector('.socrates.in'); if (s) plate($('#socrates'), 'img/art/socrates.jpg', [.5, .5], 1, 'lines'); }, 250); });
+})();
+</script>
+</body>
+</html>
