@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Living Heroes</title>
+<meta name="description" content="Five living, dithered hero paintings for sahilmahendrakar.com. One is picked at random on every reload.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300..500;1,6..72,300..500&family=IBM+Plex+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+  :root { --paper: #f4efe4; --card: #faf7f0; --ink: #1b1814; --muted: #6f675b; --rule: #ddd4c3; --accent: #8a5a3c; color-scheme: light; }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) { --paper: #15130f; --card: #1d1a15; --ink: #ede6d8; --muted: #a39a8a; --rule: #3a342b; --accent: #e0a07c; color-scheme: dark; }
+  }
+  :root[data-theme="dark"] { --paper: #15130f; --card: #1d1a15; --ink: #ede6d8; --muted: #a39a8a; --rule: #3a342b; --accent: #e0a07c; color-scheme: dark; }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body { margin: 0; background: var(--paper); color: var(--ink); font: 400 18px/1.55 "Newsreader", Georgia, serif; padding: 0 max(16px, env(safe-area-inset-right)) 0 max(16px, env(safe-area-inset-left)); }
+  a { color: inherit; }
+  .wrap { max-width: 1120px; margin: 0 auto; }
+  .mono { font: 400 11px/1.45 "IBM Plex Mono", ui-monospace, monospace; letter-spacing: .09em; text-transform: uppercase; color: var(--muted); }
+  header { padding: clamp(44px, 8vw, 96px) 0 clamp(28px, 4vw, 44px); }
+  h1 { font-weight: 300; font-size: clamp(40px, 6.4vw, 84px); line-height: 1; letter-spacing: -.02em; margin: 14px 0 20px; }
+  h1 em { font-style: italic; }
+  .lede { max-width: 620px; color: var(--muted); font-size: clamp(18px, 2vw, 20px); margin: 0 0 26px; }
+  .go { display: inline-flex; gap: 10px; align-items: center; padding: 12px 18px; border: 1px solid var(--ink); text-decoration: none; font-size: 18px; }
+  .go:hover { background: var(--ink); color: var(--paper); }
+  .list { padding: 20px 0 64px; display: grid; gap: clamp(40px, 6vw, 72px); }
+  .scene { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); gap: clamp(20px, 3.4vw, 44px); align-items: center; }
+  .scene > a { display: block; border: 1px solid var(--rule); padding: 8px; background: var(--card); }
+  .scene img { display: block; width: 100%; aspect-ratio: 16 / 10; object-fit: cover; }
+  .scene h2 { font-weight: 400; font-size: clamp(26px, 3vw, 36px); line-height: 1.1; margin: 8px 0 14px; }
+  .scene h2 a { text-decoration: none; }
+  .scene h2 a:hover { color: var(--accent); }
+  dl { margin: 0; display: grid; grid-template-columns: 74px 1fr; gap: 8px 14px; }
+  dt { padding-top: 5px; }
+  dd { margin: 0; }
+  footer { border-top: 1px solid var(--rule); padding: 24px 0 max(44px, env(safe-area-inset-bottom)); }
+  footer p { margin: 0 0 6px; max-width: 760px; }
+  @media (max-width: 760px) { .scene { grid-template-columns: minmax(0, 1fr); } body { font-size: 17px; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="mono">sahilmahendrakar.com &middot; living heroes &middot; round two</div>
+    <h1>Five paintings, <em>quietly alive</em></h1>
+    <p class="lede">One site, five possible heroes. A different one is picked every time the page loads. The motion is meant to go unnoticed at first, and the rest of the site stays plain paper with very little text.</p>
+    <a class="go" href="index.html">Open the site <span aria-hidden="true">&rarr;</span></a>
+  </header>
+
+  <main class="list">
+    <article class="scene">
+      <a href="index.html?scene=parthenon"><img src="thumbs/parthenon.jpg" alt="Dithered Parthenon at golden hour with small birds" loading="lazy"></a>
+      <div>
+        <div class="mono">Greek ruins &middot; Church, 1871</div>
+        <h2><a href="index.html?scene=parthenon">The Parthenon</a></h2>
+        <dl>
+          <dt class="mono">Alive</dt><dd>A few swallows circle the temple and settle on the cornice. The grass moves a little.</dd>
+          <dt class="mono">Cursor</dt><dd>Birds veer away from it, and perched ones take off if you come close.</dd>
+          <dt class="mono">Scroll</dt><dd>Scroll a little and they all fly off. They come back at the bottom of the page.</dd>
+        </dl>
+      </div>
+    </article>
+
+    <article class="scene">
+      <a href="index.html?scene=sunrise"><img src="thumbs/sunrise.jpg" alt="Dithered Impression, Sunrise with boats and an orange sun" loading="lazy"></a>
+      <div>
+        <div class="mono">Impressionism &middot; Monet, 1872</div>
+        <h2><a href="index.html?scene=sunrise">Impression, Sunrise</a></h2>
+        <dl>
+          <dt class="mono">Alive</dt><dd>The harbour shimmers, the three boats bob and drift, smoke wavers, and a gull crosses now and then.</dd>
+          <dt class="mono">Cursor</dt><dd>Moving over the water leaves a faint wake of ripples.</dd>
+          <dt class="mono">Scroll</dt><dd>The sun climbs and the sky warms.</dd>
+        </dl>
+      </div>
+    </article>
+
+    <article class="scene">
+      <a href="index.html?scene=swing"><img src="thumbs/swing.jpg" alt="Dithered Fragonard's The Swing" loading="lazy"></a>
+      <div>
+        <div class="mono">Rococo &middot; Fragonard, c. 1767</div>
+        <h2><a href="index.html?scene=swing">The Swing</a></h2>
+        <dl>
+          <dt class="mono">Alive</dt><dd>She swings, just barely. Light drifts through the canopy and a petal falls now and then.</dd>
+          <dt class="mono">Cursor</dt><dd>Sweeping across her gives the swing a small push. Petals drift out of the cursor's way.</dd>
+          <dt class="mono">Scroll</dt><dd>She swings higher, and the slipper carries on its flight.</dd>
+        </dl>
+      </div>
+    </article>
+
+    <article class="scene">
+      <a href="index.html?scene=laocoon"><img src="thumbs/laocoon.jpg" alt="Dithered Laocoön sculpture in warm marble tones" loading="lazy"></a>
+      <div>
+        <div class="mono">Sculpture &middot; Rhodes, 1st century BC</div>
+        <h2><a href="index.html?scene=laocoon">Laocoön and His Sons</a></h2>
+        <dl>
+          <dt class="mono">Alive</dt><dd>Lamplight flickers on the marble, dust drifts through it, and the coils shift slightly.</dd>
+          <dt class="mono">Cursor</dt><dd>The lamp follows it, so the light rakes across the muscles from wherever you are.</dd>
+          <dt class="mono">Scroll</dt><dd>The room darkens until the lamp is most of the light, and the coils stir a little more.</dd>
+        </dl>
+      </div>
+    </article>
+
+    <article class="scene">
+      <a href="index.html?scene=starry"><img src="thumbs/starry.jpg" alt="Dithered The Starry Night" loading="lazy"></a>
+      <div>
+        <div class="mono">My pick &middot; van Gogh, 1889</div>
+        <h2><a href="index.html?scene=starry">The Starry Night</a></h2>
+        <dl>
+          <dt class="mono">Alive</dt><dd>The sky keeps flowing along its own brushstrokes, the stars breathe, and the cypress moves like a flame.</dd>
+          <dt class="mono">Cursor</dt><dd>Moving through the sky stirs a small eddy.</dd>
+          <dt class="mono">Scroll</dt><dd>The sky turns a little faster.</dd>
+        </dl>
+      </div>
+    </article>
+  </main>
+
+  <footer>
+    <p class="mono">Across all five: the text sits on paper cut out of the painting with dithered edges. Scrolling dissolves the painting into paper for the content, and it comes back at the end for contact links. The link color is taken from whichever painting is showing.</p>
+    <p class="mono">Click the painting credit in the corner to switch paintings. All artworks are public domain.</p>
+  </footer>
+</div>
+</body>
+</html>

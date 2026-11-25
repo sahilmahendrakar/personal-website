@@ -32,7 +32,7 @@
   {
     "slug": "laocoon",
     "title": "File:Laocoon Pio-Clementino Inv1059-1064-1067.jpg",
-    "artwork": "Laocoön and His Sons",
+    "artwork": "Laoco\u00f6n and His Sons",
     "artist": "Hagesandros, Athenedoros and Polydoros",
     "license": "Public domain",
     "descriptionurl": "https://commons.wikimedia.org/wiki/File:Laocoon_Pio-Clementino_Inv1059-1064-1067.jpg",
@@ -81,8 +81,8 @@
   },
   {
     "slug": "paestum",
-    "title": "File:Basilica di Paestum te Paestum Autre vue interieure des restes du Collège supposé des Anfictions (titel op object) Verschillende weergaven van de resten van drie grote gebouwen die nog steeds staan te Paestum (serietit, RP-P-1966-396.jpg",
-    "artwork": "Différentes vues de Pesto: interior of the Basilica, Paestum",
+    "title": "File:Basilica di Paestum te Paestum Autre vue interieure des restes du Coll\u00e8ge suppos\u00e9 des Anfictions (titel op object) Verschillende weergaven van de resten van drie grote gebouwen die nog steeds staan te Paestum (serietit, RP-P-1966-396.jpg",
+    "artwork": "Diff\u00e9rentes vues de Pesto: interior of the Basilica, Paestum",
     "artist": "Giovanni Battista Piranesi",
     "license": "CC0",
     "descriptionurl": "https://commons.wikimedia.org/wiki/File:Basilica_di_Paestum_te_Paestum_Autre_vue_interieure_des_restes_du_Coll%C3%A8ge_suppos%C3%A9_des_Anfictions_(titel_op_object)_Verschillende_weergaven_van_de_resten_van_drie_grote_gebouwen_die_nog_steeds_staan_te_Paestum_(serietit,_RP-P-1966-396.jpg",
@@ -122,7 +122,7 @@
   {
     "slug": "parasol",
     "title": "File:Claude Monet - Woman with a Parasol - Madame Monet and Her Son - Google Art Project.jpg",
-    "artwork": "Woman with a Parasol – Madame Monet and Her Son",
+    "artwork": "Woman with a Parasol \u2013 Madame Monet and Her Son",
     "artist": "Claude Monet",
     "license": "Public domain",
     "descriptionurl": "https://commons.wikimedia.org/wiki/File:Claude_Monet_-_Woman_with_a_Parasol_-_Madame_Monet_and_Her_Son_-_Google_Art_Project.jpg",
@@ -143,7 +143,7 @@
     "slug": "swing",
     "title": "File:Fragonard, The Swing.jpg",
     "artwork": "The Happy Accidents of the Swing",
-    "artist": "Jean-Honoré Fragonard",
+    "artist": "Jean-Honor\u00e9 Fragonard",
     "license": "Public domain",
     "descriptionurl": "https://commons.wikimedia.org/wiki/File:Fragonard,_The_Swing.jpg",
     "width": 2000,
@@ -151,12 +151,22 @@
   },
   {
     "slug": "cythera",
-    "title": "File:L'Embarquement pour Cythère, by Antoine Watteau, from C2RMF retouched.jpg",
+    "title": "File:L'Embarquement pour Cyth\u00e8re, by Antoine Watteau, from C2RMF retouched.jpg",
     "artwork": "Pilgrimage to Cythera, so-called The Embarkation for Cythera",
     "artist": "Jean-Antoine Watteau",
     "license": "Public domain",
     "descriptionurl": "https://commons.wikimedia.org/wiki/File:L%27Embarquement_pour_Cyth%C3%A8re,_by_Antoine_Watteau,_from_C2RMF_retouched.jpg",
     "width": 2000,
     "height": 1312
+  },
+  {
+    "slug": "starry",
+    "title": "The Starry Night (crop)",
+    "artwork": "The Starry Night",
+    "artist": "Vincent van Gogh",
+    "license": "Public domain",
+    "descriptionurl": "https://github.com/jcjohnson/neural-style/blob/master/examples/inputs/starry_night.jpg",
+    "width": 1024,
+    "height": 640
   }
 ]
