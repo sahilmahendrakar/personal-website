@@ -34,6 +34,22 @@
     return out;
   }
 
+  // Kuwahara: flattens texture into soft brush-like patches while keeping edges
+  function kuwahara(A, W, H, r) {
+    const O = new Float32Array(A.length);
+    for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+      let best = 1e9, bm = 0;
+      for (let q = 0; q < 4; q++) {
+        const sx = q & 1 ? 1 : -1, sy = q & 2 ? 1 : -1; let n = 0, m = 0, v = 0;
+        for (let dy = 0; dy <= r; dy++) for (let dx = 0; dx <= r; dx++) { const xx = clamp(x + dx * sx, 0, W - 1), yy = clamp(y + dy * sy, 0, H - 1), l = A[yy * W + xx]; m += l; v += l * l; n++; }
+        m /= n; const va = v / n - m * m; if (va < best) { best = va; bm = m; }
+      }
+      O[y * W + x] = bm;
+    }
+    return O;
+  }
+  const loadImage = (src) => new Promise((res, rej) => { const im = new Image(); im.decoding = 'async'; im.onload = () => res(im); im.onerror = rej; im.src = src; });
+
   // ---------- ivy: seeded random-walk stems with alternating leaves ----------
   function growIvy(seeds, W, H, R) {
     const segs = [], leaves = [];
@@ -58,7 +74,7 @@
   window.LivingScene = function (canvas, scene, opts = {}) {
     const ctx = canvas.getContext('2d');
     const cellOf = () => (opts.cell || 2);
-    let W, H, back, front, frontA, colour, G, L, Lused, out, errOut, e, dirty, rowDirty, mid, vine, ivy, inkC, paperC, R, state, ready = false;
+    let water = null, hasFront = false; let W, H, back, front, frontA, colour, G, L, Lused, out, errOut, e, dirty, rowDirty, mid, vine, ivy, inkC, paperC, R, state, ready = false;
     const pointer = { x: -1e4, y: -1e4, vx: 0, vy: 0, t: 0 };
     let scrollP = 0, t0 = performance.now(), lastVine = -1, lastTint = 0, frameNo = 0;
     const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -73,10 +89,25 @@
       // paint: tone layers (grey = tone) and one colour layer
       const cb = layerCanvas(), cf = layerCanvas(), cc = layerCanvas();
       const P = { W, H, R, back: cb.getContext('2d'), front: cf.getContext('2d'), colour: cc.getContext('2d'), noise: (scale, oct) => noiseField(W, H, R, scale, oct), portrait: H > W * 1.05 };
+      P.image = (o) => {
+        const im = scene._img, iw = im.naturalWidth, ih = im.naturalHeight, f = o.focus || [0.5, 0.5], z = o.zoom || 1;
+        const sc = Math.max(W / iw, H / ih) * z, dw = iw * sc, dh = ih * sc;
+        const ox = clamp(W / 2 - f[0] * dw, W - dw, 0), oy = clamp(H / 2 - f[1] * dh, H - dh, 0);
+        for (const c of [P.back, P.colour]) { c.save(); if (o.mirror) { c.translate(W, 0); c.scale(-1, 1); } c.drawImage(im, ox, oy, dw, dh); c.restore(); }
+        // image coordinates (0..1) to dither dots
+        return (u, v) => [o.mirror ? W - (ox + u * dw) : ox + u * dw, oy + v * dh, sc];
+      };
       state = scene.paint(P) || {};
       const gb = P.back.getImageData(0, 0, W, H).data, gf = P.front.getImageData(0, 0, W, H).data;
       back = new Float32Array(W * H); front = new Float32Array(W * H); frontA = new Float32Array(W * H);
-      for (let i = 0; i < W * H; i++) { back[i] = gb[i * 4] / 255; front[i] = gf[i * 4] / 255; frontA[i] = gf[i * 4 + 3] / 255; }
+      for (let i = 0; i < W * H; i++) {
+        if (scene.src) { const r = gb[i * 4] / 255, g = gb[i * 4 + 1] / 255, b = gb[i * 4 + 2] / 255; back[i] = Math.sqrt(0.2126 * r * r + 0.7152 * g * g + 0.0722 * b * b); }
+        else back[i] = gb[i * 4] / 255;
+        front[i] = gf[i * 4] / 255; frontA[i] = gf[i * 4 + 3] / 255;
+      }
+      hasFront = frontA.some((a) => a > 0.001);
+      if (scene.levels) { const { lo = 0, hi = 1, gamma = 1, contrast = 1 } = scene.levels; for (let i = 0; i < W * H; i++) { let v = clamp((back[i] - lo) / (hi - lo)); v = Math.pow(v, gamma); back[i] = clamp((v - 0.5) * contrast + 0.5); } }
+      if (scene.brush) { back = kuwahara(back, W, H, 2); back = kuwahara(back, W, H, 1); }
       if (state.texture) state.texture(back, front);
       // the colour layer is blurred heavily: the middle ink drifts, it never outlines shapes
       const cd = P.colour.getImageData(0, 0, W, H).data, br = Math.max(3, Math.round(Math.min(W, H) / 30));
@@ -89,6 +120,8 @@
       dirty = new Uint8Array(W * H); rowDirty = new Uint8Array(H + 3); mid = new Uint8ClampedArray(W * H * 3);
       vine = { dens: new Float32Array(W * H), stem: new Uint8Array(W * H) };
       ivy = state.ivy ? growIvy(state.ivy, W, H, R) : null;
+      water = null;
+      if (state.water) { water = new Float32Array(W * H); for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) water[y * W + x] = state.water(x, y); }
       if (state.birds) state.birds.forEach((b) => Object.assign(b, { x: b.hx * W, y: b.hy * H, vx: 0, vy: 0, ph: R() * 6.28, a: R() * 6.28 }));
       lastVine = -1; tintMid(); ready = true;
     }
@@ -129,7 +162,12 @@
       for (let y = 0; y < H; y++) {
         for (let x = 0; x < W; x++) {
           const i = y * W + x; let v = back[i];
-          if (frontA[i] > 0.001 || amp) {
+          if (water && water[i] > 0.01 && amp) {
+            const wd = water[i] * (0.55 * Math.sin(y * 0.9 + t * 1.3) + 0.35 * Math.sin(y * 0.33 - t * 0.9 + x * 0.05)) * (0.6 + 0.8 * (y / H));
+            const sx = x - wd, xi = Math.floor(sx), f = sx - xi, a = back[y * W + clamp(xi, 0, W - 1)], b = back[y * W + clamp(xi + 1, 0, W - 1)];
+            v = a * (1 - f) + b * f;
+          }
+          if (hasFront && (frontA[i] > 0.001 || amp)) {
             let dx = 0;
             if (amp) {
               const w = ws(x / W, y / H);
@@ -140,7 +178,7 @@
             const a = frontA[y * W + x0] * (1 - f) + frontA[y * W + x1] * f;
             if (a > 0.001) { const fv = (front[y * W + x0] * frontA[y * W + x0] * (1 - f) + front[y * W + x1] * frontA[y * W + x1] * f) / a; v = v * (1 - a) + fv * a; }
           }
-          if (ivy) { const d = vine.dens[i]; if (d > 0.06) { const k = Math.min(1, d * 1.5); v = v * (1 - k) + (0.2 + 0.32 * Math.max(0, d - 0.7)) * k; } else if (vine.stem[i]) v = 0.08; }
+          if (ivy) { const d = vine.dens[i]; if (d > 0.06) { const k = Math.min(1, d * 1.5); v = v * (1 - k) + ((scene.ivyTone ?? 0.2) + 0.3 * Math.max(0, d - 0.7)) * k; } else if (vine.stem[i]) v = 0.1; }
           L[i] = clamp(v + G[i] * (scene.grain ?? 0.08), -0.2, 1.2);
         }
       }
@@ -223,7 +261,8 @@
       dither(frameNo === 1);
       paintOut(t);
     }
-    function start() {
+    async function start() {
+      if (scene.src && !scene._img) scene._img = await loadImage(scene.src);
       build();
       if (reduced) { if (ivy) { lastVine = 0.75; renderIvy(lastVine); tintMid(); } compose(0); dither(true); paintOut(0); return; }
       raf = requestAnimationFrame(tick);
