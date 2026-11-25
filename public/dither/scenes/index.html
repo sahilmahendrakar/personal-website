@@ -55,7 +55,7 @@
   const pick = names.includes(want) ? want : names[(Math.random() * names.length) | 0], sc = window.SCENES[pick];
   document.documentElement.style.setProperty('--ink', sc.ink);
   document.documentElement.style.setProperty('--paper', sc.paper);
-  window.live = LivingScene(document.getElementById('scene'), sc, { cell: 2 });
+  window.live = LivingScene(document.getElementById('scene'), sc, { cell: 1 });
 </script>
 </body>
 </html>

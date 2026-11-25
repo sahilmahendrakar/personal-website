@@ -153,7 +153,9 @@
       hasFront = frontA.some((a) => a > 0.001);
       if (scene.levels) { const { lo = 0, hi = 1, gamma = 1, contrast = 1 } = scene.levels; for (let i = 0; i < W * H; i++) { let v = clamp((back[i] - lo) / (hi - lo)); v = Math.pow(v, gamma); back[i] = clamp((v - 0.5) * contrast + 0.5); } }
       if (scene.brush) { back = kuwahara(back, W, H, 2); back = kuwahara(back, W, H, 1); }
-      const flow = scene.src ? flowField(back, W, H, R) : null;
+      // unsharp mask: bring the painting's fine detail forward before dithering
+      if (scene.sharpen) { const bl = blur(back, W, H, Math.max(1, Math.round(W / 700))); for (let i = 0; i < W * H; i++) back[i] = clamp(back[i] + (back[i] - bl[i]) * scene.sharpen, -0.1, 1.1); }
+      const flow = scene.src && scene.flow ? flowField(back, W, H, R) : null;
       // brush: smear the tone a little along the strokes, like paint dragged by a brush
       if (flow) { const sm = lic(flow, back, W, H, scene.smear ?? 4); for (let i = 0; i < W * H; i++) back[i] = back[i] * 0.35 + sm[i] * 0.65; }
       if (state.texture) state.texture(back, front);
@@ -172,13 +174,16 @@
       vine = { dens: new Float32Array(W * H), stem: new Uint8Array(W * H) };
       ivy = state.ivy ? growIvy(state.ivy, W, H, R) : null;
       water = null;
-      if (state.water) { water = new Float32Array(W * H); for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) water[y * W + x] = state.water(x, y); }
+      if (state.water) { water = new Float32Array(W * H); const wi = []; for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) { const v = state.water(x, y); water[y * W + x] = v; if (v > 0.01) wi.push(y * W + x); } waterIdx = Int32Array.from(wi); }
+      needFull = true;
       if (state.birds) state.birds.forEach((b) => Object.assign(b, { x: b.hx * W, y: b.hy * H, vx: 0, vy: 0, ph: R() * 6.28, a: R() * 6.28 }));
       fadeN = noiseField(W, H, R, Math.max(12, W / 14), 3);
       lastVine = -1; tintMid(); ready = true;
     }
     // middle ink: the local colour, re-lit to sit halfway between ink and paper
+    let repaintAll = true;
     function tintMid() {
+      repaintAll = true;
       const li = lum(inkC), lp = lum(paperC), target = li + (lp - li) * (scene.midLight ?? 0.5), sat = scene.sat || 1.5;
       // a gentle colour grade: cool shadows, warm light, and a sky that cools toward the top
       const gr = scene.grade, gs = gr && hex(gr.shadow), gl = gr && hex(gr.light), gk = gr && gr.sky && hex(gr.sky);
@@ -214,73 +219,98 @@
       }
     }
 
-    function compose(t) {
-      const sway = reduced ? 0 : 1, amp = (scene.sway ?? 0.55) * sway, px = pointer.x, py = pointer.y, near = Math.max(18, W * 0.06);
-      const step = Math.floor(t * 7) / 7; // the front moves in small steps, like leaves catching the wind
-      const ws = scene.wind || ((x, y) => 1);
-      const edge = (scene.fadeAt ?? 0.92) - Math.max(0, scrollP - 0.05) * 0.5;
-      for (let y = 0; y < H; y++) {
-        for (let x = 0; x < W; x++) {
-          const i = y * W + x; let v = back[i];
-          if (water && water[i] > 0.01 && amp) {
-            const wd = water[i] * (0.55 * Math.sin(y * 0.9 + t * 1.3) + 0.35 * Math.sin(y * 0.33 - t * 0.9 + x * 0.05)) * (0.6 + 0.8 * (y / H));
-            const sx = x - wd, xi = Math.floor(sx), f = sx - xi, a = back[y * W + clamp(xi, 0, W - 1)], b = back[y * W + clamp(xi + 1, 0, W - 1)];
-            v = a * (1 - f) + b * f;
-          }
-          if (hasFront && (frontA[i] > 0.001 || amp)) {
-            let dx = 0;
-            if (amp) {
-              const w = ws(x / W, y / H);
-              dx = amp * w * (0.6 * Math.sin(step * 0.9 + y * 0.045 + x * 0.012) + 0.4 * Math.sin(step * 1.7 - y * 0.11 + x * 0.03));
-              const dd = Math.hypot(x - px, y - py); if (dd < near) dx += w * (1 - dd / near) * 1.4 * Math.sin(step * 5 + y * 0.35) * Math.min(1, pointer.energy);
-            }
-            const sx = x - dx, xi = Math.floor(sx), f = sx - xi, x0 = clamp(xi, 0, W - 1), x1 = clamp(xi + 1, 0, W - 1);
-            const a = frontA[y * W + x0] * (1 - f) + frontA[y * W + x1] * f;
-            if (a > 0.001) { const fv = (front[y * W + x0] * frontA[y * W + x0] * (1 - f) + front[y * W + x1] * frontA[y * W + x1] * f) / a; v = v * (1 - a) + fv * a; }
-          }
-          if (ivy) { const d = vine.dens[i]; if (d > 0.06) { const k = Math.min(1, d * 1.5); v = v * (1 - k) + ((scene.ivyTone ?? 0.2) + 0.3 * Math.max(0, d - 0.7)) * k; } else if (vine.stem[i]) v = 0.1; }
-          // the painting dissolves into the paper along a ragged edge at the bottom, rising as you scroll
-          const fe = (y / H) - edge + fadeN[i] * 0.07; if (fe > 0) v += Math.min(1.1, fe * 9);
-          L[i] = clamp(v + G[i] * (scene.grain ?? 0.08), -0.2, 1.2);
+    let lastEdge = null, needFull = true, waterIdx = null, composed = 'none';
+    function px(x, y, i, t, edge, amp, step) {
+      let v = back[i];
+      if (water && water[i] > 0.01 && amp) {
+        const k = 720 / W, yy = y * k, wd = water[i] * (0.55 * Math.sin(yy * 0.9 + t * 1.3) + 0.35 * Math.sin(yy * 0.33 - t * 0.9 + x * k * 0.05)) * (0.6 + 0.8 * (y / H)) / k;
+        const sx = x - wd, xi = Math.floor(sx), f = sx - xi, a = back[y * W + clamp(xi, 0, W - 1)], b = back[y * W + clamp(xi + 1, 0, W - 1)];
+        v = a * (1 - f) + b * f;
+      }
+      if (hasFront && (frontA[i] > 0.001 || amp)) {
+        let dx = 0;
+        if (amp) {
+          const w = (scene.wind || (() => 1))(x / W, y / H), near = Math.max(18, W * 0.06);
+          dx = amp * w * (0.6 * Math.sin(step * 0.9 + y * 0.045 + x * 0.012) + 0.4 * Math.sin(step * 1.7 - y * 0.11 + x * 0.03));
+          const dd = Math.hypot(x - pointer.x, y - pointer.y); if (dd < near) dx += w * (1 - dd / near) * 1.4 * Math.sin(step * 5 + y * 0.35) * Math.min(1, pointer.energy);
         }
+        const sx = x - dx, xi = Math.floor(sx), f = sx - xi, x0 = clamp(xi, 0, W - 1), x1 = clamp(xi + 1, 0, W - 1);
+        const a = frontA[y * W + x0] * (1 - f) + frontA[y * W + x1] * f;
+        if (a > 0.001) { const fv = (front[y * W + x0] * frontA[y * W + x0] * (1 - f) + front[y * W + x1] * frontA[y * W + x1] * f) / a; v = v * (1 - a) + fv * a; }
+      }
+      if (ivy) { const d = vine.dens[i]; if (d > 0.06) { const k = Math.min(1, d * 1.5); v = v * (1 - k) + ((scene.ivyTone ?? 0.2) + 0.3 * Math.max(0, d - 0.7)) * k; } else if (vine.stem[i]) v = 0.1; }
+      // the painting dissolves into the paper along a ragged edge at the bottom, rising as you scroll
+      const fe = (y / H) - edge + fadeN[i] * 0.07; if (fe > 0) v += Math.min(1.1, fe * 9);
+      return clamp(v + G[i] * (scene.grain ?? 0.08), -0.2, 1.2);
+    }
+    function compose(t) {
+      const amp = reduced ? 0 : (scene.sway ?? 0.55), step = Math.floor(t * 7) / 7;
+      const edge = (scene.fadeAt ?? 0.92) - Math.max(0, scrollP - 0.05) * 0.5;
+      if (edge !== lastEdge) needFull = true;
+      if (needFull || hasFront) {
+        for (let y = 0, i = 0; y < H; y++) for (let x = 0; x < W; x++, i++) L[i] = px(x, y, i, t, edge, amp, step);
+        needFull = false; lastEdge = edge; composed = 'all';
+      } else if (waterIdx && amp) {
+        for (let n = 0; n < waterIdx.length; n++) { const i = waterIdx[n], y = (i / W) | 0; L[i] = px(i - y * W, y, i, t, edge, amp, step); }
+        composed = 'water';
       }
     }
-    // dither only the dots whose tone changed (plus a small margin), freezing the rest
-    function dither(full) {
-      dirty.fill(0); rowDirty.fill(0); let any = false;
-      for (let i = 0; i < W * H; i++) if (full || Math.abs(L[i] - Lused[i]) > 0.004) { dirty[i] = 1; any = true; }
-      if (!any) return false;
-      if (!full) { // grow the dirty area by two dots so changed patches re-weave as a whole
-        for (let pass = 0; pass < 2; pass++) { const d2 = Uint8Array.from(dirty); for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) if (d2[y * W + x]) { if (x > 0) dirty[y * W + x - 1] = 1; if (x < W - 1) dirty[y * W + x + 1] = 1; if (y > 0) dirty[(y - 1) * W + x] = 1; if (y < H - 1) dirty[(y + 1) * W + x] = 1; } }
+    // dither only the dots whose tone changed (plus a small margin), freezing the rest.
+    // composed tells us which dots could have changed: all of them, or just the water.
+    let dl = new Int32Array(0), dn = 0, y0 = 0, y1 = -1, full = true;
+    function mark(i) { if (!dirty[i]) { dirty[i] = 1; dl[dn++] = i; } }
+    function dither(all) {
+      if (dl.length !== W * H) dl = new Int32Array(W * H);
+      dn = 0;
+      if (all) { for (let i = 0; i < W * H; i++) { dirty[i] = 1; dl[i] = i; } dn = W * H; }
+      else {
+        const cand = composed === 'all' ? null : composed === 'water' ? waterIdx : [];
+        if (cand) { for (let n = 0; n < cand.length; n++) { const i = cand[n]; if (Math.abs(L[i] - Lused[i]) > 0.004) mark(i); } }
+        else for (let i = 0; i < W * H; i++) if (Math.abs(L[i] - Lused[i]) > 0.004) mark(i);
+        // grow the dirty area by two dots so changed patches re-weave as a whole
+        for (let pass = 0; pass < 2; pass++) { const m = dn; for (let n = 0; n < m; n++) { const i = dl[n], x = i % W; if (x > 0) mark(i - 1); if (x < W - 1) mark(i + 1); if (i >= W) mark(i - W); if (i + W < W * H) mark(i + W); } }
       }
-      for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) if (dirty[y * W + x]) { rowDirty[y] = 1; break; }
-      for (let i = 0; i < W * H; i++) if (dirty[i]) e[i] = L[i];
-      for (let y = 0; y < H; y++) {
-        const rtl = y & 1, near = rowDirty[y] || rowDirty[y + 1] || rowDirty[y + 2];
-        if (!near) continue;
+      composed = 'none';
+      if (!dn) { y1 = -1; return false; }
+      rowDirty.fill(0); y0 = H; y1 = 0;
+      for (let n = 0; n < dn; n++) { const i = dl[n], y = (i / W) | 0; rowDirty[y] = 1; if (y < y0) y0 = y; if (y > y1) y1 = y; e[i] = L[i]; }
+      for (let y = Math.max(0, y0 - 2); y <= y1; y++) {
+        const rtl = y & 1;
+        if (!(rowDirty[y] || rowDirty[y + 1] || rowDirty[y + 2])) continue;
         for (let k = 0; k < W; k++) {
           const x = rtl ? W - 1 - k : k, i = y * W + x;
           let er;
           if (dirty[i]) { const v = e[i], b = v < 0.25 ? 0 : v < 0.75 ? 1 : 2; out[i] = b; er = errOut[i] = v - b * 0.5; Lused[i] = L[i]; }
           else er = errOut[i];
+          if (er === 0) continue;
           for (let q = 0; q < 12; q++) { const K = STUCKI[q], xx = x + (rtl ? -K[0] : K[0]), yy = y + K[1]; if (xx >= 0 && xx < W && yy < H) { const j = yy * W + xx; if (dirty[j]) e[j] += er * K[2]; } }
         }
       }
       return true;
     }
     let img = null;
-    function paintOut(t) {
-      if (!img || img.width !== W) img = ctx.createImageData(W, H);
+    function paintOut(all) {
+      if (!img || img.width !== W || img.height !== H) { img = ctx.createImageData(W, H); all = true; }
+      if (repaintAll) { all = true; repaintAll = false; }
       const d = img.data;
-      for (let i = 0; i < W * H; i++) {
+      const put = (i) => {
         const b = out[i], j = i * 4;
         if (b === 0) { d[j] = inkC[0]; d[j + 1] = inkC[1]; d[j + 2] = inkC[2]; }
         else if (b === 2) { d[j] = paperC[0]; d[j + 1] = paperC[1]; d[j + 2] = paperC[2]; }
         else { d[j] = mid[i * 3]; d[j + 1] = mid[i * 3 + 1]; d[j + 2] = mid[i * 3 + 2]; }
         d[j + 3] = 255;
-      }
-      if (state.birds) drawBirds(d, t);
-      ctx.putImageData(img, 0, 0);
+      };
+      if (all) { for (let i = 0; i < W * H; i++) put(i); ctx.putImageData(img, 0, 0); }
+      else if (dn && y1 >= y0) { for (let n = 0; n < dn; n++) put(dl[n]); ctx.putImageData(img, 0, 0, 0, y0, W, y1 - y0 + 1); }
+      for (let n = 0; n < dn; n++) dirty[dl[n]] = 0;
+      dn = 0;
+    }
+    // birds live on their own transparent layer, so they never touch the dither
+    let over = null, octx = null;
+    function overlay() {
+      if (!over) { over = document.createElement('canvas'); over.setAttribute('aria-hidden', 'true'); over.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;image-rendering:pixelated;pointer-events:none'; canvas.after(over); octx = over.getContext('2d'); }
+      if (over.width !== W || over.height !== H) { over.width = W; over.height = H; }
+      return octx;
     }
     // swallows: a few ink marks that wheel slowly, keep away from the cursor, and leave when you scroll
     const BIRD = [[[-2, 0], [-1, -1], [0, 0], [1, -1], [2, 0]], [[-2, -1], [-1, 0], [0, 0], [1, 0], [2, -1]], [[-2, 1], [-1, 0], [0, 0], [1, 0], [2, 1]]];
@@ -288,7 +318,7 @@
       const leave = scrollP > 0.12;
       for (const b of state.birds) {
         let ax, ay;
-        if (leave) { ax = (b.x > W / 2 ? 1 : -1) * 14; ay = -10; }
+        if (leave) { ax = (b.x > W / 2 ? 1 : -1) * 14 * W / 720; ay = -10 * W / 720; }
         else {
           b.a += dt * b.spin; const tx = b.hx * W + Math.cos(b.a) * b.rx * W, ty = b.hy * H + Math.sin(b.a * 1.3) * b.ry * H;
           ax = (tx - b.x) * 0.5; ay = (ty - b.y) * 0.5;
@@ -296,14 +326,15 @@
           if (d < rr) { ax += dx / (d || 1) * 90 * (1 - d / rr); ay += dy / (d || 1) * 90 * (1 - d / rr); }
         }
         b.vx = (b.vx + ax * dt) * 0.97; b.vy = (b.vy + ay * dt) * 0.97;
-        const sp = Math.hypot(b.vx, b.vy), mx = leave ? 60 : 16; if (sp > mx) { b.vx *= mx / sp; b.vy *= mx / sp; }
+        const sp = Math.hypot(b.vx, b.vy), mx = (leave ? 60 : 16) * W / 720; if (sp > mx) { b.vx *= mx / sp; b.vy *= mx / sp; }
         b.x += b.vx * dt; b.y += b.vy * dt; b.ph += dt * (3 + sp * 0.25);
       }
     }
-    function drawBirds(d) {
+    function drawBirds() {
+      const o = overlay(); o.clearRect(0, 0, W, H); o.fillStyle = scene.ink;
       for (const b of state.birds) {
-        const f = BIRD[(Math.floor(b.ph) % 3 + 3) % 3], bx = Math.round(b.x), by = Math.round(b.y);
-        for (const [ox, oy] of f) { const x = bx + ox, y = by + oy; if (x < 0 || y < 0 || x >= W || y >= H) continue; const j = (y * W + x) * 4; d[j] = inkC[0]; d[j + 1] = inkC[1]; d[j + 2] = inkC[2]; }
+        const f = BIRD[(Math.floor(b.ph) % 3 + 3) % 3], bx = Math.round(b.x), by = Math.round(b.y), z = Math.max(1, Math.round(W / 800));
+        for (const [ox, oy] of f) o.fillRect(bx + ox * z, by + oy * z, z, z);
       }
     }
 
@@ -316,17 +347,16 @@
       if (ivy) {
         // the ivy keeps growing: slowly with time, faster as you read down the page; never backwards
         const target = Math.min(1, (scene.ivyStart ?? 0.25) + t / (scene.ivySeconds || 120) + scrollP * 0.5);
-        if (target > lastVine + 0.0025) { lastVine = Math.max(lastVine, target); renderIvy(lastVine); if (t - lastTint > 1.5) { tintMid(); lastTint = t; } }
+        if (target > lastVine + 0.004) { lastVine = Math.max(lastVine, target); renderIvy(lastVine); needFull = true; if (t - lastTint > 1.5) { tintMid(); lastTint = t; } }
       }
       if (state.birds) stepBirds(dt, t);
-      compose(t);
-      dither(frameNo === 1);
-      paintOut(t);
+      if (frameNo === 1 || needFull || frameNo % 3 === 0) { compose(t); dither(frameNo === 1); paintOut(frameNo === 1); }
+      if (state.birds) drawBirds();
     }
     async function start() {
       if (scene.src && !scene._img) scene._img = await loadImage(scene.src);
       build();
-      if (reduced) { if (ivy) { lastVine = 0.75; renderIvy(lastVine); tintMid(); } compose(0); dither(true); paintOut(0); return; }
+      if (reduced) { if (ivy) { lastVine = 0.75; renderIvy(lastVine); tintMid(); } compose(0); dither(true); paintOut(true); if (state.birds) drawBirds(); return; }
       raf = requestAnimationFrame(tick);
     }
     addEventListener('pointermove', (ev) => {
@@ -335,7 +365,7 @@
       pointer.x = x; pointer.y = y;
     }, { passive: true });
     addEventListener('scroll', () => { scrollP = clamp(scrollY / innerHeight); }, { passive: true });
-    let rs = 0; addEventListener('resize', () => { clearTimeout(rs); rs = setTimeout(() => { const w0 = W; build(); frameNo = 0; if (reduced) { compose(0); dither(true); paintOut(0); } }, 200); });
+    let rs = 0; addEventListener('resize', () => { clearTimeout(rs); rs = setTimeout(() => { const w0 = W; build(); frameNo = 0; if (reduced) { compose(0); dither(true); paintOut(true); } }, 200); });
     start();
     return { get size() { return [W, H]; } };
   };
