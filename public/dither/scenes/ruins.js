@@ -3,8 +3,9 @@
 // place in that painting's world rather than the painting itself. New ivy grows over it.
 (window.SCENES = window.SCENES || {}).ruins = {
   src: (window.ART_BASE || '../img/art/') + 'desolation.jpg',
-  ink: '#1b1c1f', paper: '#efe8d6', leaf: '#56703c', sat: 1.7, ivyTone: 0.22, ivyStart: 0.3, ivySeconds: 160, sway: 0.5, brush: true,
-  levels: { lo: 0.02, hi: 0.96, gamma: 0.72, contrast: 1.06 },
+  ink: '#1e2230', paper: '#f4eddc', leaf: '#6c8752', sat: 1.85, midLight: 0.56,
+  grade: { shadow: '#2f6f7a', light: '#ffb98a', mix: 0.36, sky: '#7d9be0', skyMix: 0.7, skyTo: 0.55 }, ivyTone: 0.22, ivyStart: 0.3, ivySeconds: 160, sway: 0.5, brush: true, grain: 0.1, comb: 12,
+  levels: { lo: 0.02, hi: 0.96, gamma: 0.74, contrast: 1.14 },
   paint(P) {
     const { W, H, R } = P, por = P.portrait;
     const map = P.image({ focus: por ? [0.4, 0.5] : [0.36, 0.42], zoom: por ? 1 : 1.12, mirror: true });

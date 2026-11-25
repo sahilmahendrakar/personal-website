@@ -48,6 +48,51 @@
     }
     return O;
   }
+  // The painting's stroke field: the direction its forms run, from a smoothed structure tensor.
+  // Where the painting is flat (open sky, still water) the field falls back to slow, wide swirls.
+  function flowField(T, W, H, R) {
+    const sm = blur(T, W, H, 1), gx = new Float32Array(W * H), gy = new Float32Array(W * H);
+    for (let y = 1; y < H - 1; y++) for (let x = 1; x < W - 1; x++) {
+      const i = y * W + x, a = sm[i - W - 1], b = sm[i - W], c = sm[i - W + 1], d = sm[i - 1], f = sm[i + 1], g = sm[i + W - 1], h = sm[i + W], k = sm[i + W + 1];
+      gx[i] = (c + 2 * f + k) - (a + 2 * d + g); gy[i] = (g + 2 * h + k) - (a + 2 * b + c);
+    }
+    let xx = new Float32Array(W * H), yy = new Float32Array(W * H), xy = new Float32Array(W * H);
+    for (let i = 0; i < W * H; i++) { xx[i] = gx[i] * gx[i]; yy[i] = gy[i] * gy[i]; xy[i] = gx[i] * gy[i]; }
+    const r = Math.max(3, Math.round(Math.min(W, H) / 90));
+    xx = blur(blur(xx, W, H, r), W, H, r); yy = blur(blur(yy, W, H, r), W, H, r); xy = blur(blur(xy, W, H, r), W, H, r);
+    const swirl = noiseField(W, H, R, Math.max(24, W / 6), 2), c2 = new Float32Array(W * H), s2 = new Float32Array(W * H);
+    let mxs = 0; for (let i = 0; i < W * H; i++) mxs = Math.max(mxs, xx[i] + yy[i]);
+    for (let i = 0; i < W * H; i++) {
+      const tr = xx[i] + yy[i], d = Math.sqrt((xx[i] - yy[i]) ** 2 + 4 * xy[i] * xy[i]), coh = tr > 1e-9 ? d / tr : 0;
+      const w = clamp(coh * Math.sqrt(tr / (mxs * 0.02 + 1e-9)));
+      // doubled-angle form, so opposite tangents agree; gradient angle + 90° is the stroke direction
+      const ga = Math.atan2(2 * xy[i], xx[i] - yy[i]) + Math.PI, fa = 2 * (0.25 + swirl[i] * 1.4);
+      c2[i] = Math.cos(ga) * w + Math.cos(fa) * (1 - w); s2[i] = Math.sin(ga) * w + Math.sin(fa) * (1 - w);
+    }
+    const fx = new Float32Array(W * H), fy = new Float32Array(W * H);
+    for (let i = 0; i < W * H; i++) { const a = Math.atan2(s2[i], c2[i]) / 2; fx[i] = Math.cos(a); fy[i] = Math.sin(a); }
+    return { fx, fy };
+  }
+  // line integral convolution: average a field along the stroke direction
+  function lic(F, S, W, H, len) {
+    const O = new Float32Array(W * H);
+    for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+      let sum = S[y * W + x], n = 1;
+      for (const dir of [1, -1]) {
+        let px = x + 0.5, py = y + 0.5, lx = 0, ly = 0;
+        for (let k = 0; k < len; k++) {
+          const j = (py | 0) * W + (px | 0); let vx = F.fx[j], vy = F.fy[j];
+          if (vx * lx + vy * ly < 0) { vx = -vx; vy = -vy; }
+          if (k === 0 && dir < 0) { vx = -vx; vy = -vy; }
+          lx = vx; ly = vy; px += vx; py += vy;
+          if (px < 0 || py < 0 || px >= W || py >= H) break;
+          const w = 1 - k / len; sum += S[(py | 0) * W + (px | 0)] * w; n += w;
+        }
+      }
+      O[y * W + x] = sum / n;
+    }
+    return O;
+  }
   const loadImage = (src) => new Promise((res, rej) => { const im = new Image(); im.decoding = 'async'; im.onload = () => res(im); im.onerror = rej; im.src = src; });
 
   // ---------- ivy: seeded random-walk stems with alternating leaves ----------
@@ -74,7 +119,7 @@
   window.LivingScene = function (canvas, scene, opts = {}) {
     const ctx = canvas.getContext('2d');
     const cellOf = () => (opts.cell || 2);
-    let water = null, hasFront = false; let W, H, back, front, frontA, colour, G, L, Lused, out, errOut, e, dirty, rowDirty, mid, vine, ivy, inkC, paperC, R, state, ready = false;
+    let water = null, hasFront = false, fadeN = null; let W, H, back, front, frontA, colour, G, L, Lused, out, errOut, e, dirty, rowDirty, mid, vine, ivy, inkC, paperC, R, state, ready = false;
     const pointer = { x: -1e4, y: -1e4, vx: 0, vy: 0, t: 0 };
     let scrollP = 0, t0 = performance.now(), lastVine = -1, lastTint = 0, frameNo = 0;
     const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -108,6 +153,9 @@
       hasFront = frontA.some((a) => a > 0.001);
       if (scene.levels) { const { lo = 0, hi = 1, gamma = 1, contrast = 1 } = scene.levels; for (let i = 0; i < W * H; i++) { let v = clamp((back[i] - lo) / (hi - lo)); v = Math.pow(v, gamma); back[i] = clamp((v - 0.5) * contrast + 0.5); } }
       if (scene.brush) { back = kuwahara(back, W, H, 2); back = kuwahara(back, W, H, 1); }
+      const flow = scene.src ? flowField(back, W, H, R) : null;
+      // brush: smear the tone a little along the strokes, like paint dragged by a brush
+      if (flow) { const sm = lic(flow, back, W, H, scene.smear ?? 4); for (let i = 0; i < W * H; i++) back[i] = back[i] * 0.35 + sm[i] * 0.65; }
       if (state.texture) state.texture(back, front);
       // the colour layer is blurred heavily: the middle ink drifts, it never outlines shapes
       const cd = P.colour.getImageData(0, 0, W, H).data, br = Math.max(3, Math.round(Math.min(W, H) / 30));
@@ -115,7 +163,10 @@
       for (let q = 0; q < 3; q++) { let A = new Float32Array(W * H); for (let i = 0; i < W * H; i++) A[i] = cd[i * 4 + q]; A = blur(blur(A, W, H, br), W, H, br); for (let i = 0; i < W * H; i++) colour[i * 3 + q] = A[i]; }
       // a soft swirly grain so flat areas break into eddies instead of a regular weave
       G = new Float32Array(W * H); for (let i = 0; i < G.length; i++) G[i] = R() * 2 - 1;
-      G = blur(blur(G, W, H, 3), W, H, 2); let mx = 0; for (const v of G) mx = Math.max(mx, Math.abs(v)); for (let i = 0; i < G.length; i++) G[i] /= mx || 1;
+      // with a stroke field the grain is combed along it, so the weave runs with the painting's forms
+      if (flow) { G = lic(flow, G, W, H, scene.comb ?? 9); const m0 = G.reduce((a, v) => a + v, 0) / G.length; let sd = 0; for (const v of G) sd += (v - m0) ** 2; sd = Math.sqrt(sd / G.length) || 1; for (let i = 0; i < G.length; i++) G[i] = clamp((G[i] - m0) / (sd * 2.5), -1, 1); }
+      else G = blur(blur(G, W, H, 3), W, H, 2);
+      let mx = 0; for (const v of G) mx = Math.max(mx, Math.abs(v)); for (let i = 0; i < G.length; i++) G[i] /= mx || 1;
       L = new Float32Array(W * H); Lused = new Float32Array(W * H).fill(-9); out = new Uint8Array(W * H); errOut = new Float32Array(W * H); e = new Float32Array(W * H);
       dirty = new Uint8Array(W * H); rowDirty = new Uint8Array(H + 3); mid = new Uint8ClampedArray(W * H * 3);
       vine = { dens: new Float32Array(W * H), stem: new Uint8Array(W * H) };
@@ -123,15 +174,23 @@
       water = null;
       if (state.water) { water = new Float32Array(W * H); for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) water[y * W + x] = state.water(x, y); }
       if (state.birds) state.birds.forEach((b) => Object.assign(b, { x: b.hx * W, y: b.hy * H, vx: 0, vy: 0, ph: R() * 6.28, a: R() * 6.28 }));
+      fadeN = noiseField(W, H, R, Math.max(12, W / 14), 3);
       lastVine = -1; tintMid(); ready = true;
     }
     // middle ink: the local colour, re-lit to sit halfway between ink and paper
     function tintMid() {
-      const li = lum(inkC), lp = lum(paperC), target = li + (lp - li) * 0.5, sat = scene.sat || 1.5;
+      const li = lum(inkC), lp = lum(paperC), target = li + (lp - li) * (scene.midLight ?? 0.5), sat = scene.sat || 1.5;
+      // a gentle colour grade: cool shadows, warm light, and a sky that cools toward the top
+      const gr = scene.grade, gs = gr && hex(gr.shadow), gl = gr && hex(gr.light), gk = gr && gr.sky && hex(gr.sky);
       let vd = null; if (ivy) vd = blur(vine.dens, W, H, 3);
       const leaf = scene.leaf ? hex(scene.leaf) : null;
       for (let i = 0; i < W * H; i++) {
         let r = colour[i * 3], g = colour[i * 3 + 1], b = colour[i * 3 + 2];
+        if (gr) {
+          const T = clamp(back[i]), y = ((i / W) | 0) / H, ks = gr.mix * (1 - T) * (1 - T), kl = gr.mix * T, kk = gk ? (gr.skyMix || 0.5) * clamp(1 - y / (gr.skyTo || 0.5)) ** 1.5 : 0;
+          r += (gs[0] - r) * ks + (gl[0] - r) * kl; g += (gs[1] - g) * ks + (gl[1] - g) * kl; b += (gs[2] - b) * ks + (gl[2] - b) * kl;
+          if (kk) { r += (gk[0] - r) * kk; g += (gk[1] - g) * kk; b += (gk[2] - b) * kk; }
+        }
         if (vd && leaf) { const k = clamp(vd[i] * 2.2); r += (leaf[0] - r) * k; g += (leaf[1] - g) * k; b += (leaf[2] - b) * k; }
         const l = 0.3 * r + 0.59 * g + 0.11 * b;
         mid[i * 3] = target + (r - l) * sat; mid[i * 3 + 1] = target + (g - l) * sat; mid[i * 3 + 2] = target + (b - l) * sat;
@@ -159,6 +218,7 @@
       const sway = reduced ? 0 : 1, amp = (scene.sway ?? 0.55) * sway, px = pointer.x, py = pointer.y, near = Math.max(18, W * 0.06);
       const step = Math.floor(t * 7) / 7; // the front moves in small steps, like leaves catching the wind
       const ws = scene.wind || ((x, y) => 1);
+      const edge = (scene.fadeAt ?? 0.92) - Math.max(0, scrollP - 0.05) * 0.5;
       for (let y = 0; y < H; y++) {
         for (let x = 0; x < W; x++) {
           const i = y * W + x; let v = back[i];
@@ -179,6 +239,8 @@
             if (a > 0.001) { const fv = (front[y * W + x0] * frontA[y * W + x0] * (1 - f) + front[y * W + x1] * frontA[y * W + x1] * f) / a; v = v * (1 - a) + fv * a; }
           }
           if (ivy) { const d = vine.dens[i]; if (d > 0.06) { const k = Math.min(1, d * 1.5); v = v * (1 - k) + ((scene.ivyTone ?? 0.2) + 0.3 * Math.max(0, d - 0.7)) * k; } else if (vine.stem[i]) v = 0.1; }
+          // the painting dissolves into the paper along a ragged edge at the bottom, rising as you scroll
+          const fe = (y / H) - edge + fadeN[i] * 0.07; if (fe > 0) v += Math.min(1.1, fe * 9);
           L[i] = clamp(v + G[i] * (scene.grain ?? 0.08), -0.2, 1.2);
         }
       }
