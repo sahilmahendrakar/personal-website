@@ -51,9 +51,9 @@
 <body>
 <div class="wrap">
   <header>
-    <div class="mono">Living hero &middot; step one &middot; fine weave, in colour</div>
-    <h1>Fine weave, <em>in colour</em></h1>
-    <p class="lede">The Fine weave dither, now with colour. Each tile uses a palette of a different size taken from the scene, from three inks up to sixteen, with the darkest always the ink and the lightest always the paper. Pixels start at Fine; Finest is one screen pixel per dot. Click any tile to see it full screen.</p>
+    <div class="mono">Living hero &middot; step one &middot; fine weave, five colours</div>
+    <h1>Fine weave, <em>five colours</em></h1>
+    <p class="lede">Keeping the lines and swirls of the weave while adding colour. The trick in each tile is that any one spot only ever mixes two or three inks, so the weave stays strong, while the scene as a whole uses about five. Pixels start at Fine; Finest is one screen pixel per dot. Click any tile to see it full screen.</p>
   </header>
 
   <div class="bar" role="toolbar" aria-label="Preview options">
@@ -79,6 +79,35 @@
   'use strict';
   const D = window.Dither, BN = D.BN, $ = (s) => document.querySelector(s);
   const clamp = (v, a = 0, b = 1) => (v < a ? a : v > b ? b : v);
+  const lum = (c) => 0.3 * c[0] + 0.59 * c[1] + 0.11 * c[2];
+  // the same hue at a chosen lightness, with its colourfulness scaled by sat
+  const tone = (c, target, sat = 1) => { const l = lum(c); return [0, 1, 2].map((q) => clamp(Math.round(target + (c[q] - l) * sat), 0, 255)); };
+  // error diffusion of one value to n evenly spaced levels (Stucki, serpentine)
+  // three levels where the middle one can differ from pixel to pixel
+  function diffuse3(L, w, h, M) {
+    const K = KER.stucki, e = Float32Array.from(L), out = new Uint8Array(w * h);
+    for (let y = 0; y < h; y++) {
+      const rtl = y & 1;
+      for (let k = 0; k < w; k++) {
+        const x = rtl ? w - 1 - k : k, i = y * w + x, v = e[i], m = M[i], b = v < m / 2 ? 0 : v < (m + 1) / 2 ? 1 : 2;
+        out[i] = b; const er = v - (b === 0 ? 0 : b === 1 ? m : 1);
+        for (const [dx0, dy, f] of K) { const xx = x + (rtl ? -dx0 : dx0), yy = y + dy; if (xx >= 0 && xx < w && yy < h) e[yy * w + xx] += er * f; }
+      }
+    }
+    return out;
+  }
+  function diffuseN(L, w, h, n) {
+    const K = KER.stucki, e = Float32Array.from(L), out = new Uint8Array(w * h), s = n - 1;
+    for (let y = 0; y < h; y++) {
+      const rtl = y & 1;
+      for (let k = 0; k < w; k++) {
+        const x = rtl ? w - 1 - k : k, i = y * w + x, v = e[i], b = v <= 0 ? 0 : v >= 1 ? s : Math.round(v * s);
+        out[i] = b; const er = v - b / s;
+        for (const [dx0, dy, f] of K) { const xx = x + (rtl ? -dx0 : dx0), yy = y + dy; if (xx >= 0 && xx < w && yy < h) e[yy * w + xx] += er * f; }
+      }
+    }
+    return out;
+  }
 
   // Scenes are just sources for now; each has its own ink and paper.
   const SCENES = [
@@ -162,12 +191,12 @@
   }
 
   const VARIANTS = [
-    { id: 'fine2', name: 'Fine weave, two inks', note: 'The one you picked, for reference: Stucki diffusion in ink and paper.', run: (c) => c.diffuseL('stucki', true) },
-    { id: 'fine3', name: 'Three inks', note: 'Ink, paper and one colour from the scene. Almost a duotone, quiet and graphic.', run: (c) => c.diffuseC('stucki', true, 3) },
-    { id: 'fine5', name: 'Five inks', note: 'A small palette pulled from the scene. Colour shows up as a tint inside the weave.', run: (c) => c.diffuseC('stucki', true, 5) },
-    { id: 'fine8', name: 'Eight inks', note: 'Enough colours that each area of the scene gets its own hue, while the weave still shows everywhere.', run: (c) => c.diffuseC('stucki', true, 8) },
-    { id: 'fine12', name: 'Twelve inks', note: 'Richer and more painterly. The swirls get softer because neighbouring colours are closer.', run: (c) => c.diffuseC('stucki', true, 12) },
-    { id: 'fine16', name: 'Sixteen inks', note: 'The fullest version. Reads almost like the painting up close, with the weave as texture.', run: (c) => c.diffuseC('stucki', true, 16) },
+    { id: 'fine3', name: 'Three inks', note: 'The one you liked, for reference: ink, paper and one colour for the whole scene.', run: (c) => c.diffuseC('stucki', true, 3) },
+    { id: 'tone5', name: 'Five inks, by tone', note: 'Five colours from the scene laid out from dark to light. Every tone sits between two neighbouring inks, so the weave shows everywhere.', run: (c) => c.byTone(5) },
+    { id: 'area5', name: 'Five inks, by area', note: 'Still three inks at any one spot, like the three-ink version, but the middle ink changes from area to area between three colours of the scene.', run: (c) => c.layered({ field: 'area', mids: [0.5] }) },
+    { id: 'inkarea', name: 'Coloured inks, by area', note: 'The two-ink weave, untouched, but the ink takes one of four deep colours depending on where it is. Paper stays paper.', run: (c) => c.layered({ field: 'area', mids: [], tint: 1 }) },
+    { id: 'tone4', name: 'Four inks, by tone', note: 'One fewer colour than five by tone. Bigger patches of weave between each pair of inks, a little calmer.', run: (c) => c.byTone(4) },
+    { id: 'drift', name: 'Drifting middle', note: 'For comparison: three inks at any spot, but the middle ink drifts smoothly with the scene, so there are many colours overall.', run: (c) => c.layered({ field: 'smooth', mids: [0.5], sat: 1.9 }) },
   ];
   const OLD = [
     { id: 'worms', name: 'Worms', note: 'Atkinson diffusion in two inks. The ruins study, as it was: short wriggling strokes, crisp highlights.', mono: true, run: (c) => c.diffuseL('atkinson', true) },
@@ -253,7 +282,37 @@
     // a soft, swirly grain so flat areas break into eddies instead of a regular weave
     let G = new Float32Array(w * h); for (let i = 0; i < G.length; i++) G[i] = Math.random() * 2 - 1;
     G = blur(blur(G, w, h, 3), w, h, 2); let mx = 0; for (const v of G) mx = Math.max(mx, Math.abs(v)); for (let i = 0; i < G.length; i++) G[i] /= mx || 1;
-    return { S, w, h, m, PW: w + 2 * m, rgb, pal, pals, G, ink: D.hex(S.ink), paper: D.hex(S.paper) };
+    // the scene's local colour, blurred heavily, used to colour inks by area
+    const PWm = w + 2 * m, LC = new Float32Array(w * h * 3), br = Math.max(3, Math.round(w / 36));
+    for (let q = 0; q < 3; q++) {
+      let A = new Float32Array(w * h);
+      for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) A[y * w + x] = rgb[((y + m) * PWm + x + m) * 3 + q];
+      A = blur(blur(A, w, h, br), w, h, br);
+      for (let i = 0; i < w * h; i++) LC[i * 3 + q] = A[i];
+    }
+    // pick n colours from the scene whose hues are as different from each other as possible
+    const chroma = (c) => { const l = lum(c); return [c[0] - l, c[1] - l, c[2] - l]; };
+    const pickHues = (n, cand) => {
+      const out = [cand.reduce((a, b) => (Math.hypot(...chroma(b)) > Math.hypot(...chroma(a)) ? b : a))];
+      while (out.length < n) { let best = null, bd = -1; for (const c of cand) { const d = Math.min(...out.map((o) => { const a = chroma(c), b = chroma(o); return Math.hypot(a[0] - b[0], a[1] - b[1], a[2] - b[2]); })); if (d > bd) { bd = d; best = c; } } out.push(best); }
+      return out;
+    };
+    const area = {};
+    // mids come from the whole palette, deep inks only from its darker half (a darkened yellow just turns brown)
+    const li0 = lum(D.hex(S.ink)), lp0 = lum(D.hex(S.paper));
+    for (const [key, n, cand] of [['mid', 3, pals[12].slice(1, 11)], ['deep', 4, pals[12].slice(1, 7)]]) {
+      const H = pickHues(n, cand), idx = new Uint8Array(w * h), wt = new Float32Array(n);
+      for (let i = 0; i < w * h; i++) {
+        // soft choice: near a border between two areas the colours interleave as dots instead of a hard edge
+        const a = chroma([LC[i * 3], LC[i * 3 + 1], LC[i * 3 + 2]]); let tot = 0;
+        for (let k = 0; k < n; k++) { const b = chroma(H[k]), d = Math.hypot(a[0] - b[0], a[1] - b[1], a[2] - b[2]); wt[k] = Math.exp(-d / 7); tot += wt[k]; }
+        let r = Math.random() * tot, k = 0; while (k < n - 1 && (r -= wt[k]) > 0) k++; idx[i] = k;
+      }
+      // each middle ink keeps roughly its own lightness, so yellows stay light and blues stay deep
+      const lev = H.map((c) => clamp((lum(c) - li0) / (lp0 - li0), 0.32, 0.7));
+      area[key] = { H, idx, lev };
+    }
+    return { S, w, h, m, PW: w + 2 * m, rgb, pal, pals, G, LC, area, ink: D.hex(S.ink), paper: D.hex(S.paper) };
   }
 
   function frame(src, ctx, v, t) {
@@ -279,6 +338,30 @@
       diffuseL(kernel, serp) { let L = this.L(); if (st.draw !== 'redrawn') L = D.sharpen(L, w, h, 0.6); const rgb2 = new Float32Array(w * h * 3); for (let i = 0; i < w * h; i++) rgb2[i * 3] = rgb2[i * 3 + 1] = rgb2[i * 3 + 2] = L[i] * 255; return two(diffuseRGB(rgb2, w, h, [[0, 0, 0], [255, 255, 255]], kernel, serp)); },
       riemersma() { const L = this.L(), rgb2 = new Float32Array(w * h * 3); for (let i = 0; i < w * h; i++) rgb2[i * 3] = rgb2[i * 3 + 1] = rgb2[i * 3 + 2] = L[i] * 255; return two(riemersma(rgb2, w, h, [[0, 0, 0], [255, 255, 255]])); },
       contours() { return two(contours(this.L(true), w, h, t || 0)); },
+      // n inks from the scene, re-lit so they sit evenly from ink to paper; diffusion runs on lightness only
+      byTone(n) {
+        const L = this.L(), b = diffuseN(L, w, h, n), li = lum(ink), lp = lum(paper);
+        const P = src.pals[n].map((c, k) => (k === 0 ? ink : k === n - 1 ? paper : tone(c, li + (lp - li) * k / (n - 1), 1.25)));
+        const id = ctx.createImageData(w, h);
+        for (let i = 0; i < w * h; i++) { const p = P[b[i]]; id.data[i * 4] = p[0]; id.data[i * 4 + 1] = p[1]; id.data[i * 4 + 2] = p[2]; id.data[i * 4 + 3] = 255; }
+        return id;
+      },
+      // ink, paper and middle inks whose colour depends on where they are
+      layered({ field, mids = [0.5], tint = 0, sat = 1.2 }) {
+        const A = src.area[tint ? 'deep' : 'mid'], lv = mids.length + 2, L = this.L(), li = lum(ink), lp = lum(paper), id = ctx.createImageData(w, h), cache = {};
+        let M = null;
+        if (field === 'area' && lv === 3) { M = new Float32Array(w * h); for (let i = 0; i < w * h; i++) M[i] = A.lev[A.idx[i]]; }
+        const b = M ? diffuse3(L, w, h, M) : diffuseN(L, w, h, lv);
+        const col = (i, k) => {
+          if (k === lv - 1) return paper;
+          const target = k === 0 ? li + (lp - li) * 0.14 : li + (lp - li) * (M ? M[i] : k / (lv - 1));
+          if (k === 0 && !tint) return ink;
+          if (field === 'area') { const key = A.idx[i] * 8 + k; return (cache[key] ||= tone(A.H[A.idx[i]], target, k === 0 ? 1.1 : sat)); }
+          return tone([src.LC[i * 3], src.LC[i * 3 + 1], src.LC[i * 3 + 2]], target, k === 0 ? sat * 0.6 : sat);
+        };
+        for (let i = 0; i < w * h; i++) { const p = col(i, b[i]); id.data[i * 4] = p[0]; id.data[i * 4 + 1] = p[1]; id.data[i * 4 + 2] = p[2]; id.data[i * 4 + 3] = 255; }
+        return id;
+      },
       diffuseC(kernel, serp, K = 4) {
         // stretch the colours toward the four inks before diffusing
         // keep the scene's own tones; only stretch contrast a touch and add the swirly grain
